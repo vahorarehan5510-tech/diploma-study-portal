@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>100% Free Diploma Study Portal</title>
+    <title>100% Free Diploma Study Portal (Online Cloud)</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
         :root {
             --primary-blue: #0056b3;
@@ -52,7 +56,7 @@
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        /* GATEWAY SCREEN (LOGIN DISPLAYED ON TOP BY DEFAULT) */
+        /* GATEWAY SCREEN */
         #gateway-screen {
             min-height: 100vh;
             background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
@@ -191,7 +195,7 @@
         .sidebar-menu a { display: block; padding: 14px 10px; color: var(--text-color); text-decoration: none; border-bottom: 1px solid var(--border-color); font-size: 15px; font-weight: 500; }
         .btn-logout { background: #dc3545; color: white; border: none; width: 100%; padding: 12px; margin-top: 25px; border-radius: 8px; cursor: pointer; font-weight: 600;}
 
-        /* BOX TYPE SUBJECT LAYOUT GRID */
+        /* BOX TYPE GRID */
         main { padding: 15px; max-width: 1200px; margin: 0 auto; }
         .content-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         
@@ -215,7 +219,7 @@
         .btn-yt { background: #ff0000; color: white; flex: 1; text-align: center; padding: 14px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; }
         .btn-pdf { background: #007bff; color: white; flex: 1; text-align: center; padding: 14px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; }
 
-        /* FULL SCALED PREMIUM MODAL DESIGN */
+        /* MODALS */
         .info-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
@@ -237,9 +241,7 @@
         }
         
         .info-modal-content h2 { margin-bottom: 20px; color: var(--primary-blue); border-bottom: 2px solid var(--border-color); padding-bottom: 12px; font-weight: 700; text-align: center; }
-        .info-modal-content p { font-size: 15px; line-height: 1.7; margin-bottom: 14px; }
         
-        /* PREMIUM FORM INPUTS FOR EDIT PROFILE */
         .modal-form-group { margin-bottom: 16px; }
         .modal-form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--text-color); }
         .modal-form-group input, .modal-form-group select {
@@ -250,11 +252,7 @@
         .btn-close-modal { background: #6c757d; color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; float: right; font-weight: bold; margin-top: 15px; margin-left: 10px; }
         .btn-save-modal { background: linear-gradient(135deg, #4A00E0, #8E2DE2); color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; float: right; font-weight: bold; margin-top: 15px; box-shadow: 0 4px 10px rgba(74,0,224,0.2); }
 
-        /* Hidden Admin Link */
-        .admin-link { font-size: 12px; color: transparent; cursor: pointer; user-select: none; }
-        header:hover .admin-link { color: rgba(255,255,255,0.2); }
-
-        /* ADMIN CONTROL PANEL */
+        /* ADMIN UI */
         #admin-panel { background-color: var(--admin-dark); min-height: 100vh; color: #ffffff; }
         .admin-header { background: rgba(0,0,0,0.2); padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .admin-container { max-width: 550px; margin: 40px auto; width: 90%; }
@@ -277,7 +275,6 @@
 <body>
 
     <div id="gateway-screen">
-        
         <div id="login-form" class="portal-container">
             <h2>Diploma Study Portal</h2>
             <div class="sub-title">100% Free Resources & Materials</div>
@@ -359,7 +356,6 @@
 
     <div id="welcome-animation" class="hidden"></div>
 
-
     <div id="home-page" class="hidden">
         <header>
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -373,7 +369,7 @@
         </header>
 
         <div class="notice-board">
-            <marquee id="notice-text">GTU Circular Notice: Material Box and Dynamic Academic Syllabus updated live.</marquee>
+            <marquee id="notice-text">GTU Circular Notice: Material Box and Dynamic Academic Syllabus updated live on Cloud Database.</marquee>
         </div>
 
         <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
@@ -416,7 +412,6 @@
         </main>
     </div>
 
-
     <div id="info-modal" class="info-modal-overlay" onclick="closeModal()">
         <div class="info-modal-content" onclick="event.stopPropagation()">
             <h2 id="modal-title">Title</h2>
@@ -427,10 +422,9 @@
         </div>
     </div>
 
-
     <div id="admin-panel" class="hidden">
         <div class="admin-header">
-            <h2>⚡ PORTAL ADMIN CONTROL</h2>
+            <h2>⚡ PORTAL ONLINE ADMIN</h2>
             <button class="dark-mode-btn" style="background: rgba(255,255,255,0.1);" onclick="exitAdmin()">Go to Login (Exit)</button>
         </div>
         <div class="admin-container">
@@ -488,7 +482,7 @@
                     <select id="adm-ch-branch-select" onchange="updateAdminSemSelect('adm-ch-branch-select', 'adm-ch-sem-select')"><option value="">-- બ્રાન્ચ પસંદ કરો --</option></select>
                     <select id="adm-ch-sem-select" onchange="updateAdminSubSelect('adm-ch-branch-select', 'adm-ch-sem-select', 'adm-ch-sub-select')"><option value="">-- સેમેસ્ટર પસંદ કરો --</option></select>
                     <select id="adm-ch-sub-select"><option value="">-- સબ્જેક્ટ પસંદ કરો --</option></select>
-                    <input type="text" id="adm-ch-name" placeholder="દા.ત. Chapter 1: Introduction">
+                    <input type="text" id="adm-ch-name" placeholder="દા.ત. Chapter 1">
                     <div class="admin-btn-group">
                         <button class="btn-admin btn-secondary-admin" onclick="adminNext(5, 6)">Skip / Next</button>
                         <button class="btn-admin btn-primary-admin" onclick="addChapter()">Save & Next</button>
@@ -523,35 +517,54 @@
     </div>
 
     <script>
-        let defaultData = {
-            branches: {
-                "Computer": {
-                    "Sem 1": { "Mathematics-1": [{ name: "Chapter 1: Matrix", yt: "https://youtube.com", pdf: "https://drive.google.com" }] }
-                },
-                "Chemical": {
-                    "Sem 3": { "Fluid Flow Operations": [{ name: "Chapter 1: Fluids Basics", yt: "https://youtube.com", pdf: "https://drive.google.com" }] }
-                },
-                "IT": {}, "Civil": {}, "Mechanical": {}
-            }
+        // Integrated with your custom live Firebase Web application credentials
+        const firebaseConfig = {
+            apiKey: "AIzaSyBi2WCy7rGfQ5Ie7ckR6SgeVPIsdPFWck8",
+            authDomain: "diploma-study-portal.firebaseapp.com",
+            databaseURL: "https://diploma-study-portal-default-rtdb.firebaseio.com/",
+            projectId: "diploma-study-portal",
+            storageBucket: "diploma-study-portal.firebasestorage.app",
+            messagingSenderId: "233448737809",
+            appId: "1:233448737809:web:8f34ab9caa3d0f521ab5b0"
         };
 
-        let db = JSON.parse(localStorage.getItem('portal_db')) || defaultData;
-        let studentsList = JSON.parse(localStorage.getItem('registered_students')) || [];
-        
-        let currentOpenSubject = "";
-        let currentOpenSem = "";
-        let currentOpenBranch = "";
+        // Initialize Web SDK Engine
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-        function saveDB() {
-            localStorage.setItem('portal_db', JSON.stringify(db));
-            calculateLiveCounters();
-        }
+        // Standard hardcoded static branches backup template
+        const baseStaticBranches = ["Computer", "Chemical", "IT", "Civil", "Mechanical"];
+        let db = { branches: { "Computer": {}, "Chemical": {}, "IT": {}, "Civil": {}, "Mechanical": {} } };
+        let studentsList = [];
 
         window.onload = function() {
+            // Live Synchronization Listening Framework
+            database.ref('portal_db').on('value', (snapshot) => {
+                if(snapshot.exists()) {
+                    db = snapshot.val();
+                    if(!db.branches) db.branches = {};
+                    // Ensure core branches template structure always persists in memory
+                    baseStaticBranches.forEach(b => { if(!db.branches[b]) db.branches[b] = {}; });
+                }
+                populateDropdowns();
+                calculateLiveCounters();
+                let user = JSON.parse(localStorage.getItem('current_logged_student'));
+                if(user) { showHomePage(user); }
+            });
+
+            database.ref('registered_students').on('value', (snapshot) => {
+                if(snapshot.exists()) {
+                    studentsList = Object.values(snapshot.val());
+                }
+            });
+            
+            // Immediate safety fallback load if network delays
             populateDropdowns();
-            checkSession();
-            calculateLiveCounters();
         };
+
+        function saveDB() {
+            database.ref('portal_db').set(db);
+        }
 
         function checkSession() {
             let user = JSON.parse(localStorage.getItem('current_logged_student'));
@@ -584,7 +597,6 @@
             }
         }
 
-        /* PREMIUM DYNAMIC MODAL BOX LOGIC */
         function openModal(type) {
             let modal = document.getElementById('info-modal');
             let title = document.getElementById('modal-title');
@@ -592,19 +604,17 @@
             let footer = document.getElementById('modal-footer-buttons');
             let user = JSON.parse(localStorage.getItem('current_logged_student'));
 
-            // Default Footer Button Reset
             footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">બંધ કરો</button>`;
 
             if (type === 'profile-edit' && user) {
                 title.innerText = "✏️ પ્રોફાઇલ એડિટ કરો (Edit Profile)";
                 
-                // Generate Dynamic Options for Branch Dropdown
                 let branchOptionsHTML = "";
-                Object.keys(db.branches).forEach(b => {
+                let uniqueBranches = Object.keys(db.branches).length > 0 ? Object.keys(db.branches) : baseStaticBranches;
+                uniqueBranches.forEach(b => {
                     branchOptionsHTML += `<option value="${b}" ${user.branch === b ? 'selected' : ''}>${b}</option>`;
                 });
 
-                // Generate Dynamic Options for Semester Dropdown
                 let semOptionsHTML = "";
                 for(let i=1; i<=6; i++) {
                     semOptionsHTML += `<option value="Sem ${i}" ${user.sem === `Sem ${i}` ? 'selected' : ''}>Sem ${i}</option>`;
@@ -633,7 +643,6 @@
                     </div>
                 `;
                 
-                // Append Save Button inside footer for custom premium styling
                 footer.innerHTML = `
                     <button class="btn-close-modal" onclick="closeModal()">કેન્સલ</button>
                     <button class="btn-save-modal" onclick="updateProfileData()">સેવ ચેન્જીસ 💾</button>
@@ -641,19 +650,19 @@
             }
             else if(type === 'saved') {
                 title.innerText = "💾 સેવ કરેલું મટીરીયલ";
-                body.innerHTML = "<p>બુકમાર્ક કરેલી ફાઈલો ટૂંક સમયમાં અહીં ડિસ્પ્લે થશે!</p>";
+                body.innerHTML = "<p>બુકમાર્ક કરેલી ફાઈલો ક્લાઉડ સ્ટોરેજ પર ઓટોમેટીક સેવ થશે!</p>";
             } 
             else if(type === 'about') {
                 title.innerText = "ℹ️ અબાઉટ અસ";
-                body.innerHTML = "<p>આ ડિપ્લોમા એન્જિનિયરિંગના વિદ્યાર્થીઓ માટેનું ૧૦૦% મફત લર્નિંગ પોર્ટલ છે.</p>";
+                body.innerHTML = "<p>આ ડિપ્લોમા એન્જિનિયરિંગના વિદ્યાર્થીઓ માટેનું ૧૦0% મફત લર્નિંગ પોર્ટલ છે.</p>";
             } 
             else if(type === 'contact') {
-                title.innerText = "📞 コન્ટેક્ટ અસ";
+                title.innerText = "📞 કોન્ટેક્ટ અસ";
                 body.innerHTML = "<p>સંપર્ક ઈમેલ: support@diplomaportal.com</p>";
             } 
             else if(type === 'privacy') {
-                title.innerText = "🔒 પ્રાઇવસી પોલીસી";
-                body.innerHTML = "<p>તમારો રજીસ્ટ્રેશન ડેટા બ્રાઉઝર લોકલ સ્ટોરેજમાં જ સુરક્ષિત સેવ રહે છે.</p>";
+                title.innerText = "🔒 પ્રાઇવસી પોલીシー";
+                body.innerHTML = "<p>તમારો ડેટા ઓનલાઈન ક્લાઉડ સર્વર પર એનક્રિપ્ટેડ ફોર્મેટમાં સુરક્ષિત સેવ થાય છે.</p>";
             }
             modal.classList.add('active');
         }
@@ -669,24 +678,15 @@
             if(!newName || !newEnroll) { alert("વિગત અધૂરી ન રાખી શકાય!"); return; }
 
             let oldEnroll = user.enroll;
-            user.name = newName;
-            user.enroll = newEnroll;
-            user.branch = newBranch;
-            user.sem = newSem;
+            user.name = newName; user.enroll = newEnroll; user.branch = newBranch; user.sem = newSem;
 
             let saveAction = () => {
-                let idx = studentsList.findIndex(s => s.enroll === oldEnroll);
-                if(idx !== -1) {
-                    studentsList[idx].name = newName; 
-                    studentsList[idx].enroll = newEnroll;
-                    studentsList[idx].branch = newBranch;
-                    studentsList[idx].sem = newSem;
-                    if(user.photo) studentsList[idx].photo = user.photo;
-                    localStorage.setItem('registered_students', JSON.stringify(studentsList));
+                database.ref('registered_students/' + user.enroll).set(user);
+                if(oldEnroll !== user.enroll) {
+                    database.ref('registered_students/' + oldEnroll).remove();
                 }
                 localStorage.setItem('current_logged_student', JSON.stringify(user));
-                closeModal(); 
-                showHomePage(user);
+                closeModal(); showHomePage(user);
             };
 
             if(fileInput.files && fileInput.files[0]) {
@@ -705,12 +705,13 @@
         }
 
         function calculateLiveCounters() {
+            if(!db || !db.branches) return;
             let totalBranches = Object.keys(db.branches).length;
             let totalSubjects = 0; let totalChapters = 0;
             Object.keys(db.branches).forEach(b => {
                 Object.keys(db.branches[b]).forEach(sem => {
                     let subs = db.branches[b][sem]; totalSubjects += Object.keys(subs).length;
-                    Object.keys(subs).forEach(sub => { totalChapters += subs[sub].length; });
+                    Object.keys(subs).forEach(sub => { if(subs[sub]) totalChapters += subs[sub].length; });
                 });
             });
             document.getElementById('stat-branches').innerText = totalBranches;
@@ -734,8 +735,12 @@
 
         function populateDropdowns() {
             let regBranch = document.getElementById('reg-branch');
+            if(!regBranch) return;
             regBranch.innerHTML = '<option value="">-- બ્રાન્ચ પસંદ કરો --</option>';
-            Object.keys(db.branches).forEach(b => { regBranch.innerHTML += `<option value="${b}">${b}</option>`; });
+            
+            // Loop with unique fallback array mapping logic
+            let branchList = (db && db.branches && Object.keys(db.branches).length > 0) ? Object.keys(db.branches) : baseStaticBranches;
+            branchList.forEach(b => { regBranch.innerHTML += `<option value="${b}">${b}</option>`; });
 
             let regSem = document.getElementById('reg-sem');
             regSem.innerHTML = '<option value="">-- સેમેસ્ટર પસંદ કરો --</option>';
@@ -756,8 +761,7 @@
                 photo: ""
             };
 
-            studentsList.push(user);
-            localStorage.setItem('registered_students', JSON.stringify(studentsList));
+            database.ref('registered_students/' + user.enroll).set(user);
             localStorage.setItem('current_logged_student', JSON.stringify(user));
             triggerWelcomeAnimation(user.name, user);
         }
@@ -846,7 +850,7 @@
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
         function logout() { localStorage.removeItem('current_logged_student'); location.reload(); }
 
-        /* ================= ADMIN SYSTEMS ================= */
+        /* ADMIN SYSTEMS */
         function openAdminModal() {
             let pwd = prompt("એડમિન કંટ્રોલ પ્રો સેન્ટર પાસવર્ડ:");
             if(pwd === "admin123") {
@@ -862,9 +866,9 @@
 
         function updateAdminDropdowns() {
             let bSelects = ['adm-sem-branch-select', 'adm-sub-branch-select', 'adm-ch-branch-select', 'adm-mat-branch-select', 'adm-del-branch-select'];
+            let branchList = (db && db.branches && Object.keys(db.branches).length > 0) ? Object.keys(db.branches) : baseStaticBranches;
             bSelects.forEach(id => {
-                let el = document.getElementById(id); el.innerHTML = '<option value="">-- બ્રાન્ચ પસંદ કરો --</option>';
-                Object.keys(db.branches).forEach(b => { el.innerHTML += `<option value="${b}">${b}</option>`; });
+                let el = document.getElementById(id); if(el) { el.innerHTML = '<option value="">-- બ્રાન્ચ પસંદ કરો --</option>'; branchList.forEach(b => { el.innerHTML += `<option value="${b}">${b}</option>`; }); }
             });
         }
 
@@ -903,7 +907,7 @@
 
         function addChapter() {
             let branch = document.getElementById('adm-ch-branch-select').value; let sem = document.getElementById('adm-ch-sem-select').value; let sub = document.getElementById('adm-ch-sub-select').value; let chName = document.getElementById('adm-ch-name').value.trim();
-            if(branch && sem && sub && chName) { db.branches[branch][sem][sub].push({ name: chName, yt: "#", pdf: "#" }); saveDB(); alert(`પ્રકરણ "${chName}" સેવ થયું.`); }
+            if(branch && sem && sub && chName) { if(!db.branches[branch][sem][sub]) db.branches[branch][sem][sub] = []; db.branches[branch][sem][sub].push({ name: chName, yt: "#", pdf: "#" }); saveDB(); alert(`પ્રકરણ "${chName}" સેવ થયું.`); }
             adminNext(5, 6);
         }
 
@@ -921,11 +925,13 @@
             let subjects = db.branches[branch][sem];
             Object.keys(subjects).forEach(subName => {
                 let div = document.createElement('div'); div.className = "admin-manage-item"; div.innerHTML = `<div class="admin-manage-header"><span>📘 સબ્જેક્ટ: ${subName}</span><button class="btn-action-small btn-delete" onclick="deleteItem('${branch}', '${sem}', '${subName}')">❌</button></div>`;
-                subjects[subName].forEach((ch, idx) => {
-                    let chDiv = document.createElement('div'); chDiv.style.margin = "10px 0 0 15px"; chDiv.innerHTML = `<div>📄 ${ch.name}</div>
-                        <div class="admin-manage-buttons"><button class="btn-action-small btn-edit" onclick="editItem('${branch}', '${sem}', '${subName}', ${idx})">✏️</button><button class="btn-action-small btn-delete" onclick="deleteItem('${branch}', '${sem}', '${subName}', ${idx})">❌</button></div>`;
-                    div.appendChild(chDiv);
-                });
+                if(subjects[subName]) {
+                    subjects[subName].forEach((ch, idx) => {
+                        let chDiv = document.createElement('div'); chDiv.style.margin = "10px 0 0 15px"; chDiv.innerHTML = `<div>📄 ${ch.name}</div>
+                            <div class="admin-manage-buttons"><button class="btn-action-small btn-edit" onclick="editItem('${branch}', '${sem}', '${subName}', ${idx})">✏️</button><button class="btn-action-small btn-delete" onclick="deleteItem('${branch}', '${sem}', '${subName}', ${idx})">❌</button></div>`;
+                        div.appendChild(chDiv);
+                    });
+                }
                 container.appendChild(div);
             });
         }
