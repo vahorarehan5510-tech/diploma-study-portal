@@ -47,7 +47,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* GATEWAY SCREEN (MAIN ENTRY) */
+        @keyframes scaleUp {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* GATEWAY SCREEN (LOGIN DISPLAYED ON TOP BY DEFAULT) */
         #gateway-screen {
             min-height: 100vh;
             background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
@@ -145,7 +150,7 @@
         }
         .notice-board marquee { font-weight: 600; }
 
-        /* RICH USER DASHBOARD CARD */
+        /* USER DASHBOARD CARD */
         .user-dashboard-card {
             background: linear-gradient(135deg, #f1f3f9, #e6eef8);
             border-radius: 16px;
@@ -186,7 +191,7 @@
         .sidebar-menu a { display: block; padding: 14px 10px; color: var(--text-color); text-decoration: none; border-bottom: 1px solid var(--border-color); font-size: 15px; font-weight: 500; }
         .btn-logout { background: #dc3545; color: white; border: none; width: 100%; padding: 12px; margin-top: 25px; border-radius: 8px; cursor: pointer; font-weight: 600;}
 
-        /* MAIN LAYOUT BOXES */
+        /* BOX TYPE SUBJECT LAYOUT GRID */
         main { padding: 15px; max-width: 1200px; margin: 0 auto; }
         .content-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         
@@ -210,22 +215,40 @@
         .btn-yt { background: #ff0000; color: white; flex: 1; text-align: center; padding: 14px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; }
         .btn-pdf { background: #007bff; color: white; flex: 1; text-align: center; padding: 14px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; }
 
-        /* FULL PAGE SIDEBAR MODAL */
+        /* FULL SCALED PREMIUM MODAL DESIGN */
         .info-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
             z-index: 1000; display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
         .info-modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
         .info-modal-content {
             background: var(--card-bg); color: var(--text-color);
-            width: 90%; max-width: 550px; padding: 30px; border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto;
+            width: 90%; max-width: 500px; padding: 30px; border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 85vh; overflow-y: auto;
+            border: 1px solid var(--border-color);
+            transform: scale(0.95); transition: transform 0.3s ease;
         }
-        .info-modal-content h2 { margin-bottom: 18px; color: var(--primary-blue); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; font-weight: 700; }
-        .info-modal-content p { font-size: 15px; line-height: 1.7; margin-bottom: 14px; text-align: justify; }
-        .btn-close-modal { background: #6c757d; color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; float: right; font-weight: bold; margin-top: 15px; }
+        .info-modal-overlay.active .info-modal-content {
+            transform: scale(1);
+            animation: scaleUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .info-modal-content h2 { margin-bottom: 20px; color: var(--primary-blue); border-bottom: 2px solid var(--border-color); padding-bottom: 12px; font-weight: 700; text-align: center; }
+        .info-modal-content p { font-size: 15px; line-height: 1.7; margin-bottom: 14px; }
+        
+        /* PREMIUM FORM INPUTS FOR EDIT PROFILE */
+        .modal-form-group { margin-bottom: 16px; }
+        .modal-form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--text-color); }
+        .modal-form-group input, .modal-form-group select {
+            width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text-color); font-size: 15px; outline: none;
+        }
+        .modal-form-group input:focus, .modal-form-group select:focus { border-color: var(--primary-blue); }
+        
+        .btn-close-modal { background: #6c757d; color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; float: right; font-weight: bold; margin-top: 15px; margin-left: 10px; }
+        .btn-save-modal { background: linear-gradient(135deg, #4A00E0, #8E2DE2); color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; float: right; font-weight: bold; margin-top: 15px; box-shadow: 0 4px 10px rgba(74,0,224,0.2); }
 
         /* Hidden Admin Link */
         .admin-link { font-size: 12px; color: transparent; cursor: pointer; user-select: none; }
@@ -398,7 +421,9 @@
         <div class="info-modal-content" onclick="event.stopPropagation()">
             <h2 id="modal-title">Title</h2>
             <div id="modal-body-text">Content</div>
-            <button class="btn-close-modal" onclick="closeModal()">બંધ કરો</button>
+            <div id="modal-footer-buttons" style="margin-top:20px;">
+                <button class="btn-close-modal" onclick="closeModal()">બંધ કરો</button>
+            </div>
         </div>
     </div>
 
@@ -426,7 +451,7 @@
 
                 <div id="admin-step-2" class="admin-step hidden">
                     <h2>સ્ટેપ-૨: નવી બ્રાન્ચ ઉમેરો</h2>
-                    <input type="text" id="adm-branch-name" placeholder="Computer, Chemical, Civil વગેરે">
+                    <input type="text" id="adm-branch-name" placeholder="Computer, Chemical વગેરે">
                     <div class="admin-btn-group">
                         <button class="btn-admin btn-secondary-admin" onclick="adminNext(2, 3)">Skip / Next</button>
                         <button class="btn-admin btn-primary-admin" onclick="addBranch()">Save & Next</button>
@@ -451,7 +476,7 @@
                     <h2>સ્ટેપ-૪: નવો સબ્જેક્ટ ઉમેરો</h2>
                     <select id="adm-sub-branch-select" onchange="updateAdminSemSelect('adm-sub-branch-select', 'adm-sub-sem-select')"><option value="">-- બ્રાન્ચ પસંદ કરો --</option></select>
                     <select id="adm-sub-sem-select"><option value="">-- સેમેસ્ટર પસંદ કરો --</option></select>
-                    <input type="text" id="adm-sub-name" placeholder="દા.ત. Fluid Operations / Data Structure">
+                    <input type="text" id="adm-sub-name" placeholder="દા.ત. Data Structure">
                     <div class="admin-btn-group">
                         <button class="btn-admin btn-secondary-admin" onclick="adminNext(4, 5)">Skip / Next</button>
                         <button class="btn-admin btn-primary-admin" onclick="addSubject()">Save & Next</button>
@@ -530,9 +555,7 @@
 
         function checkSession() {
             let user = JSON.parse(localStorage.getItem('current_logged_student'));
-            if(user) {
-                showHomePage(user);
-            }
+            if(user) { showHomePage(user); }
         }
 
         function switchForm(mode) {
@@ -561,22 +584,59 @@
             }
         }
 
+        /* PREMIUM DYNAMIC MODAL BOX LOGIC */
         function openModal(type) {
             let modal = document.getElementById('info-modal');
             let title = document.getElementById('modal-title');
             let body = document.getElementById('modal-body-text');
+            let footer = document.getElementById('modal-footer-buttons');
             let user = JSON.parse(localStorage.getItem('current_logged_student'));
+
+            // Default Footer Button Reset
+            footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">બંધ કરો</button>`;
 
             if (type === 'profile-edit' && user) {
                 title.innerText = "✏️ પ્રોફાઇલ એડિટ કરો (Edit Profile)";
+                
+                // Generate Dynamic Options for Branch Dropdown
+                let branchOptionsHTML = "";
+                Object.keys(db.branches).forEach(b => {
+                    branchOptionsHTML += `<option value="${b}" ${user.branch === b ? 'selected' : ''}>${b}</option>`;
+                });
+
+                // Generate Dynamic Options for Semester Dropdown
+                let semOptionsHTML = "";
+                for(let i=1; i<=6; i++) {
+                    semOptionsHTML += `<option value="Sem ${i}" ${user.sem === `Sem ${i}` ? 'selected' : ''}>Sem ${i}</option>`;
+                }
+
                 body.innerHTML = `
-                    <p style="text-align:center; margin-bottom:15px;">તમારો ફોટો લાઈવ અપલોડ કરવા નીચે ફાઈલ સિલેક્ટ કરો</p>
-                    <div style="text-align:center; margin-bottom:15px;"><input type="file" id="modal-photo-input" accept="image/*"></div>
-                    <label><strong>વિદ્યાર્થીનું નામ:</strong></label>
-                    <input type="text" id="edit-name-field" value="${user.name}">
-                    <label><strong>એનરોલમેન્ટ નંબર:</strong></label>
-                    <input type="text" id="edit-enroll-field" value="${user.enroll}" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                    <button class="btn-next" onclick="updateProfileData()">સેવ ચેન્જીસ 💾</button>
+                    <div class="modal-form-group" style="text-align:center;">
+                        <label>પ્રોફાઇલ પિક્ચર બદલો</label>
+                        <input type="file" id="modal-photo-input" accept="image/*" style="border:none;">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>વિદ્યાર્થીનું નામ</label>
+                        <input type="text" id="edit-name-field" value="${user.name}">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>એનરોલમેન્ટ નંબર</label>
+                        <input type="text" id="edit-enroll-field" value="${user.enroll}" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>તમારી મુખ્ય બ્રાન્ચ (Branch)</label>
+                        <select id="edit-branch-field">${branchOptionsHTML}</select>
+                    </div>
+                    <div class="modal-form-group">
+                        <label>હાલનું સેમેસ્ટર (Semester)</label>
+                        <select id="edit-sem-field">${semOptionsHTML}</select>
+                    </div>
+                `;
+                
+                // Append Save Button inside footer for custom premium styling
+                footer.innerHTML = `
+                    <button class="btn-close-modal" onclick="closeModal()">કેન્સલ</button>
+                    <button class="btn-save-modal" onclick="updateProfileData()">સેવ ચેન્જીસ 💾</button>
                 `;
             }
             else if(type === 'saved') {
@@ -588,7 +648,7 @@
                 body.innerHTML = "<p>આ ડિપ્લોમા એન્જિનિયરિંગના વિદ્યાર્થીઓ માટેનું ૧૦૦% મફત લર્નિંગ પોર્ટલ છે.</p>";
             } 
             else if(type === 'contact') {
-                title.innerText = "📞 કોન્ટેક્ટ અસ";
+                title.innerText = "📞 コન્ટેક્ટ અસ";
                 body.innerHTML = "<p>સંપર્ક ઈમેલ: support@diplomaportal.com</p>";
             } 
             else if(type === 'privacy') {
@@ -602,6 +662,8 @@
             let user = JSON.parse(localStorage.getItem('current_logged_student'));
             let newName = document.getElementById('edit-name-field').value.trim();
             let newEnroll = document.getElementById('edit-enroll-field').value.trim();
+            let newBranch = document.getElementById('edit-branch-field').value;
+            let newSem = document.getElementById('edit-sem-field').value;
             let fileInput = document.getElementById('modal-photo-input');
 
             if(!newName || !newEnroll) { alert("વિગત અધૂરી ન રાખી શકાય!"); return; }
@@ -609,16 +671,22 @@
             let oldEnroll = user.enroll;
             user.name = newName;
             user.enroll = newEnroll;
+            user.branch = newBranch;
+            user.sem = newSem;
 
             let saveAction = () => {
                 let idx = studentsList.findIndex(s => s.enroll === oldEnroll);
                 if(idx !== -1) {
-                    studentsList[idx].name = newName; studentsList[idx].enroll = newEnroll;
+                    studentsList[idx].name = newName; 
+                    studentsList[idx].enroll = newEnroll;
+                    studentsList[idx].branch = newBranch;
+                    studentsList[idx].sem = newSem;
                     if(user.photo) studentsList[idx].photo = user.photo;
                     localStorage.setItem('registered_students', JSON.stringify(studentsList));
                 }
                 localStorage.setItem('current_logged_student', JSON.stringify(user));
-                closeModal(); showHomePage(user);
+                closeModal(); 
+                showHomePage(user);
             };
 
             if(fileInput.files && fileInput.files[0]) {
@@ -629,6 +697,7 @@
         }
 
         function closeModal() { document.getElementById('info-modal').classList.remove('active'); }
+        
         function loadUserProfilePhoto(user) {
             let avatar = document.getElementById('user-avatar');
             if(user && user.photo) { avatar.innerHTML = `<img src="${user.photo}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`; } 
@@ -704,7 +773,6 @@
             document.getElementById('gateway-screen').classList.add('hidden');
             document.getElementById('home-page').classList.remove('hidden');
             
-            // Rich Dashboard Text Load
             document.getElementById('user-profile-name').innerText = user.name;
             document.getElementById('user-profile-enroll').innerText = `Enrollment: ${user.enroll}`;
             document.getElementById('dash-welcome-title').innerText = `નમસ્તે, ${user.name}! 👋`;
