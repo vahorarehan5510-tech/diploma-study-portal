@@ -333,7 +333,7 @@
 
             <div id="q-step-6" class="wizard-step hidden">
                 <h3>તમારી બ્રાન્ચ પસંદ કરો (Branch Selection)</h3>
-                <select id="reg-branch"></select>
+                <select id="reg-branch-select"></select>
                 <div class="error-text" id="err-branch">કૃપા કરીને આ વિગત ભરો</div>
                 <button class="btn-next" onclick="validateAndNext(6, 7)">Next</button>
             </div>
@@ -364,7 +364,7 @@
             </div>
             <div class="header-controls">
                 <button class="dark-mode-btn" onclick="toggleDarkMode()">🌓 Mode</button>
-                <span class="admin-link" onclick="openAdminModal()">Admin Panel</span>
+                <span class="admin-link" onclick="openAdminModal()" style="cursor:pointer; text-decoration: underline;">Admin Panel</span>
             </div>
         </header>
 
@@ -517,7 +517,6 @@
     </div>
 
     <script>
-        // Integrated with your custom live Firebase Web application credentials
         const firebaseConfig = {
             apiKey: "AIzaSyBi2WCy7rGfQ5Ie7ckR6SgeVPIsdPFWck8",
             authDomain: "diploma-study-portal.firebaseapp.com",
@@ -528,22 +527,19 @@
             appId: "1:233448737809:web:8f34ab9caa3d0f521ab5b0"
         };
 
-        // Initialize Web SDK Engine
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Standard hardcoded static branches backup template
         const baseStaticBranches = ["Computer", "Chemical", "IT", "Civil", "Mechanical"];
         let db = { branches: { "Computer": {}, "Chemical": {}, "IT": {}, "Civil": {}, "Mechanical": {} } };
         let studentsList = [];
+        let currentOpenBranch, currentOpenSem, currentOpenSubject;
 
         window.onload = function() {
-            // Live Synchronization Listening Framework
             database.ref('portal_db').on('value', (snapshot) => {
                 if(snapshot.exists()) {
                     db = snapshot.val();
                     if(!db.branches) db.branches = {};
-                    // Ensure core branches template structure always persists in memory
                     baseStaticBranches.forEach(b => { if(!db.branches[b]) db.branches[b] = {}; });
                 }
                 populateDropdowns();
@@ -558,7 +554,6 @@
                 }
             });
             
-            // Immediate safety fallback load if network delays
             populateDropdowns();
         };
 
@@ -661,7 +656,7 @@
                 body.innerHTML = "<p>સંપર્ક ઈમેલ: support@diplomaportal.com</p>";
             } 
             else if(type === 'privacy') {
-                title.innerText = "🔒 પ્રાઇવસી પોલીシー";
+                title.innerText = "🔒 પ્રાઇવસી પોલીસી";
                 body.innerHTML = "<p>તમારો ડેટા ઓનલાઈન ક્લાઉડ સર્વર પર એનક્રિપ્ટેડ ફોર્મેટમાં સુરક્ષિત સેવ થાય છે.</p>";
             }
             modal.classList.add('active');
@@ -710,7 +705,7 @@
             let totalSubjects = 0; let totalChapters = 0;
             Object.keys(db.branches).forEach(b => {
                 Object.keys(db.branches[b]).forEach(sem => {
-                    let subs = db.branches[b][sem]; totalSubjects += Object.keys(subs).length;
+                    let subs = db.branches[b][sem] || {}; totalSubjects += Object.keys(subs).length;
                     Object.keys(subs).forEach(sub => { if(subs[sub]) totalChapters += subs[sub].length; });
                 });
             });
@@ -734,11 +729,10 @@
         }
 
         function populateDropdowns() {
-            let regBranch = document.getElementById('reg-branch');
+            let regBranch = document.getElementById('reg-branch-select');
             if(!regBranch) return;
             regBranch.innerHTML = '<option value="">-- બ્રાન્ચ પસંદ કરો --</option>';
             
-            // Loop with unique fallback array mapping logic
             let branchList = (db && db.branches && Object.keys(db.branches).length > 0) ? Object.keys(db.branches) : baseStaticBranches;
             branchList.forEach(b => { regBranch.innerHTML += `<option value="${b}">${b}</option>`; });
 
@@ -755,7 +749,7 @@
                 dob: document.getElementById('reg-dob').value,
                 enroll: document.getElementById('reg-enroll').value,
                 batch: document.getElementById('reg-batch').value,
-                branch: document.getElementById('reg-branch').value, 
+                branch: document.getElementById('reg-branch-select').value, 
                 password: document.getElementById('reg-password').value,
                 sem: document.getElementById('reg-sem').value,
                 photo: ""
@@ -881,7 +875,7 @@
         function updateAdminSubSelect(bId, sId, subId) {
             let branch = document.getElementById(bId).value; let sem = document.getElementById(sId).value; let subSelect = document.getElementById(subId);
             subSelect.innerHTML = '<option value="">-- સબ્જેક્ટ પસંદ કરો --</option>';
-            if(branch && sem && db.branches[branch][sem]) { Object.keys(db.branches[branch][sem]).forEach(sub => { subSelect.innerHTML += `<option value="${sub}">${sub}</option>`; }); }
+            if(branch && sem && db.branches[branch] && db.branches[branch][sem]) { Object.keys(db.branches[branch][sem]).forEach(sub => { subSelect.innerHTML += `<option value="${sub}">${sub}</option>`; }); }
         }
 
         function updateAdminChSelect() {
@@ -895,25 +889,51 @@
             if(name) { if(!db.branches[name]) db.branches[name] = {}; saveDB(); populateDropdowns(); alert(`બ્રાન્ચ "${name}" સેવ થઈ.`); }
             adminNext(2, 3);
         }
-        function addSemester() { adminNext(3, 4); }
+        
+        function addSemester() { 
+            let branch = document.getElementById('adm-sem-branch-select').value;
+            let sem = document.getElementById('adm-sem-name').value;
+            if(branch && sem) {
+                if(!db.branches[branch]) db.branches[branch] = {};
+                if(!db.branches[branch][sem]) db.branches[branch][sem] = {};
+                saveDB();
+                alert(`${branch} માં ${sem} કન્ફર્મ થયું.`);
+            }
+            adminNext(3, 4); 
+        }
 
         function addSubject() {
             let branch = document.getElementById('adm-sub-branch-select').value; let sem = document.getElementById('adm-sub-sem-select').value; let sub = document.getElementById('adm-sub-name').value.trim();
             if(branch && sem && sub) {
-                if(!db.branches[branch][sem]) db.branches[branch][sem] = {}; if(!db.branches[branch][sem][sub]) db.branches[branch][sem][sub] = []; saveDB(); alert(`સબ્જેક્ટ "${sub}" સેવ થયો.`);
+                if(!db.branches[branch]) db.branches[branch] = {};
+                if(!db.branches[branch][sem]) db.branches[branch][sem] = {};
+                if(!db.branches[branch][sem][sub]) db.branches[branch][sem][sub] = []; 
+                saveDB(); 
+                alert(`સબ્જેક્ટ "${sub}" સેવ થયો.`);
             }
             adminNext(4, 5);
         }
 
         function addChapter() {
             let branch = document.getElementById('adm-ch-branch-select').value; let sem = document.getElementById('adm-ch-sem-select').value; let sub = document.getElementById('adm-ch-sub-select').value; let chName = document.getElementById('adm-ch-name').value.trim();
-            if(branch && sem && sub && chName) { if(!db.branches[branch][sem][sub]) db.branches[branch][sem][sub] = []; db.branches[branch][sem][sub].push({ name: chName, yt: "#", pdf: "#" }); saveDB(); alert(`પ્રકરણ "${chName}" સેવ થયું.`); }
+            if(branch && sem && sub && chName) { 
+                if(!db.branches[branch][sem][sub]) db.branches[branch][sem][sub] = []; 
+                db.branches[branch][sem][sub].push({ name: chName, yt: "#", pdf: "#" }); 
+                saveDB(); 
+                alert(`પ્રકરણ "${chName}" સેવ થયું.`); 
+            }
             adminNext(5, 6);
         }
 
         function addMaterial() {
             let branch = document.getElementById('adm-mat-branch-select').value; let sem = document.getElementById('adm-mat-sem-select').value; let sub = document.getElementById('adm-mat-sub-select').value; let chIdx = document.getElementById('adm-mat-ch-select').value; let yt = document.getElementById('adm-mat-yt').value.trim(); let pdf = document.getElementById('adm-mat-pdf').value.trim();
-            if(branch && sem && sub && chIdx !== "") { if(yt) db.branches[branch][sem][sub][chIdx].yt = yt; if(pdf) db.branches[branch][sem][sub][chIdx].pdf = pdf; saveDB(); alert("લિંક્સ ઓટોમેટીક સેવ થઈ ગઈ!"); }
+            if(branch && sem && sub && chIdx !== "") { 
+                if(!db.branches[branch][sem][sub][chIdx]) db.branches[branch][sem][sub][chIdx] = {name: "", yt: "#", pdf: "#"};
+                if(yt) db.branches[branch][sem][sub][chIdx].yt = yt; 
+                if(pdf) db.branches[branch][sem][sub][chIdx].pdf = pdf; 
+                saveDB(); 
+                alert("લિંક્સ ઓટોમેટીક સેવ થઈ ગઈ!"); 
+            }
             adminNext(6, 1);
         }
 
@@ -921,14 +941,14 @@
 
         function renderDeleteItems() {
             let branch = document.getElementById('adm-del-branch-select').value; let sem = document.getElementById('adm-del-sem-select').value; let container = document.getElementById('delete-items-list'); container.innerHTML = "";
-            if(!branch || !sem || !db.branches[branch][sem] || Object.keys(db.branches[branch][sem]).length === 0) { container.innerHTML = "<p style='color:#dc3545; text-align:center;'>ડેટા ઉપલબ્ધ નથી.</p>"; return; }
+            if(!branch || !sem || !db.branches[branch] || !db.branches[branch][sem] || Object.keys(db.branches[branch][sem]).length === 0) { container.innerHTML = "<p style='color:#dc3545; text-align:center;'>ડેટા ઉપલબ્ધ નથી.</p>"; return; }
             let subjects = db.branches[branch][sem];
             Object.keys(subjects).forEach(subName => {
-                let div = document.createElement('div'); div.className = "admin-manage-item"; div.innerHTML = `<div class="admin-manage-header"><span>📘 સબ્જેક્ટ: ${subName}</span><button class="btn-action-small btn-delete" onclick="deleteItem('${branch}', '${sem}', '${subName}')">❌</button></div>`;
+                let div = document.createElement('div'); div.className = "admin-manage-item"; div.innerHTML = `<div class="admin-manage-header"><span>📘 સબ્જેક્ટ: ${subName}</span><button style="background:none; border:none; color:#dc3545; cursor:pointer;" onclick="deleteItem('${branch}', '${sem}', '${subName}')">❌</button></div>`;
                 if(subjects[subName]) {
                     subjects[subName].forEach((ch, idx) => {
                         let chDiv = document.createElement('div'); chDiv.style.margin = "10px 0 0 15px"; chDiv.innerHTML = `<div>📄 ${ch.name}</div>
-                            <div class="admin-manage-buttons"><button class="btn-action-small btn-edit" onclick="editItem('${branch}', '${sem}', '${subName}', ${idx})">✏️</button><button class="btn-action-small btn-delete" onclick="deleteItem('${branch}', '${sem}', '${subName}', ${idx})">❌</button></div>`;
+                            <div class="admin-manage-buttons"><button style="background:none; border:none; color:#ffc107; cursor:pointer; margin-right:8px;" onclick="editItem('${branch}', '${sem}', '${subName}', ${idx})">✏️</button><button style="background:none; border:none; color:#dc3545; cursor:pointer;" onclick="deleteItem('${branch}', '${sem}', '${subName}', ${idx})">❌</button></div>`;
                         div.appendChild(chDiv);
                     });
                 }
