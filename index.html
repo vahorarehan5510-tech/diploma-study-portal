@@ -570,7 +570,7 @@
                 </div>
 
                 <div id="admin-step-payments" class="admin-step hidden">
-                    <h2>💰 Pending UTR Approvals center</h2>
+                    <h2>💰 Pending UTR Approvals Center</h2>
                     <div id="admin-payment-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 15px; padding-right:5px;"></div>
                     <button class="btn-admin btn-secondary-admin" style="width:100%;" onclick="adminNext('payments', 1)">Main Menu</button>
                 </div>
@@ -600,7 +600,7 @@
         let tempGoogleUser = null; 
         let currentActiveSection = 'subjects'; 
         
-        // એડમિન માટે તમારું દેશી UPI ID સેટિંગ
+        // એડમિન માટે તમારું દેશી UPI ID સેટિંગ (અહીં તમારું સાચું ID લખો)
         const MY_UPI_ID = "9016929061@fam"; 
 
         window.onclick = function(event) {
@@ -847,9 +847,10 @@
             document.getElementById('filter-subheading').innerText = `Branch: ${user.branch} Eng. | Semester: ${user.sem}`;
             
             loadUserProfilePhoto(user);
+            renderSubjects();
         }
 
-        // --- વિષય એક્સેસ ચેક અને લિસ્ટિંગ લોજીક ---
+        // --- વિષય સેટિંગ અને રેન્ડરિંગ લોજીક (ડબલ ચેક કરેલું) ---
         function renderSubjects() {
             if(!tempGoogleUser) return;
             database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
@@ -868,7 +869,7 @@
                 }
                 subjects.forEach(sub => {
                     let subObj = semData[sub];
-                    let price = (subObj && subObj.price) ? parseInt(subObj.price) : 0;
+                    let price = (subObj && typeof subObj === 'object' && subObj.price) ? parseInt(subObj.price) : 0;
                     
                     let card = document.createElement('div'); 
                     card.className = "box-card"; 
@@ -908,7 +909,7 @@
             }
         }
 
-        // --- ઢાયનેમિક કિંમત વાળો QR કોડ અને પેમેન્ટ મોડલ ---
+        // --- ઢાયનેમિક કિંમત વાળો QR કોડ મોડલ ---
         function openPaymentModal(user, branch, sem, subject, price) {
             let modal = document.getElementById('info-modal');
             let title = document.getElementById('modal-title');
@@ -917,7 +918,6 @@
 
             title.innerText = `🔒 Unlock ${subject}`;
             
-            // ઢાયનેમિક UPI લિંક જે આપોઆપ કિંમત અને વિષય ફિટ કરશે
             let upiString = `upi://pay?pa=${MY_UPI_ID}&pn=DiplomaStudyPortal&tn=${encodeURIComponent(subject + ' ' + user.name)}&am=${price}&cu=INR`;
             let qrChartUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
 
@@ -947,10 +947,8 @@
                 alert("કૃપા કરીને સાચો ૧૨-આંકડાનો UTR / Transaction ID દાખલ કરો!"); return;
             }
 
-            // ૧. સ્ટુડન્ટના પોતાના ડેટામાં Pending સ્ટેટસ સેટ કરો
             database.ref(`registered_students/${uid}/unlocked_subjects/${subject}`).set("pending");
 
-            // ૨. એડમિન પેનલમાં રિકવેસ્ટ મોકલો
             database.ref('payment_requests').push({
                 uid: uid,
                 subject: subject,
@@ -958,9 +956,13 @@
                 utr: utr,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             }).then(() => {
-                alert("તમારી વિનંતી મોકલાઈ ગઈ છે! એડમિન ચેક કરીને ૨૪ કલાકમાં સબ્જેક્ટ અનલોક કરી દેશે. 👍");
+                alert("તમારી વિનંતી મોકલાઈ ગઈ છે! એડમિન ચેક કરીને ટૂંક સમયમાં સબ્જેક્ટ અનલોક કરી દેશે. 👍");
                 closeModal();
-                renderSubjects();
+                if (tempGoogleUser) {
+                    database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snap) => {
+                        showHomePage(snap.val());
+                    });
+                }
             });
         }
 
@@ -1073,7 +1075,7 @@
                 }
                 else if(type === 'about') { 
                     title.innerText = "About Portal"; 
-                    body.innerHTML = `<h3>Empowering GTU Diploma Students</h3><p style="font-size: 13px; color: var(--text-light); line-height:1.6; margin-top:10px;">This portal is designed to provide clean, access to organized GTU syllabus materials. Study hard, study smart!</p>`; 
+                    body.innerHTML = `<h3>Empowering GTU Diploma Students</h3><p style="font-size: 13px; color: var(--text-light); line-height:1.6; margin-top:10px;">This portal is designed to provide clean access to organized GTU syllabus materials. Study hard, study smart!</p>`; 
                 } 
                 modal.classList.add('active');
             });
@@ -1225,6 +1227,7 @@
             adminNext(3, 4); 
         }
 
+        // --- સબજેક્ટ અપલોડ કરવાનું લોજીક (ડબલ ચેક કરેલું) ---
         function addSubject() {
             let branch = document.getElementById('adm-sub-branch-select').value; 
             let sem = document.getElementById('adm-sub-sem-select').value; 
@@ -1234,11 +1237,13 @@
             if(branch && sem && sub) {
                 if(!db.branches[branch]) db.branches[branch] = {}; 
                 if(!db.branches[branch][sem]) db.branches[branch][sem] = {};
-                if(!db.branches[branch][sem][sub]) {
-                    db.branches[branch][sem][sub] = { price: parseInt(price), chapters: [] }; 
-                } else {
-                    db.branches[branch][sem][sub].price = parseInt(price);
-                }
+                
+                // ડેટાબેઝ સ્ટ્રક્ચર પ્રોબ્લેમ ન કરે તે માટે ડિફોલ્ટ ડેમો ચેપ્ટર ઓટોમેટિક સેટ થશે
+                db.branches[branch][sem][sub] = { 
+                    price: parseInt(price), 
+                    chapters: [{ name: "Demo Chapter (ભણવાનું મટિરિયલ ટૂંક સમયમાં આવશે)", yt: "#", pdf: "#" }] 
+                }; 
+                
                 saveDB(); 
                 alert(`Subject "${sub}" saved with Price: ₹${price}.`);
             }
@@ -1248,7 +1253,13 @@
         function addChapter() {
             let branch = document.getElementById('adm-ch-branch-select').value; let sem = document.getElementById('adm-ch-sem-select').value; let sub = document.getElementById('adm-ch-sub-select').value; let chName = document.getElementById('adm-ch-name').value.trim();
             if(branch && sem && sub && chName) { 
-                if(!db.branches[branch][sem][sub].chapters) db.branches[branch][sem][sub].chapters = []; 
+                if(!db.branches[branch][sem][sub].chapters) db.branches[branch][sem][sub].chapters = [];
+                
+                // જો પહેલું ચેપ્ટર ડિફોલ્ટ ડેમો હોય તો તેને હટાવી દો
+                if(db.branches[branch][sem][sub].chapters.length === 1 && db.branches[branch][sem][sub].chapters[0].pdf === "#") {
+                    db.branches[branch][sem][sub].chapters = [];
+                }
+                
                 db.branches[branch][sem][sub].chapters.push({ name: chName, yt: "#", pdf: "#" }); 
                 saveDB(); alert(`Chapter "${chName}" saved.`); 
             }
@@ -1351,7 +1362,7 @@
             }
         }
 
-        // --- એડમિન મેન્યુઅલ UTR પેમેન્ટ વેરિફિકેશન સિસ્ટમ ---
+        // --- એડમિન UTR પેમેન્ટ વેરિફિકેશન સિસ્ટમ ---
         function openPaymentManager() {
             adminNext(1, 'payments');
             let listContainer = document.getElementById('admin-payment-list');
@@ -1393,9 +1404,7 @@
 
         function approvePayment(reqId, uid, subject) {
             if(confirm(`UTR ચેક કરી લીધો છે? "${subject}" અનલોક કરવો છે?`)) {
-                // ૧. યુઝર ડેટામાં વિષયને Approved સેટ કરો
                 database.ref(`registered_students/${uid}/unlocked_subjects/${subject}`).set("approved").then(() => {
-                    // ૨. પેમેન્ટ લિસ્ટમાંથી આ રિકવેસ્ટ ડીલીટ કરો
                     database.ref(`payment_requests/${reqId}`).remove().then(() => {
                         alert("વિષય સક્સેસફુલી અનલોક થઈ ગયો છે! 🎉");
                         openPaymentManager();
