@@ -391,6 +391,8 @@
                 <div style="height: 1px; background: var(--border-color); margin: 15px 0;"></div>
                 <a href="#" onclick="openModal('profile-edit')">✏️ Edit Profile</a>
                 <a href="#" onclick="openModal('about')">ℹ️ About Us</a>
+                <a href="#" onclick="openModal('contact')">📞 Contact Us</a>
+                <a href="#" onclick="openModal('privacy')">🔒 Privacy Policy</a>
                 <a href="#" onclick="shareApp()">📤 Share App</a>
                 <button class="btn-logout" onclick="logout()">Logout / Sign Out</button>
             </div>
@@ -463,10 +465,12 @@
                     <h2>Menu Control Panel</h2>
                     <div class="admin-btn-grid">
                         <button class="btn-admin btn-primary-admin" onclick="adminNext(1, 2)">➕ Add Branch</button>
+                        <button class="btn-admin btn-primary-admin" onclick="adminNext(1, 4)">📘 Add Subject</button>
+                        <button class="btn-admin btn-primary-admin" onclick="adminNext(1, 5)">📄 Add Chapter</button>
                         <button class="btn-admin btn-primary-admin" onclick="adminNext(1, 6)">📁 Upload Links</button>
                         <button class="btn-admin btn-warning-admin" onclick="adminNext(1, 'notif')">📢 Post Notice</button>
                         <button class="btn-admin btn-warning-admin" onclick="adminNext(1, 'pyq')">📜 Add PYQs</button>
-                        <button class="btn-admin btn-danger-admin" onclick="openDeleteManager()" style="grid-column: span 2;">🗑️ Modify/Delete Data</button>
+                        <button class="btn-admin btn-danger-admin" onclick="openDeleteManager()" style="grid-column: span 2;">🗑️ Modify/Delete DataCenter</button>
                         <button class="btn-admin btn-secondary-admin" onclick="openStudentManager()" style="grid-column: span 2;">👥 Student Management</button>
                         <button class="btn-admin btn-warning-admin" onclick="openPaymentManager()" style="grid-column: span 2; background-color: #10b981;">💰 Payment Approvals</button>
                     </div>
@@ -476,22 +480,8 @@
                     <h2>Add New Branch</h2>
                     <input type="text" id="adm-branch-name" placeholder="Computer, Chemical etc.">
                     <div class="admin-btn-group">
-                        <button class="btn-admin btn-secondary-admin" onclick="adminNext(2, 3)">Skip</button>
+                        <button class="btn-admin btn-secondary-admin" onclick="adminNext(2, 1)">Back</button>
                         <button class="btn-admin btn-primary-admin" onclick="addBranch()">Save</button>
-                    </div>
-                </div>
-
-                <div id="admin-step-3" class="admin-step hidden">
-                    <h2>Confirm Semester</h2>
-                    <select id="adm-sem-branch-select"><option value="">-- Select Branch --</option></select>
-                    <select id="adm-sem-name">
-                        <option value="Sem 1">Sem 1</option><option value="Sem 2">Sem 2</option>
-                        <option value="Sem 3">Sem 3</option><option value="Sem 4">Sem 4</option>
-                        <option value="Sem 5">Sem 5</option><option value="Sem 6">Sem 6</option>
-                    </select>
-                    <div class="admin-btn-group">
-                        <button class="btn-admin btn-secondary-admin" onclick="adminNext(3, 4)">Skip</button>
-                        <button class="btn-admin btn-primary-admin" onclick="addSemester()">Confirm</button>
                     </div>
                 </div>
 
@@ -502,8 +492,8 @@
                     <input type="text" id="adm-sub-name" placeholder="e.g. Data Structure">
                     <input type="number" id="adm-sub-price" placeholder="Price (0 for Free, 99 for Premium)" value="0">
                     <div class="admin-btn-group">
-                        <button class="btn-admin btn-secondary-admin" onclick="adminNext(4, 5)">Skip</button>
-                        <button class="btn-admin btn-primary-admin" onclick="addSubject()">Save</button>
+                        <button class="btn-admin btn-secondary-admin" onclick="adminNext(4, 1)">Back</button>
+                        <button class="btn-admin btn-primary-admin" onclick="addSubject()">Save Subject</button>
                     </div>
                 </div>
 
@@ -512,10 +502,10 @@
                     <select id="adm-ch-branch-select" onchange="updateAdminSemSelect('adm-ch-branch-select', 'adm-ch-sem-select')"><option value="">-- Select Branch --</option></select>
                     <select id="adm-ch-sem-select" onchange="updateAdminSubSelect('adm-ch-branch-select', 'adm-ch-sem-select', 'adm-ch-sub-select')"><option value="">-- Select Semester --</option></select>
                     <select id="adm-ch-sub-select"><option value="">-- Select Subject --</option></select>
-                    <input type="text" id="adm-ch-name" placeholder="e.g. Chapter 1">
+                    <input type="text" id="adm-ch-name" placeholder="e.g. Chapter 1: Introduction">
                     <div class="admin-btn-group">
-                        <button class="btn-admin btn-secondary-admin" onclick="adminNext(5, 6)">Skip</button>
-                        <button class="btn-admin btn-primary-admin" onclick="addChapter()">Save</button>
+                        <button class="btn-admin btn-secondary-admin" onclick="adminNext(5, 1)">Back</button>
+                        <button class="btn-admin btn-primary-admin" onclick="addChapter()">Save Chapter</button>
                     </div>
                 </div>
 
@@ -600,8 +590,7 @@
         let tempGoogleUser = null; 
         let currentActiveSection = 'subjects'; 
         
-        // એડમિન માટે તમારું દેશી UPI ID સેટિંગ (અહીં તમારું સાચું ID લખો)
-        const MY_UPI_ID = "9016929061@fam"; 
+        const MY_UPI_ID = "YOUR_UPI_ID@okaxis"; 
 
         window.onclick = function(event) {
             if (!event.target.closest('.notif-wrapper')) {
@@ -676,7 +665,6 @@
                 progress: { videos: 0, pdfs: 0, pyqs: 0 },
                 unlocked_subjects: {}
             };
-
             database.ref('registered_students/' + user.uid).set(user);
         }
 
@@ -689,7 +677,6 @@
                 let text = card.innerText.toLowerCase();
                 if(text.includes(filter)) {
                     card.style.display = "";
-                    card.style.animation = "scaleIn 0.3s ease";
                 } else {
                     card.style.display = "none";
                 }
@@ -707,7 +694,6 @@
                     notifs.reverse();
                     badge.innerText = notifs.length;
                     badge.classList.remove('hidden');
-
                     notifs.forEach(n => {
                         let div = document.createElement('div');
                         div.className = 'notif-item';
@@ -725,7 +711,6 @@
                 document.getElementById('prog-videos').innerText = `📺 Watched: ${p.videos || 0}`;
                 document.getElementById('prog-pdfs').innerText = `📄 Read: ${p.pdfs || 0}`;
                 document.getElementById('prog-pyqs').innerText = `📜 PYQs: ${p.pyqs || 0}`;
-                
                 let total = (p.videos || 0) + (p.pdfs || 0) + (p.pyqs || 0);
                 let percent = Math.min((total / 30) * 100, 100);
                 document.getElementById('prog-bar-fill').style.width = percent + '%';
@@ -754,7 +739,6 @@
             toggleSidebar();
             currentActiveSection = sectionType;
             document.getElementById('search-input').value = "";
-            
             let chContainer = document.getElementById('chapters-container');
             let matContainer = document.getElementById('materials-container');
             let backBtn = document.getElementById('btn-back');
@@ -850,7 +834,6 @@
             renderSubjects();
         }
 
-        // --- વિષય સેટિંગ અને રેન્ડરિંગ લોજીક (ડબલ ચેક કરેલું) ---
         function renderSubjects() {
             if(!tempGoogleUser) return;
             database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
@@ -870,10 +853,8 @@
                 subjects.forEach(sub => {
                     let subObj = semData[sub];
                     let price = (subObj && typeof subObj === 'object' && subObj.price) ? parseInt(subObj.price) : 0;
-                    
                     let card = document.createElement('div'); 
                     card.className = "box-card"; 
-                    
                     let isUnlocked = user.unlocked_subjects && user.unlocked_subjects[sub];
                     
                     if(price > 0 && isUnlocked !== "approved") {
@@ -897,7 +878,6 @@
 
         function handleSubjectAccess(user, branch, sem, subject, price) {
             let status = user.unlocked_subjects ? user.unlocked_subjects[subject] : null;
-            
             if(price > 0 && status !== "approved") {
                 if(status === "pending") {
                     alert("તમારા પેમેન્ટનું વેરિફિકેશન ચાલુ છે. એડમિન ટૂંક સમયમાં અપ્રુવ કરશે. ⏳");
@@ -909,7 +889,6 @@
             }
         }
 
-        // --- ઢાયનેમિક કિંમત વાળો QR કોડ મોડલ ---
         function openPaymentModal(user, branch, sem, subject, price) {
             let modal = document.getElementById('info-modal');
             let title = document.getElementById('modal-title');
@@ -917,7 +896,6 @@
             let footer = document.getElementById('modal-footer-buttons');
 
             title.innerText = `🔒 Unlock ${subject}`;
-            
             let upiString = `upi://pay?pa=${MY_UPI_ID}&pn=DiplomaStudyPortal&tn=${encodeURIComponent(subject + ' ' + user.name)}&am=${price}&cu=INR`;
             let qrChartUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
 
@@ -926,7 +904,6 @@
                     <p style="margin-bottom:15px; font-size:14px; color:var(--text-color);">આ પ્રીમિયમ વિષય અનલોક કરવા માટે <b>₹${price}</b> સ્કેન કરો.</p>
                     <img src="${qrChartUrl}" alt="UPI QR Code" style="border:1px solid #ddd; padding:10px; border-radius:12px; background:white; margin-bottom:15px;">
                     <p style="font-size:12px; color:var(--text-light); margin-bottom:15px;">UPI ID: <b>${MY_UPI_ID}</b></p>
-                    
                     <div class="modal-form-group">
                         <label>પેમેન્ટ કર્યા પછી ૧૨-આંકડાનો UTR / Transaction ID અહીં લખો:</label>
                         <input type="text" id="pay-utr-input" placeholder="e.g. 412589632514" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
@@ -946,9 +923,7 @@
             if(utr.length !== 12) {
                 alert("કૃપા કરીને સાચો ૧૨-આંકડાનો UTR / Transaction ID દાખલ કરો!"); return;
             }
-
             database.ref(`registered_students/${uid}/unlocked_subjects/${subject}`).set("pending");
-
             database.ref('payment_requests').push({
                 uid: uid,
                 subject: subject,
@@ -975,7 +950,7 @@
             backBtn.onclick = () => { document.getElementById('search-input').value = ""; renderSubjects(); };
 
             let chapters = db.branches[branch][sem][subject].chapters || [];
-            if(chapters.length === 0) { chContainer.innerHTML = "<p style='padding:15px; color:var(--text-light);'>No chapters available.</p>"; return; }
+            if(chapters.length === 0) { chContainer.innerHTML = "<p style='padding:15px; color:var(--text-light);'>No chapters available yet.</p>"; return; }
             chapters.forEach((ch) => {
                 let card = document.createElement('div'); card.className = "box-card"; card.innerHTML = `📄 ${ch.name}`;
                 card.onclick = () => renderMaterials(ch); chContainer.appendChild(card);
@@ -992,14 +967,13 @@
             card.innerHTML = `
                 <span style="font-size:14px; color:var(--text-light); margin-bottom:10px;">Select Study Source</span>
                 <div class="material-buttons">
-                    <a href="${chapter.yt}" target="_blank" class="btn-yt" onclick="trackProgress('video')">📺 YouTube Video</a>
-                    <a href="${chapter.pdf}" target="_blank" class="btn-pdf" onclick="trackProgress('pdf')">📄 PDF Notes</a>
+                    <a href="${chapter.yt || '#'}" target="_blank" class="btn-yt" onclick="trackProgress('video')">📺 YouTube Video</a>
+                    <a href="${chapter.pdf || '#'}" target="_blank" class="btn-pdf" onclick="trackProgress('pdf')">📄 PDF Notes</a>
                 </div>
             `;
             matContainer.appendChild(card);
         }
 
-        // --- PYQ Logic ---
         function renderPYQSubjects() {
             if(!tempGoogleUser) return;
             database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
@@ -1046,7 +1020,7 @@
             });
         }
 
-        // Profiles & Settings Modals
+        /* --- CONTACT, ABOUT & PRIVACY OPTIONS CONTROL --- */
         function openModal(type) {
             if(!tempGoogleUser) return;
             toggleSidebar();
@@ -1074,9 +1048,19 @@
                     footer.innerHTML = `<button class="btn-save-modal" onclick="updateProfileData()">Save Changes 💾</button><button class="btn-close-modal" onclick="closeModal()">Cancel</button>`;
                 }
                 else if(type === 'about') { 
-                    title.innerText = "About Portal"; 
-                    body.innerHTML = `<h3>Empowering GTU Diploma Students</h3><p style="font-size: 13px; color: var(--text-light); line-height:1.6; margin-top:10px;">This portal is designed to provide clean access to organized GTU syllabus materials. Study hard, study smart!</p>`; 
+                    title.innerText = "About Our Portal ℹ️"; 
+                    body.innerHTML = `<h3>Empowering GTU Diploma Engineering Students</h3><p style="font-size: 13px; color: var(--text-light); line-height:1.6; margin-top:10px;">Diploma Study Portal Pro એક ઓનલાઈન શૈક્ષણિક પ્લેટફોર્મ છે જે ગુજરાત ટેકનોલોજીકલ યુનિવર્સિટી (GTU) ના ડિપ્લોમા એન્જીનીયરીંગ વિદ્યાર્થીઓ માટે ખાસ બનાવવામાં આવ્યું છે. અહીં સચોટ સિલેબસ મુજબ મટીરીયલ્સ, પ્રકરણવાઇઝ યુટ્યુબ લેકચર્સ અને પાછલા વર્ષોના પ્રશ્નપત્રો ઉપલબ્ધ કરવામાં આવે છે.</p>`; 
                 } 
+                else if(type === 'contact') {
+                    title.innerText = "Contact Us 📞";
+                    body.innerHTML = `<h3>કોઈપણ પ્રશ્ન કે સમસ્યા માટે સંપર્ક કરો:</h3>
+                    <p style="font-size: 14px; margin-top:10px; line-height:1.8;">📧 Email: <b>vahorarehan5510@gmail.com</b><br>💬 Discussion Forum માં એડમિનને સીધો પ્રશ્ન પૂછી શકો છો.<br>📍 Vadodara, Gujarat, India.</p>`;
+                }
+                else if(type === 'privacy') {
+                    title.innerText = "Privacy Policy 🔒";
+                    body.innerHTML = `<h3>તમારી સુરક્ષા અમારી પ્રાથમિકતા છે</h3>
+                    <p style="font-size: 12px; color: var(--text-light); line-height:1.6; margin-top:10px;">અમે ગુગલ ઓથેન્ટિકેશન (Google Login) દ્વારા સુરક્ષિત લોગીન પ્રદાન કરીએ છીએ. તમારો ડેટા (નામ, ઈમેલ અને એકેડેમિક વિગતો) Firebase ક્લાઉડ ડેટાબેઝમાં એન્ક્રિપ્ટેડ ફોર્મેટમાં સુરક્ષિત રહે છે. અમે ક્યારેય કોઈપણ ત્રીજી સંસ્થા (Third-party) સાથે ડેટા શેર કરતા નથી.</p>`;
+                }
                 modal.classList.add('active');
             });
         }
@@ -1126,7 +1110,6 @@
             }
             document.getElementById('stat-branches').innerText = totalBranches;
             document.getElementById('stat-subjects').innerText = totalSubjects;
-            
             database.ref('registered_students').once('value').then(snap => {
                 document.getElementById('stat-students').innerText = snap.exists() ? Object.keys(snap.val()).length : 0;
             });
@@ -1158,7 +1141,7 @@
             updateAdminDropdowns();
         }
 
-        /* --- ADMIN CONSOLE LOGIC --- */
+        /* --- ADVANCED ADMIN CONSOLE LOGIC --- */
         function openAdminModal() {
             const user = firebase.auth().currentUser;
             if(user && user.email === "vahorarehan5510@gmail.com") {
@@ -1182,7 +1165,7 @@
         }
 
         function updateAdminDropdowns() {
-            let bSelects = ['adm-sem-branch-select', 'adm-sub-branch-select', 'adm-ch-branch-select', 'adm-mat-branch-select', 'adm-del-branch-select', 'adm-pyq-branch-select'];
+            let bSelects = ['adm-sub-branch-select', 'adm-ch-branch-select', 'adm-mat-branch-select', 'adm-del-branch-select', 'adm-pyq-branch-select'];
             let branchList = (db && db.branches && Object.keys(db.branches).length > 0) ? Object.keys(db.branches) : baseStaticBranches;
             bSelects.forEach(id => {
                 let el = document.getElementById(id); if(el) { el.innerHTML = '<option value="">-- Select Branch --</option>'; branchList.forEach(b => { el.innerHTML += `<option value="${b}">${b}</option>`; }); }
@@ -1200,11 +1183,6 @@
             subSelect.innerHTML = '<option value="">-- Select Subject --</option>';
             let targetDB = bId.includes('pyq') ? db.pyqs : db.branches;
             if(branch && sem && targetDB[branch] && targetDB[branch][sem]) { Object.keys(targetDB[branch][sem]).forEach(sub => { subSelect.innerHTML += `<option value="${sub}">${sub}</option>`; }); }
-            
-            if(bId.includes('pyq') && branch && sem && db.branches[branch] && db.branches[branch][sem]) {
-                subSelect.innerHTML = '<option value="">-- Select Subject --</option>';
-                Object.keys(db.branches[branch][sem]).forEach(sub => { subSelect.innerHTML += `<option value="${sub}">${sub}</option>`; });
-            }
         }
 
         function updateAdminChSelect() {
@@ -1218,16 +1196,9 @@
         function addBranch() {
             let name = document.getElementById('adm-branch-name').value.trim();
             if(name) { if(!db.branches[name]) db.branches[name] = {}; saveDB(); populateDropdowns(); alert(`Branch "${name}" saved.`); }
-            adminNext(2, 3);
-        }
-        
-        function addSemester() { 
-            let branch = document.getElementById('adm-sem-branch-select').value; let sem = document.getElementById('adm-sem-name').value;
-            if(branch && sem) { if(!db.branches[branch]) db.branches[branch] = {}; if(!db.branches[branch][sem]) db.branches[branch][sem] = {}; saveDB(); alert(`${sem} confirmed in ${branch}.`); }
-            adminNext(3, 4); 
+            adminNext(2, 1);
         }
 
-        // --- સબજેક્ટ અપલોડ કરવાનું લોજીક (ડબલ ચેક કરેલું) ---
         function addSubject() {
             let branch = document.getElementById('adm-sub-branch-select').value; 
             let sem = document.getElementById('adm-sub-sem-select').value; 
@@ -1238,32 +1209,28 @@
                 if(!db.branches[branch]) db.branches[branch] = {}; 
                 if(!db.branches[branch][sem]) db.branches[branch][sem] = {};
                 
-                // ડેટાબેઝ સ્ટ્રક્ચર પ્રોબ્લેમ ન કરે તે માટે ડિફોલ્ટ ડેમો ચેપ્ટર ઓટોમેટિક સેટ થશે
                 db.branches[branch][sem][sub] = { 
                     price: parseInt(price), 
-                    chapters: [{ name: "Demo Chapter (ભણવાનું મટિરિયલ ટૂંક સમયમાં આવશે)", yt: "#", pdf: "#" }] 
+                    chapters: [] 
                 }; 
-                
                 saveDB(); 
-                alert(`Subject "${sub}" saved with Price: ₹${price}.`);
-            }
-            adminNext(4, 5);
+                alert(`Subject "${sub}" સક્સેસફુલી સેવ થઈ ગયો છે.`);
+                adminNext(4, 1);
+            } else { alert("બધી માહિતી ભરો!"); }
         }
 
         function addChapter() {
-            let branch = document.getElementById('adm-ch-branch-select').value; let sem = document.getElementById('adm-ch-sem-select').value; let sub = document.getElementById('adm-ch-sub-select').value; let chName = document.getElementById('adm-ch-name').value.trim();
+            let branch = document.getElementById('adm-ch-branch-select').value; 
+            let sem = document.getElementById('adm-ch-sem-select').value; 
+            let sub = document.getElementById('adm-ch-sub-select').value; 
+            let chName = document.getElementById('adm-ch-name').value.trim();
+            
             if(branch && sem && sub && chName) { 
                 if(!db.branches[branch][sem][sub].chapters) db.branches[branch][sem][sub].chapters = [];
-                
-                // જો પહેલું ચેપ્ટર ડિફોલ્ટ ડેમો હોય તો તેને હટાવી દો
-                if(db.branches[branch][sem][sub].chapters.length === 1 && db.branches[branch][sem][sub].chapters[0].pdf === "#") {
-                    db.branches[branch][sem][sub].chapters = [];
-                }
-                
                 db.branches[branch][sem][sub].chapters.push({ name: chName, yt: "#", pdf: "#" }); 
-                saveDB(); alert(`Chapter "${chName}" saved.`); 
-            }
-            adminNext(5, 6);
+                saveDB(); alert(`Chapter "${chName}" સેવ થઈ ગયું છે.`); 
+                adminNext(5, 1);
+            } else { alert("બધી માહિતી સિલેક્ટ કરો!"); }
         }
 
         function addMaterial() {
@@ -1271,9 +1238,9 @@
             if(branch && sem && sub && chIdx !== "") { 
                 let ch = db.branches[branch][sem][sub].chapters[chIdx];
                 if(yt) ch.yt = yt; if(pdf) ch.pdf = pdf; 
-                saveDB(); alert("Links saved automatically!"); 
+                saveDB(); alert("લિંક્સ અપલોડ થઈ ગઈ છે!"); 
+                adminNext(6, 1);
             }
-            adminNext(6, 1);
         }
 
         function addPYQ() {
@@ -1281,8 +1248,8 @@
             if(branch && sem && sub && year && link) {
                 if(!db.pyqs) db.pyqs = {}; if(!db.pyqs[branch]) db.pyqs[branch] = {}; if(!db.pyqs[branch][sem]) db.pyqs[branch][sem] = {}; if(!db.pyqs[branch][sem][sub]) db.pyqs[branch][sem][sub] = [];
                 db.pyqs[branch][sem][sub].push({ year: year, link: link }); saveDB(); alert(`PYQ Paper for ${year} saved.`);
+                adminNext('pyq', 1);
             }
-            document.getElementById('adm-pyq-year').value = ""; document.getElementById('adm-pyq-link').value = "";
         }
 
         function postNotification() {
@@ -1329,7 +1296,6 @@
             adminNext(1, 'students');
             let listContainer = document.getElementById('admin-student-list');
             listContainer.innerHTML = "<p style='color:#9ca3af; text-align:center;'>Loading students...</p>";
-            
             database.ref('registered_students').once('value').then(snap => {
                 listContainer.innerHTML = "";
                 if(snap.exists()) {
@@ -1347,8 +1313,6 @@
                         `;
                         listContainer.appendChild(div);
                     });
-                } else {
-                    listContainer.innerHTML = "<p style='color:#dc2626; text-align:center;'>No students registered yet.</p>";
                 }
             });
         }
@@ -1356,37 +1320,30 @@
         function deleteStudent(uid, name) {
             if(confirm(`Are you sure you want to completely delete student: ${name}?`)) {
                 database.ref('registered_students/' + uid).remove().then(() => {
-                    alert(`${name} has been deleted.`);
-                    openStudentManager();
+                    alert(`${name} has been deleted.`); openStudentManager();
                 });
             }
         }
 
-        // --- એડમિન UTR પેમેન્ટ વેરિફિકેશન સિસ્ટમ ---
         function openPaymentManager() {
             adminNext(1, 'payments');
             let listContainer = document.getElementById('admin-payment-list');
             listContainer.innerHTML = "<p style='color:#9ca3af; text-align:center;'>Loading payment requests...</p>";
-
             database.ref('payment_requests').on('value', snap => {
                 listContainer.innerHTML = "";
                 if(snap.exists()) {
                     snap.forEach(child => {
-                        let reqId = child.key;
-                        let r = child.val();
-                        
+                        let reqId = child.key; let r = child.val();
                         database.ref(`registered_students/${r.uid}`).once('value').then(sSnap => {
                             let sName = sSnap.exists() ? sSnap.val().name : "Unknown Student";
                             let sEnroll = sSnap.exists() ? sSnap.val().enroll : "No Enroll";
-
                             let div = document.createElement('div');
                             div.className = "admin-manage-item";
                             div.innerHTML = `
                                 <div style="font-size:14px; color:#e5e7eb; line-height:1.6;">
                                     <b>Student:</b> ${sName} (${sEnroll})<br>
                                     <b>Subject:</b> <span style="color:#60a5fa;">${r.subject}</span> (Price: ₹${r.price})<br>
-                                    <b>UTR Number:</b> <span style="color:#10b981; font-weight:600; font-size:15px; letter-spacing:1px;">${r.utr}</span><br>
-                                    <span style="font-size:11px; color:#9ca3af;">Time: ${new Date(r.timestamp).toLocaleString()}</span>
+                                    <b>UTR Number:</b> <span style="color:#10b981; font-weight:600; font-size:15px; letter-spacing:1px;">${r.utr}</span>
                                 </div>
                                 <div class="admin-btn-group" style="margin-top:12px;">
                                     <button class="btn-admin" style="background:#10b981; padding:6px 12px; font-size:12px;" onclick="approvePayment('${reqId}', '${r.uid}', '${r.subject}')">Approve ✅</button>
@@ -1406,8 +1363,7 @@
             if(confirm(`UTR ચેક કરી લીધો છે? "${subject}" અનલોક કરવો છે?`)) {
                 database.ref(`registered_students/${uid}/unlocked_subjects/${subject}`).set("approved").then(() => {
                     database.ref(`payment_requests/${reqId}`).remove().then(() => {
-                        alert("વિષય સક્સેસફુલી અનલોક થઈ ગયો છે! 🎉");
-                        openPaymentManager();
+                        alert("વિષય સક્સેસફુલી અનલોક થઈ ગયો છે! 🎉"); openPaymentManager();
                     });
                 });
             }
@@ -1417,8 +1373,7 @@
             if(confirm("ખોટો UTR હોવાને કારણે આ રિકવેસ્ટ રીજેક્ટ કરવી છે?")) {
                 database.ref(`registered_students/${uid}/unlocked_subjects/${subject}`).remove().then(() => {
                     database.ref(`payment_requests/${reqId}`).remove().then(() => {
-                        alert("રિકવેસ્ટ રીજેક્ટ કરવામાં આવી છે.");
-                        openPaymentManager();
+                        alert("રિકવેસ્ટ રીજેક્ટ કરવામાં આવી છે."); openPaymentManager();
                     });
                 });
             }
