@@ -162,7 +162,7 @@
             .login-wrapper { flex-direction: column; max-width: 400px; }
             .login-left { padding: 40px 30px; text-align: center; }
             .login-left::after { display: none; }
-            .feature-list { display: none; } /* Hide list on mobile to save space */
+            .feature-list { display: none; }
             .login-right { padding: 40px 30px; }
         }
 
@@ -548,6 +548,25 @@
         let tempGoogleUser = null; 
 
         window.onload = function() {
+            // --- REDIRECT LOGIN LOGIC ---
+            firebase.auth().getRedirectResult().then((result) => {
+                if (result.user) {
+                    tempGoogleUser = result.user;
+                    database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
+                        if(snapshot.exists()) {
+                            let studentData = snapshot.val();
+                            localStorage.setItem('current_logged_student', JSON.stringify(studentData));
+                            triggerWelcomeAnimation(studentData.name, studentData);
+                        } else {
+                            document.getElementById('login-form').classList.add('hidden');
+                            document.getElementById('wizard-form').classList.remove('hidden');
+                        }
+                    });
+                }
+            }).catch((error) => {
+                console.error("Login Error:", error);
+            });
+
             database.ref('portal_db').on('value', (snapshot) => {
                 if(snapshot.exists()) {
                     db = snapshot.val();
@@ -568,25 +587,9 @@
             if(user && user.uid) { showHomePage(user); }
         }
 
+        // REDIRECT INSTEAD OF POPUP
         function processGoogleLogin() {
-            firebase.auth().signInWithPopup(googleProvider).then((result) => {
-                let authUser = result.user;
-                tempGoogleUser = authUser;
-
-                database.ref('registered_students/' + authUser.uid).once('value').then((snapshot) => {
-                    if(snapshot.exists()) {
-                        let studentData = snapshot.val();
-                        localStorage.setItem('current_logged_student', JSON.stringify(studentData));
-                        triggerWelcomeAnimation(studentData.name, studentData);
-                    } else {
-                        document.getElementById('login-form').classList.add('hidden');
-                        document.getElementById('wizard-form').classList.remove('hidden');
-                    }
-                });
-            }).catch((error) => {
-                console.error("Login Error:", error);
-                alert("Google લોગિન નિષ્ફળ: " + error.message);
-            });
+            firebase.auth().signInWithRedirect(googleProvider);
         }
 
         function saveRegistration() {
