@@ -166,7 +166,7 @@
             .login-right { padding: 40px 30px; }
         }
 
-        /* --- WIZARD FORM (Make it match professional theme) --- */
+        /* --- WIZARD FORM --- */
         .portal-container {
             max-width: 480px;
             background: var(--card-bg);
@@ -548,24 +548,31 @@
         let tempGoogleUser = null; 
 
         window.onload = function() {
-            // --- REDIRECT LOGIN LOGIC ---
-            firebase.auth().getRedirectResult().then((result) => {
-                if (result.user) {
-                    tempGoogleUser = result.user;
-                    database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
+            
+            // --- FIREBASE LOGIN LISTENER (PERFECT FOR REDIRECT) ---
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    tempGoogleUser = user;
+                    
+                    // ચેક કરો કે યુઝરે ૫ પ્રશ્નોના જવાબ આપ્યા છે કે નહિ
+                    database.ref('registered_students/' + user.uid).once('value').then((snapshot) => {
                         if(snapshot.exists()) {
+                            // જૂનો વિદ્યાર્થી -> સીધું ડેશબોર્ડ બતાવો
                             let studentData = snapshot.val();
                             localStorage.setItem('current_logged_student', JSON.stringify(studentData));
                             triggerWelcomeAnimation(studentData.name, studentData);
                         } else {
+                            // નવો વિદ્યાર્થી -> ૫ પ્રશ્નોનું ફોર્મ બતાવો
                             document.getElementById('login-form').classList.add('hidden');
                             document.getElementById('wizard-form').classList.remove('hidden');
                         }
+                    }).catch((error) => {
+                        console.error("Database Error:", error);
+                        alert("Error: Database Rules must be true");
                     });
                 }
-            }).catch((error) => {
-                console.error("Login Error:", error);
             });
+            // --------------------------------------------------------
 
             database.ref('portal_db').on('value', (snapshot) => {
                 if(snapshot.exists()) {
@@ -587,16 +594,17 @@
             if(user && user.uid) { showHomePage(user); }
         }
 
-        // REDIRECT INSTEAD OF POPUP
+        // REDIRECT GOOGLE LOGIN
         function processGoogleLogin() {
             firebase.auth().signInWithRedirect(googleProvider);
         }
 
+        // 5 QUESTIONS SAVE LOGIC
         function saveRegistration() {
             let user = {
                 uid: tempGoogleUser.uid,
                 email: tempGoogleUser.email,
-                name: tempGoogleUser.displayName || "વિદ્યાર્થી",
+                name: tempGoogleUser.displayName || "Student",
                 photo: tempGoogleUser.photoURL || "",
                 college: document.getElementById('reg-college').value,
                 dob: document.getElementById('reg-dob').value,
