@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html lang="gu">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> DIPLOMA Study Portal</title>
+    <title>DIPLOMA Study Portal Pro</title>
     
-    <meta name="description" content="The definitive digital repository for GTU Diploma Engineering students. Access highly curated semester-wise PDF notes, interactive video lectures, and dynamic previous year question papers mapped strictly to the official syllabus.">
-    <meta name="keywords" content="Diploma Study Portal, GTU Diploma Engineering, Diploma study material, GTU diploma papers, Diploma engineering notes, GTU syllabus, Rehan Vahora, diploma portal">
+    <meta name="description" content="The definitive digital repository for GTU Diploma Engineering students. Access highly curated semester-wise PDF notes, interactive video lectures, and dynamic previous year question papers.">
+    <meta name="keywords" content="Diploma Study Portal, GTU Diploma Engineering, Diploma study material, GTU diploma papers, Rehan Vahora">
     <meta name="author" content="Rehan Vahora">
-    
-    <link rel="icon" type="image/png" href="favicon.png">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -45,7 +43,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
-            transition: background 0.3s ease, color 0.3s ease;
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
         }
 
         body {
@@ -60,6 +58,11 @@
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         /* --- PROFESSIONAL GATEWAY SCREEN --- */
@@ -96,14 +99,7 @@
         }
 
         .login-left::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            right: -50px;
-            width: 200px;
-            height: 200px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
+            content: ''; position: absolute; bottom: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%;
         }
 
         .login-left h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 15px; line-height: 1.2; z-index: 1; }
@@ -111,58 +107,17 @@
         .feature-list { margin-top: 30px; z-index: 1; }
         .feature-list div { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 0.95rem; }
 
-        .login-right {
-            flex: 1;
-            padding: 50px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: var(--card-bg);
-        }
-
-        .login-right-content {
-            width: 100%;
-            max-width: 320px;
-            text-align: center;
-        }
-
+        .login-right { flex: 1; padding: 50px 40px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--card-bg); }
+        .login-right-content { width: 100%; max-width: 320px; text-align: center; }
         .login-right-content h2 { font-size: 1.8rem; font-weight: 600; color: var(--text-color); margin-bottom: 8px; }
         .login-right-content p { color: var(--text-light); font-size: 0.95rem; margin-bottom: 35px; }
 
-        /* Professional Google Button */
         .btn-google-pro {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            width: 100%;
-            background-color: #ffffff;
-            color: #3c4043;
-            border: 1px solid #dadce0;
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; background-color: #ffffff; color: #3c4043; border: 1px solid #dadce0; border-radius: 8px; padding: 12px 16px; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
         }
-        .btn-google-pro:hover {
-            background-color: #f8f9fa;
-            box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
-        }
+        .btn-google-pro:hover { background-color: #f8f9fa; box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15); transform: translateY(-2px); }
         .btn-google-pro img { width: 20px; height: 20px; }
-
-        .secure-badge {
-            margin-top: 25px;
-            font-size: 12px;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
+        .secure-badge { margin-top: 25px; font-size: 12px; color: var(--text-light); display: flex; align-items: center; justify-content: center; gap: 5px; }
 
         @media (max-width: 768px) {
             .login-wrapper { flex-direction: column; max-width: 400px; }
@@ -173,37 +128,16 @@
         }
 
         /* --- WIZARD FORM --- */
-        .portal-container {
-            max-width: 480px;
-            background: var(--card-bg);
-            padding: 40px 35px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            border: 1px solid var(--border-color);
-            width: 100%;
-            animation: fadeInUp 0.4s ease-out;
-        }
-
+        .portal-container { max-width: 480px; background: var(--card-bg); padding: 40px 35px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid var(--border-color); width: 100%; animation: fadeInUp 0.4s ease-out; }
         .portal-container h2 { font-size: 1.6rem; color: var(--primary-blue); text-align: center; margin-bottom: 5px; font-weight: 600; }
         .portal-container .sub-title { text-align: center; color: var(--text-light); font-size: 13px; margin-bottom: 30px; }
-        
         .portal-container h3 { margin-bottom: 15px; font-size: 1.1rem; color: var(--text-color); font-weight: 500; }
-        .portal-container input, .portal-container select {
-            width: 100%; padding: 14px 16px; margin-bottom: 15px;
-            border: 1.5px solid var(--border-color); border-radius: 10px;
-            background: #f9fafb; color: var(--text-color); font-size: 0.95rem; outline: none;
-            transition: border-color 0.2s;
-        }
+        .portal-container input, .portal-container select { width: 100%; padding: 14px 16px; margin-bottom: 15px; border: 1.5px solid var(--border-color); border-radius: 10px; background: #f9fafb; color: var(--text-color); font-size: 0.95rem; outline: none; }
         .portal-container input:focus, .portal-container select:focus { border-color: var(--primary-blue); background: #ffffff; }
 
-        .btn-next {
-            background-color: var(--primary-blue); color: white;
-            padding: 14px 20px; border: none; border-radius: 10px; cursor: pointer; width: 100%;
-            font-size: 1rem; font-weight: 500; transition: background 0.2s, transform 0.2s;
-        }
-        .btn-next:hover { background-color: var(--secondary-blue); transform: translateY(-2px); }
+        .btn-next { background-color: var(--primary-blue); color: white; padding: 14px 20px; border: none; border-radius: 10px; cursor: pointer; width: 100%; font-size: 1rem; font-weight: 500; }
+        .btn-next:hover { background-color: var(--secondary-blue); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
 
-        /* WELCOME ANIMATION */
         #welcome-animation { height: 100vh; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; font-weight: 700; color: var(--primary-blue); text-align: center; padding: 20px; background: var(--bg-color);}
 
         /* HOME PAGE DESIGN */
@@ -211,404 +145,199 @@
         .menu-btn { font-size: 24px; cursor: pointer; background: none; border: none; color: white; }
         .header-controls { display: flex; gap: 15px; align-items: center; }
         .dark-mode-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500;}
+        .dark-mode-btn:hover { background: rgba(255,255,255,0.25); }
+
+        /* NOTIFICATIONS */
+        .notif-wrapper { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.15); transition: background 0.2s; }
+        .notif-wrapper:hover { background: rgba(255,255,255,0.25); }
+        .notif-badge { position: absolute; top: -2px; right: -2px; background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; border: 2px solid var(--primary-blue); }
+        .notif-dropdown { position: absolute; right: 0; top: 50px; background: var(--card-bg); border: 1px solid var(--border-color); width: 300px; border-radius: 12px; display: none; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 1000; animation: scaleIn 0.2s ease; overflow: hidden; }
+        .notif-dropdown.active { display: flex; }
+        .notif-header { padding: 12px 15px; background: #f9fafb; border-bottom: 1px solid var(--border-color); font-weight: 600; color: var(--text-color); font-size: 14px; }
+        .dark-mode .notif-header { background: #111827; }
+        .notif-list { max-height: 250px; overflow-y: auto; }
+        .notif-item { padding: 12px 15px; border-bottom: 1px solid var(--border-color); font-size: 13px; color: var(--text-color); line-height: 1.4; }
+        .notif-item:last-child { border-bottom: none; }
+        .notif-time { font-size: 11px; color: var(--text-light); margin-top: 4px; display: block; }
 
         .notice-board { background-color: #fef08a; color: #854d0e; padding: 12px 24px; overflow: hidden; white-space: nowrap; font-size: 14px; border-bottom: 1px solid #fde047; }
-        .notice-board marquee { font-weight: 500; }
-
-        /* USER DASHBOARD CARD */
+        
+        /* USER DASHBOARD CARD & PROGRESS */
         .user-dashboard-card { background: var(--card-bg); border-radius: 16px; padding: 24px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.02); animation: fadeInUp 0.4s ease-out; position: relative; overflow: hidden;}
         .user-dashboard-card::before { content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: var(--primary-blue); }
         .user-dashboard-card h3 { font-size: 1.4rem; margin-bottom: 5px; color: var(--text-color); font-weight: 600;}
-        .user-dashboard-card p { font-size: 14px; color: var(--text-light); }
+        
+        .progress-section { margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color); }
+        .progress-stats { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-light); margin-bottom: 8px; font-weight: 500; }
+        .progress-bar-bg { width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+        .dark-mode .progress-bar-bg { background: #374151; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)); width: 0%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* SIDEBAR & GRIDS */
-        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background-color: var(--card-bg); border-right: 1px solid var(--border-color); z-index: 200; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px 20px; box-shadow: 5px 0 25px rgba(0,0,0,0.05);}
+        /* SEARCH BAR */
+        .search-container { margin-bottom: 25px; animation: fadeInUp 0.5s ease-out; }
+        .search-container input { width: 100%; padding: 15px 20px; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--card-bg); color: var(--text-color); font-size: 15px; outline: none; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .search-container input:focus { border-color: var(--primary-blue); box-shadow: 0 4px 15px rgba(37,99,235,0.1); }
+
+        /* SIDEBAR */
+        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background-color: var(--card-bg); border-right: 1px solid var(--border-color); z-index: 200; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px 20px; box-shadow: 5px 0 25px rgba(0,0,0,0.05); overflow-y: auto;}
         .sidebar.active { left: 0; }
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); display: none; z-index: 150; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); display: none; z-index: 150; transition: opacity 0.3s; }
         .profile-section { text-align: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 25px; }
         .profile-img-container { position: relative; width: 90px; height: 90px; margin: 0 auto 15px; }
         .profile-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: flex; align-items: center; justify-content: center; font-size: 35px; color: var(--primary-blue); background: #eff6ff; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .sidebar-menu a { display: block; padding: 14px 15px; color: var(--text-color); text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; margin-bottom: 5px; transition: background 0.2s;}
-        .sidebar-menu a:hover { background: #f3f4f6; color: var(--primary-blue); }
-        .btn-logout { background: #fee2e2; color: #ef4444; border: none; width: 100%; padding: 14px; margin-top: 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background 0.2s;}
-        .btn-logout:hover { background: #fecaca; }
+        .sidebar-menu a { display: block; padding: 14px 15px; color: var(--text-color); text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; margin-bottom: 5px; }
+        .sidebar-menu a:hover { background: #f3f4f6; color: var(--primary-blue); transform: translateX(5px); }
+        .dark-mode .sidebar-menu a:hover { background: #374151; }
+        .btn-logout { background: #fee2e2; color: #ef4444; border: none; width: 100%; padding: 14px; margin-top: 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-logout:hover { background: #fecaca; transform: translateY(-2px); }
+        .dark-mode .btn-logout { background: rgba(239, 68, 68, 0.1); } .dark-mode .btn-logout:hover { background: rgba(239, 68, 68, 0.2); }
 
         main { padding: 24px; max-width: 1200px; margin: 0 auto; }
-        .content-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .content-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); animation: scaleIn 0.3s ease-out;}
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
         @media (max-width: 480px) { .grid-container { grid-template-columns: 1fr; } }
 
-        .box-card { background: var(--card-bg); border: 1.5px solid var(--border-color); padding: 25px 20px; border-radius: 16px; cursor: pointer; text-align: center; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: 500; font-size: 1.1rem; transition: all 0.2s; color: var(--text-color);}
+        .box-card { background: var(--card-bg); border: 1.5px solid var(--border-color); padding: 25px 20px; border-radius: 16px; cursor: pointer; text-align: center; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: 500; font-size: 1.1rem; color: var(--text-color);}
         .box-card:hover { border-color: var(--primary-blue); transform: translateY(-5px); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1); }
 
         .material-buttons { display: flex; gap: 12px; width: 100%; margin-top: 20px; }
-        .btn-yt { background: #fee2e2; color: #dc2626; flex: 1; text-align: center; padding: 12px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.2s;}
-        .btn-yt:hover { background: #fecaca; }
-        .btn-pdf { background: #eff6ff; color: #2563eb; flex: 1; text-align: center; padding: 12px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.2s;}
-        .btn-pdf:hover { background: #dbeafe; }
+        .btn-yt, .btn-pdf, .btn-pyq-action { flex: 1; text-align: center; padding: 12px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; }
+        .btn-yt { background: #fee2e2; color: #dc2626; } .btn-yt:hover { background: #fecaca; transform: translateY(-2px);}
+        .btn-pdf { background: #eff6ff; color: #2563eb; } .btn-pdf:hover { background: #dbeafe; transform: translateY(-2px);}
+        .btn-pyq-action { background: #fef3c7; color: #d97706; border: none; cursor: pointer;} .btn-pyq-action:hover { background: #fde68a; transform: translateY(-2px);}
+        .dark-mode .btn-yt { background: rgba(220, 38, 38, 0.1); } .dark-mode .btn-yt:hover { background: rgba(220, 38, 38, 0.2); }
+        .dark-mode .btn-pdf { background: rgba(37, 99, 235, 0.1); } .dark-mode .btn-pdf:hover { background: rgba(37, 99, 235, 0.2); }
+        .dark-mode .btn-pyq-action { background: rgba(217, 119, 6, 0.1); } .dark-mode .btn-pyq-action:hover { background: rgba(217, 119, 6, 0.2); }
 
-        /* MODALS */
+        /* MODALS & FORUM */
         .info-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .info-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .info-modal-content { background: var(--card-bg); color: var(--text-color); width: 95%; max-width: 500px; padding: 35px; border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); max-height: 85vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .info-modal-content { background: var(--card-bg); color: var(--text-color); width: 95%; max-width: 550px; padding: 35px; border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); max-height: 85vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .info-modal-overlay.active .info-modal-content { transform: scale(1); }
         .info-modal-content h2 { margin-bottom: 20px; color: var(--text-color); font-weight: 600; text-align: left; font-size: 1.4rem;}
         
         .modal-form-group { margin-bottom: 16px; text-align: left; }
         .modal-form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 8px; color: var(--text-light); }
-        .modal-form-group input, .modal-form-group select { width: 100%; padding: 12px 15px; border: 1.5px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text-color); font-size: 14px; outline: none; }
-        .modal-form-group input:focus, .modal-form-group select:focus { border-color: var(--primary-blue); }
+        .modal-form-group input, .modal-form-group select, .modal-form-group textarea { width: 100%; padding: 12px 15px; border: 1.5px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text-color); font-size: 14px; outline: none; }
+        .modal-form-group input:focus, .modal-form-group select:focus, .modal-form-group textarea:focus { border-color: var(--primary-blue); }
         
         .btn-close-modal { background: #f3f4f6; color: #4b5563; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; float: right; font-weight: 500; margin-top: 15px; margin-left: 10px; }
         .btn-save-modal { background: var(--primary-blue); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; float: right; font-weight: 500; margin-top: 15px; }
+        .btn-close-modal:hover { background: #e5e7eb; } .btn-save-modal:hover { background: var(--secondary-blue); transform: translateY(-2px); }
+        .dark-mode .btn-close-modal { background: #374151; color: #d1d5db; } .dark-mode .btn-close-modal:hover { background: #4b5563; }
+
+        /* Forum Specific */
+        .forum-container { display: flex; flex-direction: column; height: 50vh; }
+        .forum-messages { flex: 1; overflow-y: auto; background: var(--bg-color); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; border: 1px solid var(--border-color); }
+        .forum-msg { background: var(--card-bg); padding: 12px; border-radius: 12px 12px 12px 2px; font-size: 13.5px; max-width: 85%; align-self: flex-start; border: 1px solid var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.02); animation: fadeInUp 0.3s ease-out;}
+        .forum-msg.mine { align-self: flex-end; background: #eff6ff; border-color: #bfdbfe; border-radius: 12px 12px 2px 12px; }
+        .dark-mode .forum-msg.mine { background: rgba(37, 99, 235, 0.15); border-color: rgba(37, 99, 235, 0.3); }
+        .forum-msg strong { font-size: 11.5px; color: var(--primary-blue); display: block; margin-bottom: 4px; }
+        .forum-msg .time { font-size: 10px; color: var(--text-light); float: right; margin-top: 5px; margin-left: 10px;}
+        .forum-input-group { display: flex; gap: 10px; }
+        .forum-input-group input { flex: 1; padding: 12px 15px; border-radius: 20px; border: 1.5px solid var(--border-color); background: var(--card-bg); color: var(--text-color); outline: none; }
+        .forum-input-group input:focus { border-color: var(--primary-blue); }
+        .btn-send { background: var(--primary-blue); color: white; border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; transition: transform 0.2s; }
+        .btn-send:hover { transform: scale(1.05); background: var(--secondary-blue); }
 
         /* ADMIN UI */
-        #admin-panel { background-color: var(--admin-dark); min-height: 100vh; color: #ffffff; }
-        .admin-header { background: rgba(255,255,255,0.05); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .admin-container { max-width: 600px; margin: 40px auto; width: 90%; }
+        #admin-panel { background-color: var(--admin-dark); min-height: 100vh; color: #ffffff; padding-bottom: 40px;}
+        .admin-header { background: rgba(255,255,255,0.05); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(10px);}
+        .admin-container { max-width: 600px; margin: 40px auto; width: 90%; animation: scaleIn 0.3s ease-out;}
         .admin-card-glass { background: #1f2937; padding: 35px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
         .admin-step h2 { margin-bottom: 25px; color: #60a5fa; font-size: 1.4rem; font-weight: 600; }
-        .admin-step input, .admin-step select { width: 100%; padding: 14px; margin-bottom: 18px; border: 1px solid #374151; border-radius: 10px; background: #111827; color: #fff; font-size: 1rem; outline: none; }
+        .admin-step input, .admin-step select, .admin-step textarea { width: 100%; padding: 14px; margin-bottom: 18px; border: 1px solid #374151; border-radius: 10px; background: #111827; color: #fff; font-size: 1rem; outline: none; }
+        .admin-step input:focus, .admin-step select:focus, .admin-step textarea:focus { border-color: #60a5fa; }
         .admin-dashboard-stats { display: flex; gap: 15px; margin-bottom: 30px; }
         .stat-box { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; font-size: 12px; color: #9ca3af; }
         .stat-box strong { display: block; font-size: 22px; color: #fff; margin-top: 5px; font-weight: 600;}
-        .admin-btn-group { display: flex; gap: 12px; }
-        .btn-admin { flex: 1; padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 500; color: white; text-align: center; transition: background 0.2s;}
-        .btn-primary-admin { background: #2563eb; } .btn-primary-admin:hover { background: #1d4ed8;}
-        .btn-secondary-admin { background: #374151; } .btn-secondary-admin:hover { background: #4b5563;}
-        .btn-danger-admin { background: #dc2626; } .btn-danger-admin:hover { background: #b91c1c;}
+        
+        .admin-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .admin-btn-group { display: flex; gap: 12px; margin-top: 10px;}
+        .btn-admin { padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; color: white; text-align: center; transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .btn-primary-admin { background: #2563eb; } .btn-primary-admin:hover { background: #1d4ed8; transform: translateY(-2px);}
+        .btn-secondary-admin { background: #374151; } .btn-secondary-admin:hover { background: #4b5563; }
+        .btn-danger-admin { background: #dc2626; } .btn-danger-admin:hover { background: #b91c1c; transform: translateY(-2px);}
+        .btn-warning-admin { background: #d97706; } .btn-warning-admin:hover { background: #b45309; transform: translateY(-2px);}
+
         .admin-manage-item { background: #111827; padding: 15px; border: 1px solid #374151; border-radius: 12px; margin-bottom: 12px; }
         .admin-manage-header { display: flex; justify-content: space-between; align-items: center; }
         .admin-manage-buttons { display: flex; gap: 8px; margin-top: 10px; }
-
-        /* --- MODERN WEB STYLING FOR CUSTOM MODALS --- */
-        .modal-banner {
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            color: white;
-            padding: 24px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .modal-banner::after {
-            content: '';
-            position: absolute;
-            top: -30px;
-            right: -30px;
-            width: 90px;
-            height: 90px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-        }
-        .banner-badge {
-            background: rgba(255, 255, 255, 0.25);
-            color: #ffffff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .about-section {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .about-section h4 {
-            color: var(--primary-blue);
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-        .about-section p {
-            color: var(--text-light);
-            font-size: 13.5px;
-            line-height: 1.6;
-        }
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        @media (max-width: 480px) {
-            .about-grid { grid-template-columns: 1fr; }
-        }
-        .about-card {
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: left;
-        }
-        .about-card .card-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-        .about-card h5 {
-            font-size: 14px;
-            color: var(--text-color);
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        .about-card p {
-            font-size: 12px;
-            color: var(--text-light);
-            line-height: 1.5;
-        }
-        .highlight-box {
-            background: #eff6ff;
-            border-left: 4px solid var(--primary-blue);
-            padding: 15px 20px;
-            border-radius: 0 12px 12px 0;
-        }
-        .dark-mode .highlight-box {
-            background: rgba(37, 99, 235, 0.15);
-        }
-        .highlight-box h4 {
-            color: var(--primary-blue);
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-        .highlight-box p {
-            color: var(--text-color);
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        /* Contact Details Design Parameters */
-        .contact-intro {
-            color: var(--text-light);
-            font-size: 13.5px;
-            line-height: 1.5;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .contact-methods-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-        .contact-method-card {
-            display: block;
-            text-decoration: none;
-            padding: 15px 20px;
-            border-radius: 12px;
-            border: 1.5px solid var(--border-color);
-            background: var(--bg-color);
-            transition: all 0.2s;
-            text-align: left;
-        }
-        .contact-method-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .method-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 6px;
-        }
-        .method-icon {
-            font-size: 18px;
-        }
-        .method-title {
-            font-size: 13px;
-            color: var(--text-light);
-            font-weight: 500;
-        }
-        .method-value {
-            display: block;
-            font-size: 15px;
-            color: var(--text-color);
-            font-weight: 600;
-            margin-bottom: 4px;
-            word-break: break-all;
-        }
-        .method-action {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .email-card:hover { border-color: #3b82f6; }
-        .email-card .method-action { color: #3b82f6; }
-        .call-card:hover { border-color: #10b981; }
-        .call-card .method-action { color: #10b981; }
-        .whatsapp-card:hover { border-color: #25d366; }
-        .whatsapp-card .method-action { color: #25d366; }
-
-        .contact-form-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-color);
-            margin-bottom: 12px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 20px;
-            text-align: left;
-        }
-
-        /* Privacy Policy Parameters */
-        .policy-header {
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .update-tag {
-            background: #fef3c7;
-            color: #d97706;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
-        .dark-mode .update-tag {
-            background: rgba(217, 119, 6, 0.2);
-            color: #fbbf24;
-        }
-        .policy-header h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-        .policy-body {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            text-align: left;
-        }
-        .policy-section h4 {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--primary-blue);
-            margin-bottom: 6px;
-        }
-        .policy-section p {
-            font-size: 13px;
-            color: var(--text-light);
-            line-height: 1.6;
-            margin-bottom: 8px;
-        }
-        .policy-section ul {
-            padding-left: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-bottom: 8px;
-        }
-        .policy-section li {
-            font-size: 13px;
-            color: var(--text-light);
-            line-height: 1.5;
-        }
-        .highlight-policy {
-            background: #fffbeb;
-            border-left: 4px solid #f59e0b;
-            padding: 15px;
-            border-radius: 0 10px 10px 0;
-        }
-        .dark-mode .highlight-policy {
-            background: rgba(245, 158, 11, 0.1);
-        }
-        .highlight-policy h4 {
-            color: #d97706;
-        }
-        .highlight-policy p {
-            color: var(--text-color);
-            margin-bottom: 0;
-        }
+        
+        .user-list-item { background: #111827; border: 1px solid #374151; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
+        .user-list-info div { font-size: 14px; font-weight: 600; color: #e5e7eb; }
+        .user-list-info span { font-size: 12px; color: #9ca3af; }
     </style>
 </head>
 <body>
 
     <div id="gateway-screen">
-        
         <div id="login-form" class="login-wrapper">
-            
             <div class="login-left">
                 <h1>Diploma Study<br>Portal 🎓</h1>
                 <p>Engineering resources, previous papers, and video lectures sorted by your GTU syllabus.</p>
-                
                 <div class="feature-list">
                     <div>✅ 100% Free Access Forever</div>
                     <div>✅ Cloud Based Secure Storage</div>
                     <div>✅ Smart Subject Filtering</div>
+                    <div>💬 Student Discussion Forum</div>
                 </div>
             </div>
-
             <div class="login-right">
                 <div class="login-right-content">
                     <h2>Welcome Back</h2>
                     <p>Sign in to continue your learning journey.</p>
-                    
                     <button class="btn-google-pro" onclick="processGoogleLogin()">
                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
                         Continue with Google
                     </button>
-
-                    <div class="secure-badge">
-                        🔒 Secure 256-bit Cloud Connection
-                    </div>
+                    <div class="secure-badge">🔒 Secure 256-bit Cloud Connection</div>
                 </div>
             </div>
-            
         </div>
 
         <div id="wizard-form" class="portal-container hidden">
             <h2>Complete Profile</h2>
-            <div class="sub-title">તમારો અભ્યાસ ડેટા ભરો</div>
+            <div class="sub-title">Fill your academic details</div>
 
             <div id="q-step-2" class="wizard-step">
-                <h3>કોલેજનું નામ લખો (College Name)</h3>
-                <input type="text" id="reg-college" placeholder="અહીં કોલેજનું નામ લખો">
-                <div class="error-text" id="err-college">કૃપા કરીને આ વિગત ભરો</div>
+                <h3>Enter College Name</h3>
+                <input type="text" id="reg-college" placeholder="Enter college name here">
+                <div class="error-text" id="err-college">Please fill this detail</div>
                 <button class="btn-next" onclick="validateAndNext(2, 3)">Next Step</button>
             </div>
-
             <div id="q-step-3" class="wizard-step hidden">
-                <h3>જન્મતારીખ પસંદ કરો (Birthdate)</h3>
+                <h3>Select Birthdate</h3>
                 <input type="date" id="reg-dob">
-                <div class="error-text" id="err-dob">કૃપા કરીને આ વિગત ભરો</div>
+                <div class="error-text" id="err-dob">Please fill this detail</div>
                 <button class="btn-next" onclick="validateAndNext(3, 4)">Next Step</button>
             </div>
-
             <div id="q-step-4" class="wizard-step hidden">
-                <h3>એનરોલમેન્ટ નંબર લખો (Enrollment No)</h3>
-                <input type="text" id="reg-enroll" placeholder="Zmre 12 BpZpZm Bbso h tyAp bso" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                <div class="error-text" id="err-enroll">કૃપા કરીને આ વિગત ભરો</div>
+                <h3>Enter Enrollment No</h3>
+                <input type="text" id="reg-enroll" placeholder="e.g. 216090..." oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <div class="error-text" id="err-enroll">Please fill this detail</div>
                 <button class="btn-next" onclick="validateAndNext(4, 5)">Next Step</button>
             </div>
-
             <div id="q-step-5" class="wizard-step hidden">
-                <h3>એડમિશન વર્ષ / બેચ (Batch)</h3>
+                <h3>Admission Year / Batch</h3>
                 <select id="reg-batch">
-                    <option value="">-- વર્ષ પસંદ કરો --</option>
+                    <option value="">-- Select Year --</option>
                     <option value="2023">2023</option><option value="2024">2024</option>
                     <option value="2025">2025</option><option value="2026">2026</option>
                 </select>
-                <div class="error-text" id="err-batch">કૃપા કરીને આ વિગત ભરો</div>
+                <div class="error-text" id="err-batch">Please fill this detail</div>
                 <button class="btn-next" onclick="validateAndNext(5, 6)">Next Step</button>
             </div>
-
             <div id="q-step-6" class="wizard-step hidden">
-                <h3>તમારી બ્રાન્ચ પસંદ કરો (Branch Selection)</h3>
+                <h3>Select Your Branch</h3>
                 <select id="reg-branch-select"></select>
-                <div class="error-text" id="err-branch">કૃપા કરીને આ વિગત ભરો</div>
+                <div class="error-text" id="err-branch">Please fill this detail</div>
                 <button class="btn-next" onclick="validateAndNext(6, 8)">Next Step</button>
             </div>
-
             <div id="q-step-8" class="wizard-step hidden">
-                <h3>તમારું સેમેસ્ટર પસંદ કરો (Semester)</h3>
+                <h3>Select Your Semester</h3>
                 <select id="reg-sem"></select>
-                <div class="error-text" id="err-sem">કૃપા કરીને આ વિગત ભરો</div>
+                <div class="error-text" id="err-sem">Please fill this detail</div>
                 <button class="btn-next" onclick="saveRegistration()">Finish & Start Exploring</button>
             </div>
         </div>
@@ -624,12 +353,24 @@
             </div>
             <div class="header-controls">
                 <button class="dark-mode-btn" onclick="toggleDarkMode()">🌓 Dark</button>
-                <span class="admin-link" onclick="openAdminModal()" style="cursor:pointer; font-size: 13px; opacity: 0.8;">Admin</span>
+                
+                <!-- Notification Bell -->
+                <div class="notif-wrapper" onclick="toggleNotifs(event)">
+                    🔔<span id="notif-badge" class="notif-badge hidden">0</span>
+                    <div id="notif-dropdown" class="notif-dropdown" onclick="event.stopPropagation()">
+                        <div class="notif-header">📢 Latest Updates</div>
+                        <div class="notif-list" id="notif-list-container">
+                            <div style="padding: 15px; text-align: center; color: var(--text-light); font-size: 12px;">No new notifications</div>
+                        </div>
+                    </div>
+                </div>
+
+                <span class="admin-link" onclick="openAdminModal()" style="cursor:pointer; font-size: 13px; opacity: 0.8; margin-left: 5px;">Admin</span>
             </div>
         </header>
 
         <div class="notice-board">
-            <marquee id="notice-text">GTU Circular Notice: Material Box and Dynamic Academic Syllabus updated live on Cloud Database.</marquee>
+            <marquee id="notice-text">Welcome to the upgraded Diploma Study Portal! Access Materials, PYQs, and connect in the Discussion Forum.</marquee>
         </div>
 
         <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
@@ -642,32 +383,54 @@
                 <p id="user-profile-enroll" style="font-size: 13px; color: var(--text-light); margin-top: 3px;">Enrollment No</p>
             </div>
             <div class="sidebar-menu">
-                <a href="#" onclick="openModal('profile-edit')">✏️ પ્રોફાઇલ એડિટ</a>
-                <a href="#" onclick="openModal('saved')">💾 સેવ કરેલું મટીરીયલ</a>
-                <a href="#" onclick="openModal('about')">ℹ️ અબાઉટ અસ (About Us)</a>
-                <a href="#" onclick="openModal('contact')">📞 કોન્ટેક્ટ અસ (Contact Us)</a>
-                <a href="#" onclick="openModal('privacy')">🔒 પ્રાઇવસી પોલીસી (Privacy Policy)</a>
-                <a href="#" onclick="shareApp()">📤 એપ શેર કરો (Share App)</a>
+                <a href="#" onclick="showSection('subjects')">📚 My Subjects</a>
+                <a href="#" onclick="showSection('pyqs')">📜 Previous Year Papers</a>
+                <a href="#" onclick="openForumModal()">💬 Discussion Forum</a>
+                <div style="height: 1px; background: var(--border-color); margin: 15px 0;"></div>
+                <a href="#" onclick="openModal('profile-edit')">✏️ Edit Profile</a>
+                <a href="#" onclick="openModal('saved')">💾 Saved Material</a>
+                <a href="#" onclick="openModal('about')">ℹ️ About Us</a>
+                <a href="#" onclick="shareApp()">📤 Share App</a>
                 <button class="btn-logout" onclick="logout()">Logout / Sign Out</button>
             </div>
         </div>
 
         <main>
             <div class="user-dashboard-card">
-                <h3 id="dash-welcome-title">નમસ્તે, વિદ્યાર્થી મિત્ર!</h3>
-                <p id="dash-user-info" style="margin-bottom: 12px;">તમારા અભ્યાસક્રમ મુજબના વિષયો નીચે બોક્સ સ્વરૂપે ગોઠવાયેલા છે.</p>
-                <div style="font-size: 13px; display: flex; gap: 20px; flex-wrap: wrap;">
+                <h3 id="dash-welcome-title">Hello, Dear Student!</h3>
+                <p id="dash-user-info" style="margin-bottom: 12px;">Subjects according to your syllabus are arranged below.</p>
+                <div style="font-size: 13px; display: flex; gap: 15px; flex-wrap: wrap;">
                     <span id="dash-stat-batch" style="background: var(--bg-color); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border-color);"><b>Batch:</b> -</span>
                     <span id="dash-stat-college" style="background: var(--bg-color); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border-color);"><b>College:</b> -</span>
                 </div>
+                
+                <!-- Progress Tracker -->
+                <div class="progress-section">
+                    <div class="progress-stats">
+                        <span id="prog-videos">📺 Watched: 0</span>
+                        <span id="prog-pdfs">📄 Read: 0</span>
+                        <span id="prog-pyqs">📜 PYQs: 0</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div id="prog-bar-fill" class="progress-bar-fill"></div>
+                    </div>
+                </div>
             </div>
 
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="search-input" onkeyup="filterCards()" placeholder="🔍 Search subjects, chapters, or papers...">
+            </div>
+
+            <!-- Dynamic Content Area -->
             <div class="content-box">
-                <h2 id="filter-heading" style="font-weight: 600; margin-bottom: 5px;">તમારા સબ્જેક્ટ્સ</h2>
+                <h2 id="filter-heading" style="font-weight: 600; margin-bottom: 5px;">Your Subjects</h2>
                 <p id="filter-subheading" style="color: var(--text-light); font-size: 14px; margin-bottom: 15px;"></p>
-                <div id="subjects-container" class="grid-container"></div>
                 
-                <button id="btn-back" class="btn-next hidden" style="width: auto; margin-top: 20px; display: inline-block; padding: 10px 20px; background: var(--text-light);">⬅️ પાછા જાઓ</button>
+                <div id="subjects-container" class="grid-container"></div>
+                <div id="pyqs-container" class="grid-container hidden"></div>
+                
+                <button id="btn-back" class="btn-next hidden" style="width: auto; margin-top: 20px; display: inline-block; padding: 10px 20px; background: var(--text-light); border-radius: 8px;">⬅️ Go Back</button>
                 
                 <div id="chapters-container" class="grid-container hidden"></div>
                 <div id="materials-container" class="grid-container hidden"></div>
@@ -675,16 +438,18 @@
         </main>
     </div>
 
+    <!-- Reusable Info Modal -->
     <div id="info-modal" class="info-modal-overlay" onclick="closeModal()">
         <div class="info-modal-content" onclick="event.stopPropagation()">
             <h2 id="modal-title">Title</h2>
             <div id="modal-body-text">Content</div>
             <div id="modal-footer-buttons" style="margin-top:20px; display: flow-root;">
-                <button class="btn-close-modal" onclick="closeModal()">બંધ કરો</button>
+                <button class="btn-close-modal" onclick="closeModal()">Close</button>
             </div>
         </div>
     </div>
 
+    <!-- Admin Panel -->
     <div id="admin-panel" class="hidden">
         <div class="admin-header">
             <h2 style="font-size: 1.2rem; font-weight: 600;">⚡ ADMIN CONSOLE</h2>
@@ -695,20 +460,24 @@
                 <div class="admin-dashboard-stats">
                     <div class="stat-box">Branches<strong id="stat-branches">0</strong></div>
                     <div class="stat-box">Subjects<strong id="stat-subjects">0</strong></div>
-                    <div class="stat-box">Chapters<strong id="stat-chapters">0</strong></div>
+                    <div class="stat-box">Students<strong id="stat-students">0</strong></div>
                 </div>
 
                 <div id="admin-step-1" class="admin-step">
-                    <h2>મેનૂ કંટ્રોલ પેનલ</h2>
-                    <div class="admin-btn-group" style="flex-direction: column;">
-                        <button class="btn-admin btn-primary-admin" onclick="adminNext(1, 2)">નવી બ્રાન્ચ ઉમેરો ➕</button>
-                        <button class="btn-admin btn-danger-admin" style="margin-top:8px;" onclick="openDeleteManager()">ડેટા મોડિફાય અને ડીલીટ કરો 🗑️</button>
+                    <h2>Menu Control Panel</h2>
+                    <div class="admin-btn-grid">
+                        <button class="btn-admin btn-primary-admin" onclick="adminNext(1, 2)">➕ Add Branch</button>
+                        <button class="btn-admin btn-primary-admin" onclick="adminNext(1, 6)">📁 Upload Links</button>
+                        <button class="btn-admin btn-warning-admin" onclick="adminNext(1, 'notif')">📢 Post Notice</button>
+                        <button class="btn-admin btn-warning-admin" onclick="adminNext(1, 'pyq')">📜 Add PYQs</button>
+                        <button class="btn-admin btn-danger-admin" onclick="openDeleteManager()" style="grid-column: span 2;">🗑️ Modify/Delete Data</button>
+                        <button class="btn-admin btn-secondary-admin" onclick="openStudentManager()" style="grid-column: span 2;">👥 Student Management</button>
                     </div>
                 </div>
 
                 <div id="admin-step-2" class="admin-step hidden">
-                    <h2>નવી બ્રાન્ચ ઉમેરો</h2>
-                    <input type="text" id="adm-branch-name" placeholder="Computer, Chemical વગેરે">
+                    <h2>Add New Branch</h2>
+                    <input type="text" id="adm-branch-name" placeholder="Computer, Chemical etc.">
                     <div class="admin-btn-group">
                         <button class="btn-admin btn-secondary-admin" onclick="adminNext(2, 3)">Skip</button>
                         <button class="btn-admin btn-primary-admin" onclick="addBranch()">Save</button>
@@ -716,8 +485,8 @@
                 </div>
 
                 <div id="admin-step-3" class="admin-step hidden">
-                    <h2>સેમેસ્ટર કન્ફર્મ કરો</h2>
-                    <select id="adm-sem-branch-select"><option value="">-- બ્રાન્ચ પસંદ કરો --</option></select>
+                    <h2>Confirm Semester</h2>
+                    <select id="adm-sem-branch-select"><option value="">-- Select Branch --</option></select>
                     <select id="adm-sem-name">
                         <option value="Sem 1">Sem 1</option><option value="Sem 2">Sem 2</option>
                         <option value="Sem 3">Sem 3</option><option value="Sem 4">Sem 4</option>
@@ -730,10 +499,10 @@
                 </div>
 
                 <div id="admin-step-4" class="admin-step hidden">
-                    <h2>નવો સબ્જેક્ટ ઉમેરો</h2>
-                    <select id="adm-sub-branch-select" onchange="updateAdminSemSelect('adm-sub-branch-select', 'adm-sub-sem-select')"><option value="">-- બ્રાન્ચ પસંદ કરો --</option></select>
-                    <select id="adm-sub-sem-select"><option value="">-- સેમેસ્ટર પસંદ કરો --</option></select>
-                    <input type="text" id="adm-sub-name" placeholder="દા.ત. Data Structure">
+                    <h2>Add New Subject</h2>
+                    <select id="adm-sub-branch-select" onchange="updateAdminSemSelect('adm-sub-branch-select', 'adm-sub-sem-select')"><option value="">-- Select Branch --</option></select>
+                    <select id="adm-sub-sem-select"><option value="">-- Select Semester --</option></select>
+                    <input type="text" id="adm-sub-name" placeholder="e.g. Data Structure">
                     <div class="admin-btn-group">
                         <button class="btn-admin btn-secondary-admin" onclick="adminNext(4, 5)">Skip</button>
                         <button class="btn-admin btn-primary-admin" onclick="addSubject()">Save</button>
@@ -741,11 +510,11 @@
                 </div>
 
                 <div id="admin-step-5" class="admin-step hidden">
-                    <h2>નવું ચેપ્ટર ઉમેરો</h2>
-                    <select id="adm-ch-branch-select" onchange="updateAdminSemSelect('adm-ch-branch-select', 'adm-ch-sem-select')"><option value="">-- બ્રાન્ચ પસંદ કરો --</option></select>
-                    <select id="adm-ch-sem-select" onchange="updateAdminSubSelect('adm-ch-branch-select', 'adm-ch-sem-select', 'adm-ch-sub-select')"><option value="">-- સેમેસ્ટર પસંદ કરો --</option></select>
-                    <select id="adm-ch-sub-select"><option value="">-- સબ્જેક્ટ પસંદ કરો --</option></select>
-                    <input type="text" id="adm-ch-name" placeholder="દા.ત. Chapter 1">
+                    <h2>Add New Chapter</h2>
+                    <select id="adm-ch-branch-select" onchange="updateAdminSemSelect('adm-ch-branch-select', 'adm-ch-sem-select')"><option value="">-- Select Branch --</option></select>
+                    <select id="adm-ch-sem-select" onchange="updateAdminSubSelect('adm-ch-branch-select', 'adm-ch-sem-select', 'adm-ch-sub-select')"><option value="">-- Select Semester --</option></select>
+                    <select id="adm-ch-sub-select"><option value="">-- Select Subject --</option></select>
+                    <input type="text" id="adm-ch-name" placeholder="e.g. Chapter 1">
                     <div class="admin-btn-group">
                         <button class="btn-admin btn-secondary-admin" onclick="adminNext(5, 6)">Skip</button>
                         <button class="btn-admin btn-primary-admin" onclick="addChapter()">Save</button>
@@ -753,28 +522,61 @@
                 </div>
 
                 <div id="admin-step-6" class="admin-step hidden">
-                    <h2>મટીરીયલ લિંક અપલોડ કરો</h2>
-                    <select id="adm-mat-branch-select" onchange="updateAdminSemSelect('adm-mat-branch-select', 'adm-mat-sem-select')"><option value="">-- બ્રાન્ચ પસંદ કરો --</option></select>
-                    <select id="adm-mat-sem-select" onchange="updateAdminSubSelect('adm-mat-branch-select', 'adm-mat-sem-select', 'adm-mat-sub-select')"><option value="">-- સેમેસ્ટર પસંદ કરો --</option></select>
-                    <select id="adm-mat-sub-select" onchange="updateAdminChSelect()"><option value="">-- સબ્જેક્ટ પસંદ કરો --</option></select>
-                    <select id="adm-mat-ch-select"><option value="">-- ચેપ્ટર પસંદ કરો --</option></select>
-                    
+                    <h2>Upload Material Link</h2>
+                    <select id="adm-mat-branch-select" onchange="updateAdminSemSelect('adm-mat-branch-select', 'adm-mat-sem-select')"><option value="">-- Select Branch --</option></select>
+                    <select id="adm-mat-sem-select" onchange="updateAdminSubSelect('adm-mat-branch-select', 'adm-mat-sem-select', 'adm-mat-sub-select')"><option value="">-- Select Semester --</option></select>
+                    <select id="adm-mat-sub-select" onchange="updateAdminChSelect()"><option value="">-- Select Subject --</option></select>
+                    <select id="adm-mat-ch-select"><option value="">-- Select Chapter --</option></select>
                     <input type="url" id="adm-mat-yt" placeholder="YouTube Video Link">
                     <input type="url" id="adm-mat-pdf" placeholder="Google Drive PDF Link">
-                    
                     <div class="admin-btn-group">
                         <button class="btn-admin btn-secondary-admin" onclick="adminNext(6, 1)">Back</button>
                         <button class="btn-admin btn-primary-admin" onclick="addMaterial()">Upload Links</button>
                     </div>
                 </div>
 
-                <div id="admin-step-delete" class="admin-step hidden">
-                    <h2>🗑️ ડેટા મેનેજમેન્ટ સેન્ટર</h2>
-                    <select id="adm-del-branch-select" onchange="updateAdminSemSelect('adm-del-branch-select', 'adm-del-sem-select')"><option value="">-- બ્રાન્ચ પસંદ કરો --</option></select>
-                    <select id="adm-del-sem-select" onchange="renderDeleteItems()"><option value="">-- સેમેસ્ટર પસંદ કરો --</option></select>
-                    <div id="delete-items-list" style="max-height: 350px; overflow-y: auto; margin-bottom: 15px;"></div>
-                    <button class="btn-admin btn-secondary-admin" onclick="adminNext('delete', 1)">Main Menu</button>
+                <!-- Admin: PYQ Upload -->
+                <div id="admin-step-pyq" class="admin-step hidden">
+                    <h2>📜 Upload Previous Year Paper</h2>
+                    <select id="adm-pyq-branch-select" onchange="updateAdminSemSelect('adm-pyq-branch-select', 'adm-pyq-sem-select')"><option value="">-- Select Branch --</option></select>
+                    <select id="adm-pyq-sem-select" onchange="updateAdminSubSelect('adm-pyq-branch-select', 'adm-pyq-sem-select', 'adm-pyq-sub-select')"><option value="">-- Select Semester --</option></select>
+                    <select id="adm-pyq-sub-select"><option value="">-- Select Subject --</option></select>
+                    <input type="text" id="adm-pyq-year" placeholder="e.g. Winter 2023, Summer 2022">
+                    <input type="url" id="adm-pyq-link" placeholder="Google Drive PDF Link for Paper">
+                    <div class="admin-btn-group">
+                        <button class="btn-admin btn-secondary-admin" onclick="adminNext('pyq', 1)">Back</button>
+                        <button class="btn-admin btn-primary-admin" onclick="addPYQ()">Upload Paper</button>
+                    </div>
                 </div>
+
+                <!-- Admin: Post Notification -->
+                <div id="admin-step-notif" class="admin-step hidden">
+                    <h2>📢 Push Global Notification</h2>
+                    <textarea id="adm-notif-text" placeholder="Type announcement for all students... (e.g. New materials for Sem 3 Computer have been added!)" style="height:100px; resize:none;"></textarea>
+                    <div class="admin-btn-group">
+                        <button class="btn-admin btn-secondary-admin" onclick="adminNext('notif', 1)">Back</button>
+                        <button class="btn-admin btn-primary-admin" onclick="postNotification()">Push to Portal</button>
+                    </div>
+                </div>
+
+                <!-- Admin: Delete Data -->
+                <div id="admin-step-delete" class="admin-step hidden">
+                    <h2>🗑️ Data Management Center</h2>
+                    <select id="adm-del-branch-select" onchange="updateAdminSemSelect('adm-del-branch-select', 'adm-del-sem-select')"><option value="">-- Select Branch --</option></select>
+                    <select id="adm-del-sem-select" onchange="renderDeleteItems()"><option value="">-- Select Semester --</option></select>
+                    <div id="delete-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; padding-right:5px;"></div>
+                    <button class="btn-admin btn-secondary-admin" style="width:100%;" onclick="adminNext('delete', 1)">Main Menu</button>
+                </div>
+
+                <!-- Admin: Manage Students -->
+                <div id="admin-step-students" class="admin-step hidden">
+                    <h2>👥 Registered Students</h2>
+                    <div id="admin-student-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 15px; padding-right:5px;">
+                        <!-- Student list populates here -->
+                    </div>
+                    <button class="btn-admin btn-secondary-admin" style="width:100%;" onclick="adminNext('students', 1)">Main Menu</button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -795,30 +597,34 @@
         const googleProvider = new firebase.auth.GoogleAuthProvider();
 
         const baseStaticBranches = ["Computer", "Chemical", "IT", "Civil", "Mechanical"];
-        let db = { branches: { "Computer": {}, "Chemical": {}, "IT": {}, "Civil": {}, "Mechanical": {} } };
+        let db = { branches: {}, pyqs: {} };
         let currentOpenBranch, currentOpenSem, currentOpenSubject;
         let tempGoogleUser = null; 
+        let currentActiveSection = 'subjects'; // 'subjects' or 'pyqs'
+
+        // Close dropdowns if clicked outside
+        window.onclick = function(event) {
+            if (!event.target.closest('.notif-wrapper')) {
+                document.getElementById('notif-dropdown').classList.remove('active');
+            }
+        }
 
         window.onload = function() {
-            // --- FIREBASE LIVE AUTH STATE LISTENER (REPLACED LOCALSTORAGE MIXUPS) ---
             firebase.auth().onAuthStateChanged((user) => {
                 if (user) {
                     tempGoogleUser = user;
-                    
                     database.ref('registered_students/' + user.uid).once('value').then((snapshot) => {
                         if(snapshot.exists()) {
                             let studentData = snapshot.val();
                             triggerWelcomeAnimation(studentData.name, studentData);
+                            setupLiveListeners(user);
                         } else {
                             document.getElementById('login-form').classList.add('hidden');
                             document.getElementById('home-page').classList.add('hidden');
                             document.getElementById('admin-panel').classList.add('hidden');
                             document.getElementById('wizard-form').classList.remove('hidden');
                         }
-                    }).catch((error) => {
-                        console.error("Database Error:", error);
-                        alert("Error: Database Rules must be true");
-                    });
+                    }).catch((error) => console.error("Database Error:", error));
                 } else {
                     tempGoogleUser = null;
                     document.getElementById('home-page').classList.add('hidden');
@@ -833,10 +639,14 @@
                 if(snapshot.exists()) {
                     db = snapshot.val();
                     if(!db.branches) db.branches = {};
+                    if(!db.pyqs) db.pyqs = {};
                     baseStaticBranches.forEach(b => { if(!db.branches[b]) db.branches[b] = {}; });
                 }
                 populateDropdowns();
                 calculateLiveCounters();
+                if(tempGoogleUser && currentActiveSection === 'subjects') {
+                    // Refetch data invisibly if updated
+                }
             });
             populateDropdowns();
         };
@@ -845,7 +655,6 @@
 
         function processGoogleLogin() {
             firebase.auth().signInWithPopup(googleProvider).catch((error) => {
-                console.error("Popup failed, trying redirect...", error);
                 firebase.auth().signInWithRedirect(googleProvider);
             });
         }
@@ -862,330 +671,173 @@
                 enroll: document.getElementById('reg-enroll').value,
                 batch: document.getElementById('reg-batch').value,
                 branch: document.getElementById('reg-branch-select').value, 
-                sem: document.getElementById('reg-sem').value
+                sem: document.getElementById('reg-sem').value,
+                progress: { videos: 0, pdfs: 0, pyqs: 0 }
             };
 
             database.ref('registered_students/' + user.uid).set(user).then(() => {
                 triggerWelcomeAnimation(user.name, user);
+                setupLiveListeners(user);
             });
         }
 
-        function openModal(type) {
+        // Search/Filter Functionality
+        function filterCards() {
+            let filter = document.getElementById('search-input').value.toLowerCase();
+            let visibleContainer = document.querySelector('.grid-container:not(.hidden)');
+            if(!visibleContainer) return;
+            let cards = visibleContainer.querySelectorAll('.box-card');
+            cards.forEach(card => {
+                let text = card.innerText.toLowerCase();
+                if(text.includes(filter)) {
+                    card.style.display = "";
+                    card.style.animation = "scaleIn 0.3s ease";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        // Live Listeners (Notifications & Progress)
+        function setupLiveListeners(user) {
+            // Notifications
+            database.ref('notifications').limitToLast(10).on('value', snap => {
+                let listContainer = document.getElementById('notif-list-container');
+                let badge = document.getElementById('notif-badge');
+                listContainer.innerHTML = '';
+                if(snap.exists()) {
+                    let notifs = [];
+                    snap.forEach(child => { notifs.push(child.val()); });
+                    notifs.reverse(); // newest first
+                    
+                    badge.innerText = notifs.length;
+                    badge.classList.remove('hidden');
+
+                    notifs.forEach(n => {
+                        let div = document.createElement('div');
+                        div.className = 'notif-item';
+                        div.innerHTML = `<strong>Admin:</strong> ${n.text} <span class="notif-time">${new Date(n.time).toLocaleDateString()}</span>`;
+                        listContainer.appendChild(div);
+                    });
+                } else {
+                    badge.classList.add('hidden');
+                    listContainer.innerHTML = `<div style="padding: 15px; text-align: center; color: var(--text-light); font-size: 12px;">No new notifications</div>`;
+                }
+            });
+
+            // Progress Tracker
+            database.ref('registered_students/' + user.uid + '/progress').on('value', snap => {
+                let p = snap.val() || { videos: 0, pdfs: 0, pyqs: 0 };
+                document.getElementById('prog-videos').innerText = `📺 Watched: ${p.videos || 0}`;
+                document.getElementById('prog-pdfs').innerText = `📄 Read: ${p.pdfs || 0}`;
+                document.getElementById('prog-pyqs').innerText = `📜 PYQs: ${p.pyqs || 0}`;
+                
+                let total = (p.videos || 0) + (p.pdfs || 0) + (p.pyqs || 0);
+                let percent = Math.min((total / 30) * 100, 100); // UI visual trick: max 30 activities for full bar
+                document.getElementById('prog-bar-fill').style.width = percent + '%';
+            });
+        }
+
+        function trackProgress(type) {
             if(!tempGoogleUser) return;
+            let ref = database.ref('registered_students/' + tempGoogleUser.uid + '/progress');
+            ref.transaction(prog => {
+                if(!prog) prog = { videos: 0, pdfs: 0, pyqs: 0 };
+                if(type === 'video') prog.videos = (prog.videos || 0) + 1;
+                if(type === 'pdf') prog.pdfs = (prog.pdfs || 0) + 1;
+                if(type === 'pyq') prog.pyqs = (prog.pyqs || 0) + 1;
+                return prog;
+            });
+        }
+
+        function toggleNotifs(e) {
+            if(e) e.stopPropagation();
+            document.getElementById('notif-dropdown').classList.toggle('active');
+            document.getElementById('notif-badge').classList.add('hidden'); // clear badge visual
+        }
+
+        // Section Toggle (Subjects vs PYQs)
+        function showSection(sectionType) {
+            toggleSidebar();
+            currentActiveSection = sectionType;
+            document.getElementById('search-input').value = ""; // clear search
+            
+            let chContainer = document.getElementById('chapters-container');
+            let matContainer = document.getElementById('materials-container');
+            let backBtn = document.getElementById('btn-back');
+            chContainer.classList.add('hidden'); matContainer.classList.add('hidden'); backBtn.classList.add('hidden');
+            
+            if(sectionType === 'subjects') {
+                document.getElementById('pyqs-container').classList.add('hidden');
+                renderSubjects();
+            } else if (sectionType === 'pyqs') {
+                document.getElementById('subjects-container').classList.add('hidden');
+                renderPYQSubjects();
+            }
+        }
+
+        // Discussion Forum
+        function openForumModal() {
+            toggleSidebar();
             let modal = document.getElementById('info-modal');
             let title = document.getElementById('modal-title');
             let body = document.getElementById('modal-body-text');
             let footer = document.getElementById('modal-footer-buttons');
 
-            footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">બંધ કરો</button>`;
-
-            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
-                let user = snapshot.val();
-                
-                if (type === 'profile-edit' && user) {
-                    title.innerText = "પ્રોફાઇલ એડિટ કરો";
-                    
-                    let branchOptionsHTML = "";
-                    let uniqueBranches = Object.keys(db.branches).length > 0 ? Object.keys(db.branches) : baseStaticBranches;
-                    uniqueBranches.forEach(b => { branchOptionsHTML += `<option value="${b}" ${user.branch === b ? 'selected' : ''}>${b}</option>`; });
-
-                    let semOptionsHTML = "";
-                    for(let i=1; i<=6; i++) { semOptionsHTML += `<option value="Sem ${i}" ${user.sem === `Sem ${i}` ? 'selected' : ''}>Sem ${i}</option>`; }
-
-                    body.innerHTML = `
-                        <div class="modal-form-group"><label>વિદ્યાર્થીનું નામ</label><input type="text" id="edit-name-field" value="${user.name}"></div>
-                        <div class="modal-form-group"><label>એનરોલમેન્ટ નંબર</label><input type="text" id="edit-enroll-field" value="${user.enroll}" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-                        <div class="modal-form-group"><label>તમારી મુખ્ય બ્રાન્ચ (Branch)</label><select id="edit-branch-field">${branchOptionsHTML}</select></div>
-                        <div class="modal-form-group"><label>હાલનું સેમેસ્ટર (Semester)</label><select id="edit-sem-field">${semOptionsHTML}</select></div>
-                    `;
-                    
-                    footer.innerHTML = `
-                        <button class="btn-save-modal" onclick="updateProfileData()">સેવ ચેન્જીસ 💾</button>
-                        <button class="btn-close-modal" onclick="closeModal()">કેન્સલ</button>
-                    `;
-                }
-                else if(type === 'saved') { 
-                    title.innerText = "સેવ કરેલું મટીરીયલ"; 
-                    body.innerHTML = "<p style='text-align:left; font-size:14px; color:var(--text-light); line-height:1.5;'>બુકમાર્ક કરેલી ફાઈલો ક્લાઉડ સ્ટોરેજ પર ઓટોમેટીક સેવ થશે!</p>"; 
-                } 
-                else if(type === 'about') { 
-                    title.innerText = "About Diploma Study Portal"; 
-                    body.innerHTML = `
-                        <div class="modal-about-container">
-                            <div class="modal-banner">
-                                <span class="banner-badge">PORTAL CORE EDITION v2.0</span>
-                                <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:5px;">Empowering GTU Diploma Students</h3>
-                                <p style="font-size:12px; opacity:0.9;">Your ultimate repository for dynamic academic success.</p>
-                            </div>
-                            <div class="about-section">
-                                <h4>🎯 Our Mission</h4>
-                                <p>To break down academic barriers by providing curated, high-quality engineering resources directly aligned with the Gujarat Technological University (GTU) syllabus. We believe access to quality study resources should be seamless, instant, and 100% free for every aspiring engineer.</p>
-                            </div>
-                            <div class="about-grid">
-                                <div class="about-card">
-                                    <div class="card-icon">📚</div>
-                                    <h5>Curated Materials</h5>
-                                    <p>Interactive YouTube lectures and hand-picked PDF materials mapped strictly to your academic semesters.</p>
-                                </div>
-                                <div class="about-card">
-                                    <div class="card-icon">☁️</div>
-                                    <h5>Cloud Synced</h5>
-                                    <p>Syllabus modifications, study packages, and dynamic notifications update live through high-speed cloud databases.</p>
-                                </div>
-                            </div>
-                            <div class="about-section highlight-box">
-                                <h4>💡 Built For Students, By Pioneers</h4>
-                                <p>This study portal removes the hassle of hunting down files. Register once, select your branch, select your semester, and gain instant visual modules. No hidden charges—just plain focus on technical education.</p>
-                            </div>
-                        </div>
-                    `; 
-                    footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Close Panel</button>`;
-                } 
-                else if(type === 'contact') { 
-                    title.innerText = "Get in Touch"; 
-                    body.innerHTML = `
-                        <div class="modal-contact-container">
-                            <p class="contact-intro">Have queries, recommendations, or structural doubts about portal contents? Our active support channel is open. Reach out to the core admin desks directly:</p>
-                            
-                            <div class="contact-methods-grid">
-                                <a href="mailto:vahorarehan5510@gmail.com?subject=Diploma%20Study%20Portal%20Inquiry" class="contact-method-card email-card">
-                                    <div class="method-header">
-                                        <span class="method-icon">✉️</span>
-                                        <span class="method-title">Official Email Desk</span>
-                                    </div>
-                                    <span class="method-value">vahorarehan5510@gmail.com</span>
-                                    <span class="method-action">Send Email ➡️</span>
-                                </a>
-
-                                <a href="tel:+919016929061" class="contact-method-card call-card">
-                                    <div class="method-header">
-                                        <span class="method-icon">📞</span>
-                                        <span class="method-title">Voice Call Helpline</span>
-                                    </div>
-                                    <span class="method-value">+91 90169 29061</span>
-                                    <span class="method-action">Dial Call ➡️</span>
-                                </a>
-
-                                <a href="https://wa.me/919016929061?text=Hi%20Rehan,%20I%20am%20using%20the%20Diploma%20Study%20Portal%20and%20had%20some%20queries." target="_blank" class="contact-method-card whatsapp-card">
-                                    <div class="method-header">
-                                        <span class="method-icon">💬</span>
-                                        <span class="method-title">WhatsApp Chat Assistant</span>
-                                    </div>
-                                    <span class="method-value">+91 90169 29061</span>
-                                    <span class="method-action">Message Admin ➡️</span>
-                                </a>
-                            </div>
-
-                            <div class="contact-form-title">⚡ Drop a Quick message Online</div>
-                            <div class="contact-quick-form">
-                                <div class="modal-form-group">
-                                    <label>Your Message Subject</label>
-                                    <input type="text" id="contact-subject" placeholder="e.g., Syllabus Updates, Material correction">
-                                </div>
-                                <div class="modal-form-group">
-                                    <label>Message Details</label>
-                                    <textarea id="contact-message" placeholder="Type your detailed queries here..." style="width: 100%; min-height: 85px; padding: 12px 15px; border: 1.5px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text-color); font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--primary-blue)'"></textarea>
-                                </div>
-                                <button class="btn-save-modal" style="width:100%; margin-top:10px; border-radius:10px; float:none;" onclick="submitQuickContact()">Submit Message over Cloud</button>
-                            </div>
-                        </div>
-                    `; 
-                    footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Close Panel</button>`;
-                } 
-                else if(type === 'privacy') { 
-                    title.innerText = "Privacy & Data Protection Policy"; 
-                    body.innerHTML = `
-                        <div class="modal-privacy-container">
-                            <div class="policy-header">
-                                <span class="update-tag">Updated: June 2026</span>
-                                <h3>Your Data Security is Our Top Priority</h3>
-                            </div>
-                            
-                            <div class="policy-body">
-                                <div class="policy-section">
-                                    <h4>🔍 1. Information We Collect</h4>
-                                    <p>To construct a dynamically customized profile matched directly with your engineering branch, we collect specific details during Registration:</p>
-                                    <ul>
-                                        <li><strong>Identity Credentials:</strong> Full Name, secure Profile Photo URL, and Email verified through Google SSO authentication.</li>
-                                        <li><strong>Academic Details:</strong> Engineering Branch, Current Semester, Admission Batch, Enrollment Number, and College Name.</li>
-                                    </ul>
-                                </div>
-
-                                <div class="policy-section">
-                                    <h4>⚙️ 2. How We Use Your Data</h4>
-                                    <p>We practice extreme simplicity and data hygiene. Your attributes are strictly utilized to:</p>
-                                    <ul>
-                                        <li>Filter and populate the accurate GTU modules matched with your Current Semester.</li>
-                                        <li>Enable direct dashboard modification features manageable directly from your sidebar dashboard.</li>
-                                        <li>Maintain statistical records inside the Administrator Console.</li>
-                                    </ul>
-                                </div>
-
-                                <div class="policy-section">
-                                    <h4>🔒 3. Cloud Database Standard Security</h4>
-                                    <p>All operations are securely handled over standard SSL/TLS 256-bit encryption protocols. Profile statistics and syllabus materials are hosted on high-end Google Firebase systems with secure database authorization filters, preventing external identity sniffing.</p>
-                                </div>
-
-                                <div class="policy-section highlight-policy">
-                                    <h4>🚫 4. Strict Zero-Ad and Commercial Policy</h4>
-                                    <p>We will never distribute, sell, rent, or lease your academic parameters to third parties. This portal is built purely as a secure, education-first utilities portal without active advertisements.</p>
-                                </div>
-
-                                <div class="policy-section">
-                                    <h4>🛠️ 5. User Authority & Deletion Rights</h4>
-                                    <p>You have full ownership of your details. You can dynamically modify credentials through the <strong>Profile Edit (પ્રોફાઇલ એડિટ)</strong> console or sign out instantly. For absolute record deletion, contact the admin desk.</p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">I Understand</button>`;
-                }
-                modal.classList.add('active');
-            });
-        }
-
-        function updateProfileData() {
-            if(!tempGoogleUser) return;
-            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
-                let user = snapshot.val();
-                let newName = document.getElementById('edit-name-field').value.trim();
-                let newEnroll = document.getElementById('edit-enroll-field').value.trim();
-                
-                if(!newName || !newEnroll) { alert("વિગત અધૂરી ન રાખી શકાય!"); return; }
-
-                user.name = newName; 
-                user.enroll = newEnroll; 
-                user.branch = document.getElementById('edit-branch-field').value; 
-                user.sem = document.getElementById('edit-sem-field').value;
-
-                database.ref('registered_students/' + user.uid).set(user).then(() => {
-                    closeModal(); 
-                    showHomePage(user);
-                });
-            });
-        }
-
-        function submitQuickContact() {
-            if(!tempGoogleUser) { alert("Please login first to submit a contact inquiry."); return; }
-            
-            const subject = document.getElementById('contact-subject').value.trim();
-            const msg = document.getElementById('contact-message').value.trim();
-            
-            if(!subject || !msg) {
-                alert("Please fill in both the Subject and Message fields.");
-                return;
-            }
-
-            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
-                let user = snapshot.val();
-                database.ref('registered_students/' + user.uid + '/contact_queries').push({
-                    subject: subject,
-                    message: msg,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                }).then(() => {
-                    const container = document.querySelector('.modal-contact-container');
-                    container.innerHTML = `
-                        <div style="text-align:center; padding: 30px 10px;">
-                            <div style="font-size: 50px; margin-bottom: 15px; color: #10b981;">✅</div>
-                            <h4 style="font-size: 1.1rem; color: var(--text-color); margin-bottom: 10px;">Message Delivered!</h4>
-                            <p style="font-size: 13.5px; color: var(--text-light); line-height: 1.5;">Thank you, ${user.name}! Your query regarding "<strong>${subject}</strong>" has been logged dynamically into our cloud database. Admin Rehan will get back to you shortly.</p>
-                        </div>
-                    `;
-                }).catch(err => {
-                    console.error("Message Submit Error:", err);
-                    alert("Failed to deliver your message. Kindly send direct call or WhatsApp inquiry.");
-                });
-            });
-        }
-
-        function shareApp() {
-            const shareTitle = "🎓 GTU Diploma Study Portal";
-            const shareText = "📚 *Boost Your GTU Diploma Engineering Prep!* 🎓\n\nHey! I am using this amazing study portal to access structured video lectures, dynamic GTU previous papers, and sorted PDF notes—all 100% FREE! It updates dynamically through cloud.\n\n👉 Join now and excel in your exams:\n";
-            const shareUrl = window.location.href;
-            const fullShareMessage = `${shareText}${shareUrl}\n\n🚀 Let's study smart together!`;
-
-            if (navigator.share) {
-                navigator.share({
-                    title: shareTitle,
-                    text: fullShareMessage
-                }).catch(err => console.log('Error sharing:', err));
-            } else {
-                const dummyTextarea = document.createElement("textarea");
-                document.body.appendChild(dummyTextarea);
-                dummyTextarea.value = fullShareMessage;
-                dummyTextarea.select();
-                document.execCommand("copy");
-                document.body.removeChild(dummyTextarea);
-
-                let modal = document.getElementById('info-modal');
-                let title = document.getElementById('modal-title');
-                let body = document.getElementById('modal-body-text');
-                let footer = document.getElementById('modal-footer-buttons');
-
-                title.innerHTML = "📤 App Shared Successfully!";
-                body.innerHTML = `
-                    <div style="text-align:center; padding: 15px 0;">
-                        <div style="font-size: 50px; margin-bottom: 15px;">🎉</div>
-                        <h4 style="font-size:1.1rem; margin-bottom:10px; color: var(--primary-blue);">Sharing Message Copied!</h4>
-                        <p style="font-size:13.5px; color:var(--text-light); margin-bottom:15px; line-height:1.5;">An elegant sharing invite has been copied to your clipboard. Send it to WhatsApp, Telegram, or any study circles directly!</p>
-                        <textarea readonly style="width:100%; height:110px; padding:10px; border-radius:8px; border:1.5px solid var(--border-color); font-size:11px; color:var(--text-light); background:#f9fafb; resize:none;">${fullShareMessage}</textarea>
+            title.innerText = "💬 Global Discussion Forum";
+            body.innerHTML = `
+                <div class="forum-container">
+                    <div id="forum-chat-box" class="forum-messages">
+                        <div style="text-align:center; color:var(--text-light); font-size:12px; margin-top:20px;">Loading messages...</div>
                     </div>
-                `;
-                footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Superb!</button>`;
-                modal.classList.add('active');
-            }
-        }
+                    <div class="forum-input-group">
+                        <input type="text" id="forum-input-msg" placeholder="Type your doubt or reply..." onkeypress="if(event.key === 'Enter') sendForumMsg()">
+                        <button class="btn-send" onclick="sendForumMsg()">➤</button>
+                    </div>
+                </div>
+            `;
+            footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Close Panel</button>`;
+            modal.classList.add('active');
 
-        function closeModal() { document.getElementById('info-modal').classList.remove('active'); }
-        
-        function loadUserProfilePhoto(user) {
-            let avatar = document.getElementById('user-avatar');
-            if(user && user.photo) { avatar.innerHTML = `<img src="${user.photo}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`; } 
-            else { avatar.innerHTML = "🎓"; }
-        }
-
-        function calculateLiveCounters() {
-            if(!db || !db.branches) return;
-            let totalBranches = Object.keys(db.branches).length;
-            let totalSubjects = 0; let totalChapters = 0;
-            Object.keys(db.branches).forEach(b => {
-                Object.keys(db.branches[b]).forEach(sem => {
-                    let subs = db.branches[b][sem] || {}; totalSubjects += Object.keys(subs).length;
-                    Object.keys(subs).forEach(sub => { if(subs[sub]) totalChapters += subs[sub].length; });
-                });
+            // Load Firebase Forum Realtime
+            let chatBox = document.getElementById('forum-chat-box');
+            database.ref('forum').limitToLast(50).on('value', snap => {
+                if(!document.getElementById('forum-chat-box')) return; // if modal closed
+                chatBox.innerHTML = '';
+                if(snap.exists()) {
+                    snap.forEach(child => {
+                        let msg = child.val();
+                        let isMine = tempGoogleUser && msg.uid === tempGoogleUser.uid;
+                        let div = document.createElement('div');
+                        div.className = `forum-msg ${isMine ? 'mine' : ''}`;
+                        div.innerHTML = `<strong>${msg.name}</strong>${msg.text}<span class="time">${new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>`;
+                        chatBox.appendChild(div);
+                    });
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                } else {
+                    chatBox.innerHTML = '<div style="text-align:center; color:var(--text-light); font-size:12px; margin-top:20px;">Be the first to start a discussion!</div>';
+                }
             });
-            document.getElementById('stat-branches').innerText = totalBranches;
-            document.getElementById('stat-subjects').innerText = totalSubjects;
-            document.getElementById('stat-chapters').innerText = totalChapters;
         }
 
-        function validateAndNext(current, next) {
-            let isValid = true;
-            let currentInput = document.querySelector(`#q-step-${current} input, #q-step-${current} select`);
-            if (currentInput && !currentInput.value.trim()) isValid = false;
-
-            let errorDiv = document.querySelector(`#q-step-${current} .error-text`);
-            if (!isValid) { if(errorDiv) errorDiv.style.display = 'block'; } 
-            else {
-                if(errorDiv) errorDiv.style.display = 'none';
-                document.getElementById(`q-step-${current}`).classList.add('hidden');
-                document.getElementById(`q-step-${next}`).classList.remove('hidden');
-            }
+        function sendForumMsg() {
+            let input = document.getElementById('forum-input-msg');
+            let text = input.value.trim();
+            if(!text || !tempGoogleUser) return;
+            
+            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then(snap => {
+                let uName = snap.exists() ? snap.val().name : "Student";
+                database.ref('forum').push({
+                    uid: tempGoogleUser.uid,
+                    name: uName,
+                    text: text,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                input.value = "";
+            });
         }
 
-        function populateDropdowns() {
-            let regBranch = document.getElementById('reg-branch-select');
-            if(!regBranch) return;
-            regBranch.innerHTML = '<option value="">-- બ્રાન્ચ પસંદ કરો --</option>';
-            let branchList = (db && db.branches && Object.keys(db.branches).length > 0) ? Object.keys(db.branches) : baseStaticBranches;
-            branchList.forEach(b => { regBranch.innerHTML += `<option value="${b}">${b}</option>`; });
-
-            let regSem = document.getElementById('reg-sem');
-            regSem.innerHTML = '<option value="">-- સેમેસ્ટર પસંદ કરો --</option>';
-            for(let i=1; i<=6; i++) { regSem.innerHTML += `<option value="Sem ${i}">Sem ${i}</option>`; }
-            updateAdminDropdowns();
-        }
-
+        /* --- EXISTING CORE FUNCTIONS (Adapted) --- */
         function triggerWelcomeAnimation(name, userData) {
             document.getElementById('gateway-screen').classList.add('hidden');
             let animScreen = document.getElementById('welcome-animation');
@@ -1199,13 +851,13 @@
             
             document.getElementById('user-profile-name').innerText = user.name;
             document.getElementById('user-profile-enroll').innerText = `Enrollment: ${user.enroll}`;
-            document.getElementById('dash-welcome-title').innerText = `નમસ્તે, ${user.name}! 👋`;
+            document.getElementById('dash-welcome-title').innerText = `Hello, ${user.name}! 👋`;
             document.getElementById('dash-stat-batch').innerHTML = `<b>Batch:</b> ${user.batch}`;
             document.getElementById('dash-stat-college').innerHTML = `<b>College:</b> ${user.college}`;
+            document.getElementById('filter-subheading').innerText = `Branch: ${user.branch} Eng. | Semester: ${user.sem}`;
             
-            document.getElementById('filter-subheading').innerText = `બ્રાન્ચ: ${user.branch} Engineering | સેમેસ્ટર: ${user.sem}`;
             loadUserProfilePhoto(user);
-            renderSubjects();
+            showSection('subjects'); // Default view
         }
 
         function renderSubjects() {
@@ -1213,21 +865,21 @@
             database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
                 let user = snapshot.val();
                 let container = document.getElementById('subjects-container');
-                let chContainer = document.getElementById('chapters-container');
-                let matContainer = document.getElementById('materials-container');
-                let backBtn = document.getElementById('btn-back');
+                container.classList.remove('hidden');
+                document.getElementById('filter-heading').innerText = "Your Subjects"; 
+                container.innerHTML = "";
 
-                container.classList.remove('hidden'); chContainer.classList.add('hidden'); matContainer.classList.add('hidden'); backBtn.classList.add('hidden');
-                document.getElementById('filter-heading').innerText = "તમારા સબ્જેક્ટ્સ"; container.innerHTML = "";
-
-                let branchData = db.branches[user.branch] || {}; let semData = branchData[user.sem] || {}; let subjects = Object.keys(semData);
+                let branchData = (db.branches && db.branches[user.branch]) || {}; 
+                let semData = branchData[user.sem] || {}; 
+                let subjects = Object.keys(semData);
 
                 if(subjects.length === 0) {
-                    container.innerHTML = "<p style='padding:15px; color:var(--text-light);'>તમારી બ્રાન્ચ/સેમેસ્ટરમાં કોઈ સબ્જેક્ટ્સ હજુ અપલોડ થયા નથી.</p>"; return;
+                    container.innerHTML = "<p style='padding:15px; color:var(--text-light);'>No subjects have been uploaded to your branch/semester yet.</p>"; return;
                 }
                 subjects.forEach(sub => {
                     let card = document.createElement('div'); card.className = "box-card"; card.innerHTML = `📘 ${sub}`;
-                    card.onclick = () => renderChapters(user.branch, user.sem, sub); container.appendChild(card);
+                    card.onclick = () => { document.getElementById('search-input').value = ""; renderChapters(user.branch, user.sem, sub); };
+                    container.appendChild(card);
                 });
             });
         }
@@ -1237,11 +889,11 @@
             let container = document.getElementById('subjects-container'); let chContainer = document.getElementById('chapters-container'); let backBtn = document.getElementById('btn-back');
 
             container.classList.add('hidden'); chContainer.classList.remove('hidden'); backBtn.classList.remove('hidden');
-            document.getElementById('filter-heading').innerText = `${subject} ના પ્રકરણો`; chContainer.innerHTML = "";
-            backBtn.onclick = renderSubjects;
+            document.getElementById('filter-heading').innerText = `Chapters of ${subject}`; chContainer.innerHTML = "";
+            backBtn.onclick = () => { document.getElementById('search-input').value = ""; renderSubjects(); };
 
             let chapters = db.branches[branch][sem][subject] || [];
-            if(chapters.length === 0) { chContainer.innerHTML = "<p style='padding:15px; color:var(--text-light);'>કોઈ પ્રકરણ ઉપલબ્ધ નથી.</p>"; return; }
+            if(chapters.length === 0) { chContainer.innerHTML = "<p style='padding:15px; color:var(--text-light);'>No chapters available.</p>"; return; }
             chapters.forEach((ch) => {
                 let card = document.createElement('div'); card.className = "box-card"; card.innerHTML = `📄 ${ch.name}`;
                 card.onclick = () => renderMaterials(ch); chContainer.appendChild(card);
@@ -1251,109 +903,254 @@
         function renderMaterials(chapter) {
             let chContainer = document.getElementById('chapters-container'); let matContainer = document.getElementById('materials-container'); let backBtn = document.getElementById('btn-back');
             chContainer.classList.add('hidden'); matContainer.classList.remove('hidden');
-            document.getElementById('filter-heading').innerText = `${chapter.name} સ્ટડી બોક્સ`; matContainer.innerHTML = "";
-            backBtn.onclick = () => renderChapters(currentOpenBranch, currentOpenSem, currentOpenSubject);
+            document.getElementById('filter-heading').innerText = `${chapter.name} Study Box`; matContainer.innerHTML = "";
+            backBtn.onclick = () => { document.getElementById('search-input').value = ""; renderChapters(currentOpenBranch, currentOpenSem, currentOpenSubject); };
 
             let card = document.createElement('div'); card.className = "box-card"; card.style.width = "100%"; card.style.cursor = "default";
             card.innerHTML = `
-                <span style="font-size:14px; color:var(--text-light); margin-bottom:10px;">અભ્યાસ સોર્સ પસંદ કરો</span>
+                <span style="font-size:14px; color:var(--text-light); margin-bottom:10px;">Select Study Source</span>
                 <div class="material-buttons">
-                    <a href="${chapter.yt}" target="_blank" class="btn-yt">📺 YouTube Video</a>
-                    <a href="${chapter.pdf}" target="_blank" class="btn-pdf">📄 PDF Notes</a>
+                    <a href="${chapter.yt}" target="_blank" class="btn-yt" onclick="trackProgress('video')">📺 YouTube Video</a>
+                    <a href="${chapter.pdf}" target="_blank" class="btn-pdf" onclick="trackProgress('pdf')">📄 PDF Notes</a>
                 </div>
             `;
             matContainer.appendChild(card);
+        }
+
+        // --- PYQ Logic ---
+        function renderPYQSubjects() {
+            if(!tempGoogleUser) return;
+            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
+                let user = snapshot.val();
+                let container = document.getElementById('pyqs-container');
+                container.classList.remove('hidden');
+                document.getElementById('filter-heading').innerText = "Select Subject for PYQs"; 
+                container.innerHTML = "";
+
+                let branchData = (db.pyqs && db.pyqs[user.branch]) || {}; 
+                let semData = branchData[user.sem] || {}; 
+                let subjects = Object.keys(semData);
+
+                if(subjects.length === 0) {
+                    container.innerHTML = "<p style='padding:15px; color:var(--text-light);'>No PYQs uploaded for your branch/semester yet.</p>"; return;
+                }
+                subjects.forEach(sub => {
+                    let card = document.createElement('div'); card.className = "box-card"; card.innerHTML = `📝 ${sub}`;
+                    card.onclick = () => { document.getElementById('search-input').value = ""; renderPYQPapers(user.branch, user.sem, sub); };
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        function renderPYQPapers(branch, sem, subject) {
+            let container = document.getElementById('pyqs-container'); let matContainer = document.getElementById('materials-container'); let backBtn = document.getElementById('btn-back');
+
+            container.classList.add('hidden'); matContainer.classList.remove('hidden'); backBtn.classList.remove('hidden');
+            document.getElementById('filter-heading').innerText = `${subject} - Past Papers`; matContainer.innerHTML = "";
+            backBtn.onclick = () => { document.getElementById('search-input').value = ""; matContainer.classList.add('hidden'); renderPYQSubjects(); backBtn.classList.add('hidden');};
+
+            let papers = db.pyqs[branch][sem][subject] || [];
+            if(papers.length === 0) { matContainer.innerHTML = "<p style='padding:15px; color:var(--text-light);'>No papers available.</p>"; return; }
+            
+            papers.forEach((p) => {
+                let card = document.createElement('div'); card.className = "box-card"; card.style.width = "100%"; card.style.cursor = "default";
+                card.innerHTML = `
+                    <span style="font-size:15px; font-weight:600; color:var(--text-color); margin-bottom:10px;">${p.year}</span>
+                    <div class="material-buttons" style="margin-top: 5px;">
+                        <a href="${p.link}" target="_blank" class="btn-pyq-action" onclick="trackProgress('pyq')">⬇️ Download PDF Paper</a>
+                    </div>
+                `;
+                matContainer.appendChild(card);
+            });
+        }
+
+
+        // Profiles & Settings Modals
+        function openModal(type) {
+            if(!tempGoogleUser) return;
+            toggleSidebar(); // close sidebar when opening a modal
+            let modal = document.getElementById('info-modal');
+            let title = document.getElementById('modal-title');
+            let body = document.getElementById('modal-body-text');
+            let footer = document.getElementById('modal-footer-buttons');
+            footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Close</button>`;
+
+            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
+                let user = snapshot.val();
+                if (type === 'profile-edit' && user) {
+                    title.innerText = "Edit Profile";
+                    let branchOptionsHTML = "";
+                    let uniqueBranches = Object.keys(db.branches).length > 0 ? Object.keys(db.branches) : baseStaticBranches;
+                    uniqueBranches.forEach(b => { branchOptionsHTML += `<option value="${b}" ${user.branch === b ? 'selected' : ''}>${b}</option>`; });
+                    let semOptionsHTML = "";
+                    for(let i=1; i<=6; i++) { semOptionsHTML += `<option value="Sem ${i}" ${user.sem === `Sem ${i}` ? 'selected' : ''}>Sem ${i}</option>`; }
+                    body.innerHTML = `
+                        <div class="modal-form-group"><label>Student Name</label><input type="text" id="edit-name-field" value="${user.name}"></div>
+                        <div class="modal-form-group"><label>Enrollment Number</label><input type="text" id="edit-enroll-field" value="${user.enroll}" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                        <div class="modal-form-group"><label>Your Main Branch</label><select id="edit-branch-field">${branchOptionsHTML}</select></div>
+                        <div class="modal-form-group"><label>Current Semester</label><select id="edit-sem-field">${semOptionsHTML}</select></div>
+                    `;
+                    footer.innerHTML = `<button class="btn-save-modal" onclick="updateProfileData()">Save Changes 💾</button><button class="btn-close-modal" onclick="closeModal()">Cancel</button>`;
+                }
+                else if(type === 'about') { 
+                    title.innerText = "About Portal"; 
+                    body.innerHTML = `<div class="modal-banner"><h3 style="font-size:1.2rem; font-weight:600;">Empowering GTU Diploma Students</h3><p style="font-size:12px; opacity:0.9;">Your ultimate repository for dynamic academic success.</p></div><p style="font-size: 13px; color: var(--text-light); line-height:1.6;">This portal is designed to provide clean, ad-free access to organized GTU syllabus materials. Study hard, study smart!</p>`; 
+                } 
+                modal.classList.add('active');
+            });
+        }
+
+        function updateProfileData() {
+            if(!tempGoogleUser) return;
+            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
+                let user = snapshot.val();
+                let newName = document.getElementById('edit-name-field').value.trim();
+                let newEnroll = document.getElementById('edit-enroll-field').value.trim();
+                if(!newName || !newEnroll) { alert("Details incomplete!"); return; }
+                user.name = newName; user.enroll = newEnroll; user.branch = document.getElementById('edit-branch-field').value; user.sem = document.getElementById('edit-sem-field').value;
+                database.ref('registered_students/' + user.uid).set(user).then(() => {
+                    closeModal(); showHomePage(user);
+                });
+            });
+        }
+
+        function shareApp() {
+            const shareText = "📚 *Boost Your GTU Diploma Prep!* 🎓\nHey! I am using this portal for video lectures, PYQs, and PDF notes—all 100% FREE!\n👉 Join now:\n" + window.location.href;
+            if (navigator.share) { navigator.share({ title: "GTU Portal", text: shareText }).catch(err => console.log('Error sharing')); } 
+            else { alert("Copy this link and share with friends: \n" + window.location.href); }
         }
 
         function toggleSidebar() {
             let sidebar = document.getElementById('sidebar'); let overlay = document.getElementById('sidebar-overlay');
             sidebar.classList.toggle('active'); overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
         }
-
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
-        
-        function logout() {
-            firebase.auth().signOut().then(() => {
-                location.reload();
+        function logout() { firebase.auth().signOut().then(() => location.reload()); }
+        function closeModal() { document.getElementById('info-modal').classList.remove('active'); }
+        function loadUserProfilePhoto(user) {
+            let avatar = document.getElementById('user-avatar');
+            if(user && user.photo) { avatar.innerHTML = `<img src="${user.photo}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`; } 
+            else { avatar.innerHTML = "🎓"; }
+        }
+
+        function calculateLiveCounters() {
+            let totalBranches = db.branches ? Object.keys(db.branches).length : 0;
+            let totalSubjects = 0; let totalChapters = 0;
+            if(db.branches) {
+                Object.keys(db.branches).forEach(b => {
+                    Object.keys(db.branches[b]).forEach(sem => {
+                        let subs = db.branches[b][sem] || {}; totalSubjects += Object.keys(subs).length;
+                        Object.keys(subs).forEach(sub => { if(subs[sub]) totalChapters += subs[sub].length; });
+                    });
+                });
+            }
+            document.getElementById('stat-branches').innerText = totalBranches;
+            document.getElementById('stat-subjects').innerText = totalSubjects;
+            document.getElementById('stat-chapters').innerText = totalChapters;
+            
+            // Count students for admin
+            database.ref('registered_students').once('value').then(snap => {
+                document.getElementById('stat-students').innerText = snap.exists() ? Object.keys(snap.val()).length : 0;
             });
         }
 
-        /* --- SECURE ADMIN ACCESS CONTROLLER (REPLACED HARDCODED PLAIN PASSWORD) --- */
+        function validateAndNext(current, next) {
+            let currentInput = document.querySelector(`#q-step-${current} input, #q-step-${current} select`);
+            let errorDiv = document.querySelector(`#q-step-${current} .error-text`);
+            if (currentInput && !currentInput.value.trim()) { if(errorDiv) errorDiv.style.display = 'block'; } 
+            else {
+                if(errorDiv) errorDiv.style.display = 'none';
+                document.getElementById(`q-step-${current}`).classList.add('hidden');
+                document.getElementById(`q-step-${next}`).classList.remove('hidden');
+            }
+        }
+
+        function populateDropdowns() {
+            let regBranch = document.getElementById('reg-branch-select');
+            if(regBranch) {
+                regBranch.innerHTML = '<option value="">-- Select Branch --</option>';
+                let branchList = (db && db.branches && Object.keys(db.branches).length > 0) ? Object.keys(db.branches) : baseStaticBranches;
+                branchList.forEach(b => { regBranch.innerHTML += `<option value="${b}">${b}</option>`; });
+            }
+            let regSem = document.getElementById('reg-sem');
+            if(regSem) {
+                regSem.innerHTML = '<option value="">-- Select Semester --</option>';
+                for(let i=1; i<=6; i++) { regSem.innerHTML += `<option value="Sem ${i}">Sem ${i}</option>`; }
+            }
+            updateAdminDropdowns();
+        }
+
+        /* --- ADMIN CONSOLE LOGIC --- */
         function openAdminModal() {
             const user = firebase.auth().currentUser;
-            
-            // Checks if the logged-in Google Email matches your strictly authorized admin account desk
             if(user && user.email === "vahorarehan5510@gmail.com") {
                 document.getElementById('home-page').classList.add('hidden');
                 document.getElementById('gateway-screen').classList.add('hidden');
                 document.getElementById('admin-panel').classList.remove('hidden');
                 updateAdminDropdowns();
-            } else { 
-                alert("ભૂલ: તમારી પાસે એડમિન પેનલ ખોલવાની પરમિશન નથી!"); 
-            }
+            } else { alert("Error: Administrator Access Denied."); }
         }
 
         function exitAdmin() { 
             document.getElementById('admin-panel').classList.add('hidden'); 
             if(firebase.auth().currentUser) {
-                database.ref('registered_students/' + firebase.auth().currentUser.uid).once('value').then((snapshot) => {
-                    showHomePage(snapshot.val());
-                });
+                database.ref('registered_students/' + firebase.auth().currentUser.uid).once('value').then((snapshot) => { showHomePage(snapshot.val()); });
             }
         }
         
         function adminNext(curr, next) { document.getElementById(`admin-step-${curr}`).classList.add('hidden'); document.getElementById(`admin-step-${next}`).classList.remove('hidden'); }
 
         function updateAdminDropdowns() {
-            let bSelects = ['adm-sem-branch-select', 'adm-sub-branch-select', 'adm-ch-branch-select', 'adm-mat-branch-select', 'adm-del-branch-select'];
+            let bSelects = ['adm-sem-branch-select', 'adm-sub-branch-select', 'adm-ch-branch-select', 'adm-mat-branch-select', 'adm-del-branch-select', 'adm-pyq-branch-select'];
             let branchList = (db && db.branches && Object.keys(db.branches).length > 0) ? Object.keys(db.branches) : baseStaticBranches;
             bSelects.forEach(id => {
-                let el = document.getElementById(id); if(el) { el.innerHTML = '<option value="">-- બ્રાન્ચ પસંદ કરો --</option>'; branchList.forEach(b => { el.innerHTML += `<option value="${b}">${b}</option>`; }); }
+                let el = document.getElementById(id); if(el) { el.innerHTML = '<option value="">-- Select Branch --</option>'; branchList.forEach(b => { el.innerHTML += `<option value="${b}">${b}</option>`; }); }
             });
         }
 
         function updateAdminSemSelect(bId, sId) {
             let branch = document.getElementById(bId).value; let sSelect = document.getElementById(sId);
-            sSelect.innerHTML = '<option value="">-- સેમેસ્ટર પસંદ કરો --</option>';
+            sSelect.innerHTML = '<option value="">-- Select Semester --</option>';
             if(branch) { for(let i=1; i<=6; i++) { sSelect.innerHTML += `<option value="Sem ${i}">Sem ${i}</option>`; } }
         }
 
         function updateAdminSubSelect(bId, sId, subId) {
             let branch = document.getElementById(bId).value; let sem = document.getElementById(sId).value; let subSelect = document.getElementById(subId);
-            subSelect.innerHTML = '<option value="">-- સબ્જેક્ટ પસંદ કરો --</option>';
-            if(branch && sem && db.branches[branch] && db.branches[branch][sem]) { Object.keys(db.branches[branch][sem]).forEach(sub => { subSelect.innerHTML += `<option value="${sub}">${sub}</option>`; }); }
+            subSelect.innerHTML = '<option value="">-- Select Subject --</option>';
+            // Check if looking at PYQ or normal materials
+            let targetDB = bId.includes('pyq') ? db.pyqs : db.branches;
+            if(branch && sem && targetDB[branch] && targetDB[branch][sem]) { Object.keys(targetDB[branch][sem]).forEach(sub => { subSelect.innerHTML += `<option value="${sub}">${sub}</option>`; }); }
+            // For PYQ, if subject doesn't exist, allow creating by typing? No, better use standard subject creation logic.
+            // Actually, we can fetch subjects from db.branches for PYQ selection so they map properly.
+            if(bId.includes('pyq') && branch && sem && db.branches[branch] && db.branches[branch][sem]) {
+                subSelect.innerHTML = '<option value="">-- Select Subject --</option>';
+                Object.keys(db.branches[branch][sem]).forEach(sub => { subSelect.innerHTML += `<option value="${sub}">${sub}</option>`; });
+            }
         }
 
         function updateAdminChSelect() {
             let branch = document.getElementById('adm-mat-branch-select').value; let sem = document.getElementById('adm-mat-sem-select').value; let sub = document.getElementById('adm-mat-sub-select').value; let chSelect = document.getElementById('adm-mat-ch-select');
-            chSelect.innerHTML = '<option value="">-- ચેપ્ટર પસંદ કરો --</option>';
+            chSelect.innerHTML = '<option value="">-- Select Chapter --</option>';
             if(branch && sem && sub && db.branches[branch][sem][sub]) { db.branches[branch][sem][sub].forEach((ch, idx) => { chSelect.innerHTML += `<option value="${idx}">${ch.name}</option>`; }); }
         }
 
         function addBranch() {
             let name = document.getElementById('adm-branch-name').value.trim();
-            if(name) { if(!db.branches[name]) db.branches[name] = {}; saveDB(); populateDropdowns(); alert(`બ્રાન્ચ "${name}" સેવ થઈ.`); }
+            if(name) { if(!db.branches[name]) db.branches[name] = {}; saveDB(); populateDropdowns(); alert(`Branch "${name}" saved.`); }
             adminNext(2, 3);
         }
         
         function addSemester() { 
-            let branch = document.getElementById('adm-sem-branch-select').value;
-            let sem = document.getElementById('adm-sem-name').value;
-            if(branch && sem) {
-                if(!db.branches[branch]) db.branches[branch] = {};
-                if(!db.branches[branch][sem]) db.branches[branch][sem] = {};
-                saveDB(); alert(`${branch} માં ${sem} કન્ફર્મ થયું.`);
-            }
+            let branch = document.getElementById('adm-sem-branch-select').value; let sem = document.getElementById('adm-sem-name').value;
+            if(branch && sem) { if(!db.branches[branch]) db.branches[branch] = {}; if(!db.branches[branch][sem]) db.branches[branch][sem] = {}; saveDB(); alert(`${sem} confirmed in ${branch}.`); }
             adminNext(3, 4); 
         }
 
         function addSubject() {
             let branch = document.getElementById('adm-sub-branch-select').value; let sem = document.getElementById('adm-sub-sem-select').value; let sub = document.getElementById('adm-sub-name').value.trim();
             if(branch && sem && sub) {
-                if(!db.branches[branch]) db.branches[branch] = {};
-                if(!db.branches[branch][sem]) db.branches[branch][sem] = {};
-                if(!db.branches[branch][sem][sub]) db.branches[branch][sem][sub] = []; 
-                saveDB(); alert(`સબ્જેક્ટ "${sub}" સેવ થયો.`);
+                if(!db.branches[branch]) db.branches[branch] = {}; if(!db.branches[branch][sem]) db.branches[branch][sem] = {};
+                if(!db.branches[branch][sem][sub]) db.branches[branch][sem][sub] = []; saveDB(); alert(`Subject "${sub}" saved.`);
             }
             adminNext(4, 5);
         }
@@ -1361,9 +1158,7 @@
         function addChapter() {
             let branch = document.getElementById('adm-ch-branch-select').value; let sem = document.getElementById('adm-ch-sem-select').value; let sub = document.getElementById('adm-ch-sub-select').value; let chName = document.getElementById('adm-ch-name').value.trim();
             if(branch && sem && sub && chName) { 
-                if(!db.branches[branch][sem][sub]) db.branches[branch][sem][sub] = []; 
-                db.branches[branch][sem][sub].push({ name: chName, yt: "#", pdf: "#" }); 
-                saveDB(); alert(`પ્રકરણ "${chName}" સેવ થયું.`); 
+                if(!db.branches[branch][sem][sub]) db.branches[branch][sem][sub] = []; db.branches[branch][sem][sub].push({ name: chName, yt: "#", pdf: "#" }); saveDB(); alert(`Chapter "${chName}" saved.`); 
             }
             adminNext(5, 6);
         }
@@ -1372,18 +1167,35 @@
             let branch = document.getElementById('adm-mat-branch-select').value; let sem = document.getElementById('adm-mat-sem-select').value; let sub = document.getElementById('adm-mat-sub-select').value; let chIdx = document.getElementById('adm-mat-ch-select').value; let yt = document.getElementById('adm-mat-yt').value.trim(); let pdf = document.getElementById('adm-mat-pdf').value.trim();
             if(branch && sem && sub && chIdx !== "") { 
                 if(!db.branches[branch][sem][sub][chIdx]) db.branches[branch][sem][sub][chIdx] = {name: "", yt: "#", pdf: "#"};
-                if(yt) db.branches[branch][sem][sub][chIdx].yt = yt; 
-                if(pdf) db.branches[branch][sem][sub][chIdx].pdf = pdf; 
-                saveDB(); alert("લિંક્સ ઓટોમેટીક સેવ થઈ ગઈ!"); 
+                if(yt) db.branches[branch][sem][sub][chIdx].yt = yt; if(pdf) db.branches[branch][sem][sub][chIdx].pdf = pdf; saveDB(); alert("Links saved automatically!"); 
             }
             adminNext(6, 1);
         }
 
-        function openDeleteManager() { adminNext(1, 'delete'); document.getElementById('delete-items-list').innerHTML = "<p style='color:#9ca3af; text-align:center;'>ઉપરથી પસંદગી કરો...</p>"; }
+        function addPYQ() {
+            let branch = document.getElementById('adm-pyq-branch-select').value; let sem = document.getElementById('adm-pyq-sem-select').value; let sub = document.getElementById('adm-pyq-sub-select').value; let year = document.getElementById('adm-pyq-year').value.trim(); let link = document.getElementById('adm-pyq-link').value.trim();
+            if(branch && sem && sub && year && link) {
+                if(!db.pyqs) db.pyqs = {}; if(!db.pyqs[branch]) db.pyqs[branch] = {}; if(!db.pyqs[branch][sem]) db.pyqs[branch][sem] = {}; if(!db.pyqs[branch][sem][sub]) db.pyqs[branch][sem][sub] = [];
+                db.pyqs[branch][sem][sub].push({ year: year, link: link }); saveDB(); alert(`PYQ Paper for ${year} saved.`);
+            }
+            document.getElementById('adm-pyq-year').value = ""; document.getElementById('adm-pyq-link').value = "";
+        }
+
+        function postNotification() {
+            let text = document.getElementById('adm-notif-text').value.trim();
+            if(text) {
+                database.ref('notifications').push({ text: text, time: firebase.database.ServerValue.TIMESTAMP });
+                alert("Announcement pushed globally!");
+                document.getElementById('adm-notif-text').value = "";
+                adminNext('notif', 1);
+            }
+        }
+
+        function openDeleteManager() { adminNext(1, 'delete'); document.getElementById('delete-items-list').innerHTML = "<p style='color:#9ca3af; text-align:center;'>Make a selection from above...</p>"; }
 
         function renderDeleteItems() {
             let branch = document.getElementById('adm-del-branch-select').value; let sem = document.getElementById('adm-del-sem-select').value; let container = document.getElementById('delete-items-list'); container.innerHTML = "";
-            if(!branch || !sem || !db.branches[branch] || !db.branches[branch][sem] || Object.keys(db.branches[branch][sem]).length === 0) { container.innerHTML = "<p style='color:#dc2626; text-align:center;'>ડેટા ઉપલબ્ધ નથી.</p>"; return; }
+            if(!branch || !sem || !db.branches[branch] || !db.branches[branch][sem] || Object.keys(db.branches[branch][sem]).length === 0) { container.innerHTML = "<p style='color:#dc2626; text-align:center;'>Data not available.</p>"; return; }
             let subjects = db.branches[branch][sem];
             Object.keys(subjects).forEach(subName => {
                 let div = document.createElement('div'); div.className = "admin-manage-item"; div.innerHTML = `<div class="admin-manage-header"><span>📘 ${subName}</span><button style="background:none; border:none; color:#dc2626; cursor:pointer; font-size:16px;" onclick="deleteItem('${branch}', '${sem}', '${subName}')">❌</button></div>`;
@@ -1399,14 +1211,52 @@
         }
 
         function deleteItem(branch, sem, subName, chIdx = null) {
-            if (chIdx === null) { if (confirm(`સબ્જેક્ટ ડીલીટ કરવો છે?`)) { delete db.branches[branch][sem][subName]; } } 
-            else { if (confirm(`ચેપ્ટર કાઢી નાખવું છે?`)) { db.branches[branch][sem][subName].splice(chIdx, 1); } }
+            if (chIdx === null) { if (confirm(`Delete subject?`)) { delete db.branches[branch][sem][subName]; } } 
+            else { if (confirm(`Remove chapter?`)) { db.branches[branch][sem][subName].splice(chIdx, 1); } }
             saveDB(); renderDeleteItems();
         }
 
         function editItem(branch, sem, subName, chIdx) {
-            let ch = db.branches[branch][sem][subName][chIdx]; let newName = prompt("નવું ચેપ્ટર નામ:", ch.name); let newYt = prompt("નવી YouTube લિંક:", ch.yt); let newPdf = prompt("નવી PDF લિંક:", ch.pdf);
+            let ch = db.branches[branch][sem][subName][chIdx]; let newName = prompt("New Chapter Name:", ch.name); let newYt = prompt("New YouTube Link:", ch.yt); let newPdf = prompt("New PDF Link:", ch.pdf);
             if (newName) ch.name = newName; if (newYt) ch.yt = newYt; if (newPdf) ch.pdf = newPdf; saveDB(); renderDeleteItems();
+        }
+
+        // --- User Management (Admin) ---
+        function openStudentManager() {
+            adminNext(1, 'students');
+            let listContainer = document.getElementById('admin-student-list');
+            listContainer.innerHTML = "<p style='color:#9ca3af; text-align:center;'>Loading students...</p>";
+            
+            database.ref('registered_students').once('value').then(snap => {
+                listContainer.innerHTML = "";
+                if(snap.exists()) {
+                    let students = snap.val();
+                    Object.keys(students).forEach(uid => {
+                        let s = students[uid];
+                        let div = document.createElement('div');
+                        div.className = "user-list-item";
+                        div.innerHTML = `
+                            <div class="user-list-info">
+                                <div>${s.name} <span style="font-weight:400;">(${s.enroll || 'No Enroll'})</span></div>
+                                <span>${s.branch} | ${s.sem} | ${s.college}</span>
+                            </div>
+                            <button class="btn-admin btn-danger-admin" style="padding: 8px 12px; font-size:12px;" onclick="deleteStudent('${uid}', '${s.name}')">Delete</button>
+                        `;
+                        listContainer.appendChild(div);
+                    });
+                } else {
+                    listContainer.innerHTML = "<p style='color:#dc2626; text-align:center;'>No students registered yet.</p>";
+                }
+            });
+        }
+
+        function deleteStudent(uid, name) {
+            if(confirm(`Are you sure you want to completely delete student: ${name}?`)) {
+                database.ref('registered_students/' + uid).remove().then(() => {
+                    alert(`${name} has been deleted.`);
+                    openStudentManager(); // refresh list
+                });
+            }
         }
     </script>
 </body>
