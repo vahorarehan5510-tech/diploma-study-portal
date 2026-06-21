@@ -222,7 +222,7 @@
         .profile-section { text-align: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 25px; }
         .profile-img-container { position: relative; width: 90px; height: 90px; margin: 0 auto 15px; }
         .profile-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: flex; align-items: center; justify-content: center; font-size: 35px; color: var(--primary-blue); background: #eff6ff; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .sidebar-menu a { display: block; padding: 14px 15px; color: var(--text-color); text-decoration: none; border-radius: 8px; font-size: 15px; font-weight: 500; margin-bottom: 5px; transition: background 0.2s;}
+        .sidebar-menu a { display: block; padding: 14px 15px; color: var(--text-color); text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; margin-bottom: 5px; transition: background 0.2s;}
         .sidebar-menu a:hover { background: #f3f4f6; color: var(--primary-blue); }
         .btn-logout { background: #fee2e2; color: #ef4444; border: none; width: 100%; padding: 14px; margin-top: 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background 0.2s;}
         .btn-logout:hover { background: #fecaca; }
@@ -244,11 +244,11 @@
         /* MODALS */
         .info-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .info-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .info-modal-content { background: var(--card-bg); color: var(--text-color); width: 90%; max-width: 450px; padding: 35px; border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); max-height: 85vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .info-modal-content { background: var(--card-bg); color: var(--text-color); width: 95%; max-width: 500px; padding: 35px; border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); max-height: 85vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .info-modal-overlay.active .info-modal-content { transform: scale(1); }
-        .info-modal-content h2 { margin-bottom: 25px; color: var(--text-color); font-weight: 600; text-align: left; font-size: 1.4rem;}
+        .info-modal-content h2 { margin-bottom: 20px; color: var(--text-color); font-weight: 600; text-align: left; font-size: 1.4rem;}
         
-        .modal-form-group { margin-bottom: 16px; }
+        .modal-form-group { margin-bottom: 16px; text-align: left; }
         .modal-form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 8px; color: var(--text-light); }
         .modal-form-group input, .modal-form-group select { width: 100%; padding: 12px 15px; border: 1.5px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text-color); font-size: 14px; outline: none; }
         .modal-form-group input:focus, .modal-form-group select:focus { border-color: var(--primary-blue); }
@@ -274,6 +274,251 @@
         .admin-manage-item { background: #111827; padding: 15px; border: 1px solid #374151; border-radius: 12px; margin-bottom: 12px; }
         .admin-manage-header { display: flex; justify-content: space-between; align-items: center; }
         .admin-manage-buttons { display: flex; gap: 8px; margin-top: 10px; }
+
+        /* --- MODERN WEB STYLING FOR CUSTOM MODALS --- */
+        .modal-banner {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .modal-banner::after {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 90px;
+            height: 90px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .banner-badge {
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .about-section {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .about-section h4 {
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .about-section p {
+            color: var(--text-light);
+            font-size: 13.5px;
+            line-height: 1.6;
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 480px) {
+            .about-grid { grid-template-columns: 1fr; }
+        }
+        .about-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: left;
+        }
+        .about-card .card-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .about-card h5 {
+            font-size: 14px;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .about-card p {
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+        .highlight-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary-blue);
+            padding: 15px 20px;
+            border-radius: 0 12px 12px 0;
+        }
+        .dark-mode .highlight-box {
+            background: rgba(37, 99, 235, 0.15);
+        }
+        .highlight-box h4 {
+            color: var(--primary-blue);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        .highlight-box p {
+            color: var(--text-color);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Contact Details Design Parameters */
+        .contact-intro {
+            color: var(--text-light);
+            font-size: 13.5px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .contact-methods-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        .contact-method-card {
+            display: block;
+            text-decoration: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border-color);
+            background: var(--bg-color);
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .contact-method-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .method-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .method-icon {
+            font-size: 18px;
+        }
+        .method-title {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        .method-value {
+            display: block;
+            font-size: 15px;
+            color: var(--text-color);
+            font-weight: 600;
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+        .method-action {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .email-card:hover { border-color: #3b82f6; }
+        .email-card .method-action { color: #3b82f6; }
+        .call-card:hover { border-color: #10b981; }
+        .call-card .method-action { color: #10b981; }
+        .whatsapp-card:hover { border-color: #25d366; }
+        .whatsapp-card .method-action { color: #25d366; }
+
+        .contact-form-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 12px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            text-align: left;
+        }
+
+        /* Privacy Policy Parameters */
+        .policy-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .update-tag {
+            background: #fef3c7;
+            color: #d97706;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .dark-mode .update-tag {
+            background: rgba(217, 119, 6, 0.2);
+            color: #fbbf24;
+        }
+        .policy-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .policy-body {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: left;
+        }
+        .policy-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 6px;
+        }
+        .policy-section p {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        .policy-section ul {
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+        .policy-section li {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+        .highlight-policy {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+        }
+        .dark-mode .highlight-policy {
+            background: rgba(245, 158, 11, 0.1);
+        }
+        .highlight-policy h4 {
+            color: #d97706;
+        }
+        .highlight-policy p {
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
@@ -393,9 +638,10 @@
             <div class="sidebar-menu">
                 <a href="#" onclick="openModal('profile-edit')">✏️ પ્રોફાઇલ એડિટ</a>
                 <a href="#" onclick="openModal('saved')">💾 સેવ કરેલું મટીરીયલ</a>
-                <a href="#" onclick="openModal('about')">ℹ️ અબાઉટ અસ</a>
-                <a href="#" onclick="openModal('contact')">📞 કોન્ટેક્ટ અસ</a>
-                <a href="#" onclick="openModal('privacy')">🔒 પ્રાઇવસી પોલીસી</a>
+                <a href="#" onclick="openModal('about')">ℹ️ અબાઉટ અસ (About Us)</a>
+                <a href="#" onclick="openModal('contact')">📞 કોન્ટેક્ટ અસ (Contact Us)</a>
+                <a href="#" onclick="openModal('privacy')">🔒 પ્રાઇવસી પોલીસી (Privacy Policy)</a>
+                <a href="#" onclick="shareApp()">📤 એપ શેર કરો (Share App)</a>
                 <button class="btn-logout" onclick="logout()">Logout / Sign Out</button>
             </div>
         </div>
@@ -654,10 +900,142 @@
                     <button class="btn-close-modal" onclick="closeModal()">કેન્સલ</button>
                 `;
             }
-            else if(type === 'saved') { title.innerText = "સેવ કરેલું મટીરીયલ"; body.innerHTML = "<p>બુકમાર્ક કરેલી ફાઈલો ક્લાઉડ સ્ટોરેજ પર ઓટોમેટીક સેવ થશે!</p>"; } 
-            else if(type === 'about') { title.innerText = "અબાઉટ અસ"; body.innerHTML = "<p>આ ડિપ્લોમા એન્જિનિયરિંગના વિદ્યાર્થીઓ માટેનું ૧૦0% મફત લર્નિંગ પોર્ટલ છે.</p>"; } 
-            else if(type === 'contact') { title.innerText = "કોન્ટેક્ટ અસ"; body.innerHTML = "<p>સંપર્ક ઈમેલ: support@diplomaportal.com</p>"; } 
-            else if(type === 'privacy') { title.innerText = "પ્રાઇવસી પોલીસી"; body.innerHTML = "<p>તમારો ડેટા ઓનલાઈન ક્લાઉડ સર્વર પર સુરક્ષિત સેવ થાય છે.</p>"; }
+            else if(type === 'saved') { 
+                title.innerText = "સેવ કરેલું મટીરીયલ"; 
+                body.innerHTML = "<p style='text-align:left; font-size:14px; color:var(--text-light); line-height:1.5;'>બુકમાર્ક કરેલી ફાઈલો ક્લાઉડ સ્ટોરેજ પર ઓટોમેટીક સેવ થશે!</p>"; 
+            } 
+            else if(type === 'about') { 
+                title.innerText = "About Diploma Study Portal"; 
+                body.innerHTML = `
+                    <div class="modal-about-container">
+                        <div class="modal-banner">
+                            <span class="banner-badge">PORTAL CORE EDITION v2.0</span>
+                            <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:5px;">Empowering GTU Diploma Students</h3>
+                            <p style="font-size:12px; opacity:0.9;">Your ultimate repository for dynamic academic success.</p>
+                        </div>
+                        <div class="about-section">
+                            <h4>🎯 Our Mission</h4>
+                            <p>To break down academic barriers by providing curated, high-quality engineering resources directly aligned with the Gujarat Technological University (GTU) syllabus. We believe access to quality study resources should be seamless, instant, and 100% free for every aspiring engineer.</p>
+                        </div>
+                        <div class="about-grid">
+                            <div class="about-card">
+                                <div class="card-icon">📚</div>
+                                <h5>Curated Materials</h5>
+                                <p>Interactive YouTube lectures and hand-picked PDF materials mapped strictly to your academic semesters.</p>
+                            </div>
+                            <div class="about-card">
+                                <div class="card-icon">☁️</div>
+                                <h5>Cloud Synced</h5>
+                                <p>Syllabus modifications, study packages, and dynamic notifications update live through high-speed cloud databases.</p>
+                            </div>
+                        </div>
+                        <div class="about-section highlight-box">
+                            <h4>💡 Built For Students, By Pioneers</h4>
+                            <p>This study portal removes the hassle of hunting down files. Register once, select your branch, select your semester, and gain instant visual modules. No hidden charges—just plain focus on technical education.</p>
+                        </div>
+                    </div>
+                `; 
+                footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Close Panel</button>`;
+            } 
+            else if(type === 'contact') { 
+                title.innerText = "Get in Touch"; 
+                body.innerHTML = `
+                    <div class="modal-contact-container">
+                        <p class="contact-intro">Have queries, recommendations, or structural doubts about portal contents? Our active support channel is open. Reach out to the core admin desks directly:</p>
+                        
+                        <div class="contact-methods-grid">
+                            <a href="mailto:vahorarehan5510@gmail.com?subject=Diploma%20Study%20Portal%20Inquiry" class="contact-method-card email-card">
+                                <div class="method-header">
+                                    <span class="method-icon">✉️</span>
+                                    <span class="method-title">Official Email Desk</span>
+                                </div>
+                                <span class="method-value">vahorarehan5510@gmail.com</span>
+                                <span class="method-action">Send Email ➡️</span>
+                            </a>
+
+                            <a href="tel:+919016929061" class="contact-method-card call-card">
+                                <div class="method-header">
+                                    <span class="method-icon">📞</span>
+                                    <span class="method-title">Voice Call Helpline</span>
+                                </div>
+                                <span class="method-value">+91 90169 29061</span>
+                                <span class="method-action">Dial Call ➡️</span>
+                            </a>
+
+                            <a href="https://wa.me/919016929061?text=Hi%20Rehan,%20I%20am%20using%20the%20Diploma%20Study%20Portal%20and%20had%20some%20queries." target="_blank" class="contact-method-card whatsapp-card">
+                                <div class="method-header">
+                                    <span class="method-icon">💬</span>
+                                    <span class="method-title">WhatsApp Chat Assistant</span>
+                                </div>
+                                <span class="method-value">+91 90169 29061</span>
+                                <span class="method-action">Message Admin ➡️</span>
+                            </a>
+                        </div>
+
+                        <div class="contact-form-title">⚡ Drop a Quick message Online</div>
+                        <div class="contact-quick-form">
+                            <div class="modal-form-group">
+                                <label>Your Message Subject</label>
+                                <input type="text" id="contact-subject" placeholder="e.g., Syllabus Updates, Material correction">
+                            </div>
+                            <div class="modal-form-group">
+                                <label>Message Details</label>
+                                <textarea id="contact-message" placeholder="Type your detailed queries here..." style="width: 100%; min-height: 85px; padding: 12px 15px; border: 1.5px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text-color); font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--primary-blue)'"></textarea>
+                            </div>
+                            <button class="btn-save-modal" style="width:100%; margin-top:10px; border-radius:10px; float:none;" onclick="submitQuickContact()">Submit Message over Cloud</button>
+                        </div>
+                    </div>
+                `; 
+                footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Close Panel</button>`;
+            } 
+            else if(type === 'privacy') { 
+                title.innerText = "Privacy & Data Protection Policy"; 
+                body.innerHTML = `
+                    <div class="modal-privacy-container">
+                        <div class="policy-header">
+                            <span class="update-tag">Updated: June 2026</span>
+                            <h3>Your Data Security is Our Top Priority</h3>
+                        </div>
+                        
+                        <div class="policy-body">
+                            <div class="policy-section">
+                                <h4>🔍 1. Information We Collect</h4>
+                                <p>To construct a dynamically customized profile matched directly with your engineering branch, we collect specific details during Registration:</p>
+                                <ul>
+                                    <li><strong>Identity Credentials:</strong> Full Name, secure Profile Photo URL, and Email verified through Google SSO authentication.</li>
+                                    <li><strong>Academic Details:</strong> Engineering Branch, Current Semester, Admission Batch, Enrollment Number, and College Name.</li>
+                                </ul>
+                            </div>
+
+                            <div class="policy-section">
+                                <h4>⚙️ 2. How We Use Your Data</h4>
+                                <p>We practice extreme simplicity and data hygiene. Your attributes are strictly utilized to:</p>
+                                <ul>
+                                    <li>Filter and populate the accurate GTU modules matched with your Current Semester.</li>
+                                    <li>Enable direct dashboard modification features manageable directly from your sidebar dashboard.</li>
+                                    <li>Maintain statistical records inside the Administrator Console.</li>
+                                </ul>
+                            </div>
+
+                            <div class="policy-section">
+                                <h4>🔒 3. Cloud Database Standard Security</h4>
+                                <p>All operations are securely handled over standard SSL/TLS 256-bit encryption protocols. Profile statistics and syllabus materials are hosted on high-end Google Firebase systems with secure database authorization filters, preventing external identity sniffing.</p>
+                            </div>
+
+                            <div class="policy-section highlight-policy">
+                                <h4>🚫 4. Strict Zero-Ad and Commercial Policy</h4>
+                                <p>We will never distribute, sell, rent, or lease your academic parameters to third parties. This portal is built purely as a secure, education-first utilities portal without active advertisements.</p>
+                            </div>
+
+                            <div class="policy-section">
+                                <h4>🛠️ 5. User Authority & Deletion Rights</h4>
+                                <p>You have full ownership of your details. You can dynamically modify credentials through the <strong>Profile Edit (પ્રોફાઇલ એડિટ)</strong> console or sign out instantly. For absolute record deletion, contact the admin desk.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">I Understand</button>`;
+            }
             modal.classList.add('active');
         }
 
@@ -677,6 +1055,79 @@
                 localStorage.setItem('current_logged_student', JSON.stringify(user));
                 closeModal(); showHomePage(user);
             });
+        }
+
+        // --- SUBMIT ONLINE MESSAGE HANDLER ---
+        function submitQuickContact() {
+            const user = JSON.parse(localStorage.getItem('current_logged_student'));
+            if(!user) { alert("Please login first to submit a contact inquiry."); return; }
+            
+            const subject = document.getElementById('contact-subject').value.trim();
+            const msg = document.getElementById('contact-message').value.trim();
+            
+            if(!subject || !msg) {
+                alert("Please fill in both the Subject and Message fields.");
+                return;
+            }
+
+            database.ref('registered_students/' + user.uid + '/contact_queries').push({
+                subject: subject,
+                message: msg,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                const container = document.querySelector('.modal-contact-container');
+                container.innerHTML = `
+                    <div style="text-align:center; padding: 30px 10px;">
+                        <div style="font-size: 50px; margin-bottom: 15px; color: #10b981;">✅</div>
+                        <h4 style="font-size: 1.1rem; color: var(--text-color); margin-bottom: 10px;">Message Delivered!</h4>
+                        <p style="font-size: 13.5px; color: var(--text-light); line-height: 1.5;">Thank you, ${user.name}! Your query regarding "<strong>${subject}</strong>" has been logged dynamically into our cloud database. Admin Rehan will get back to you shortly.</p>
+                    </div>
+                `;
+            }).catch(err => {
+                console.error("Message Submit Error:", err);
+                alert("Failed to deliver your message. Kindly send direct call or WhatsApp inquiry.");
+            });
+        }
+
+        // --- DYNAMIC SHARE APP HANDLER ---
+        function shareApp() {
+            const shareTitle = "🎓 GTU Diploma Study Portal";
+            const shareText = "📚 *Boost Your GTU Diploma Engineering Prep!* 🎓\n\nHey! I am using this amazing study portal to access structured video lectures, dynamic GTU previous papers, and sorted PDF notes—all 100% FREE! It updates dynamically through cloud.\n\n👉 Join now and excel in your exams:\n";
+            const shareUrl = window.location.href;
+            const fullShareMessage = `${shareText}${shareUrl}\n\n🚀 Let's study smart together!`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: shareTitle,
+                    text: fullShareMessage
+                }).catch(err => console.log('Error sharing:', err));
+            } else {
+                // Fallback copy functionality
+                const dummyTextarea = document.createElement("textarea");
+                document.body.appendChild(dummyTextarea);
+                dummyTextarea.value = fullShareMessage;
+                dummyTextarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(dummyTextarea);
+
+                // Show visual confirmation inside modal
+                let modal = document.getElementById('info-modal');
+                let title = document.getElementById('modal-title');
+                let body = document.getElementById('modal-body-text');
+                let footer = document.getElementById('modal-footer-buttons');
+
+                title.innerHTML = "📤 App Shared Successfully!";
+                body.innerHTML = `
+                    <div style="text-align:center; padding: 15px 0;">
+                        <div style="font-size: 50px; margin-bottom: 15px;">🎉</div>
+                        <h4 style="font-size:1.1rem; margin-bottom:10px; color: var(--primary-blue);">Sharing Message Copied!</h4>
+                        <p style="font-size:13.5px; color:var(--text-light); margin-bottom:15px; line-height:1.5;">An elegant sharing invite has been copied to your clipboard. Send it to WhatsApp, Telegram, or any study circles directly!</p>
+                        <textarea readonly style="width:100%; height:110px; padding:10px; border-radius:8px; border:1.5px solid var(--border-color); font-size:11px; color:var(--text-light); background:#f9fafb; resize:none;">${fullShareMessage}</textarea>
+                    </div>
+                `;
+                footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Superb!</button>`;
+                modal.classList.add('active');
+            }
         }
 
         function closeModal() { document.getElementById('info-modal').classList.remove('active'); }
