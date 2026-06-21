@@ -582,7 +582,7 @@
 
             <div id="q-step-4" class="wizard-step hidden">
                 <h3>એનરોલમેન્ટ નંબર લખો (Enrollment No)</h3>
-                <input type="text" id="reg-enroll" placeholder="ફક્ત ૧૨ આંકડાના નંબર્સ જ ટાઈપ થશે" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <input type="text" id="reg-enroll" placeholder="Zmre 12 BpZpZm Bbso h tyAp bso" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 <div class="error-text" id="err-enroll">કૃપા કરીને આ વિગત ભરો</div>
                 <button class="btn-next" onclick="validateAndNext(4, 5)">Next Step</button>
             </div>
@@ -800,31 +800,34 @@
         let tempGoogleUser = null; 
 
         window.onload = function() {
-            
-            // --- FIREBASE LOGIN LISTENER (PERFECT FOR REDIRECT) ---
+            // --- FIREBASE LIVE AUTH STATE LISTENER (REPLACED LOCALSTORAGE MIXUPS) ---
             firebase.auth().onAuthStateChanged((user) => {
                 if (user) {
                     tempGoogleUser = user;
                     
-                    // ચેક કરો કે યુઝરે ૫ પ્રશ્નોના જવાબ આપ્યા છે કે નહિ
                     database.ref('registered_students/' + user.uid).once('value').then((snapshot) => {
                         if(snapshot.exists()) {
-                            // જૂનો વિદ્યાર્થી -> સીધું ડેશબોર્ડ બતાવો
                             let studentData = snapshot.val();
-                            localStorage.setItem('current_logged_student', JSON.stringify(studentData));
                             triggerWelcomeAnimation(studentData.name, studentData);
                         } else {
-                            // નવો વિદ્યાર્થી -> ૫ પ્રશ્નોનું ફોર્મ બતાવો
                             document.getElementById('login-form').classList.add('hidden');
+                            document.getElementById('home-page').classList.add('hidden');
+                            document.getElementById('admin-panel').classList.add('hidden');
                             document.getElementById('wizard-form').classList.remove('hidden');
                         }
                     }).catch((error) => {
                         console.error("Database Error:", error);
                         alert("Error: Database Rules must be true");
                     });
+                } else {
+                    tempGoogleUser = null;
+                    document.getElementById('home-page').classList.add('hidden');
+                    document.getElementById('wizard-form').classList.add('hidden');
+                    document.getElementById('admin-panel').classList.add('hidden');
+                    document.getElementById('login-form').classList.remove('hidden');
+                    document.getElementById('gateway-screen').classList.remove('hidden');
                 }
             });
-            // --------------------------------------------------------
 
             database.ref('portal_db').on('value', (snapshot) => {
                 if(snapshot.exists()) {
@@ -834,19 +837,12 @@
                 }
                 populateDropdowns();
                 calculateLiveCounters();
-                checkSession();
             });
             populateDropdowns();
         };
 
         function saveDB() { database.ref('portal_db').set(db); }
 
-        function checkSession() {
-            let user = JSON.parse(localStorage.getItem('current_logged_student'));
-            if(user && user.uid) { showHomePage(user); }
-        }
-
-        // REDIRECT GOOGLE LOGIN
         function processGoogleLogin() {
             firebase.auth().signInWithPopup(googleProvider).catch((error) => {
                 console.error("Popup failed, trying redirect...", error);
@@ -854,8 +850,8 @@
             });
         }
 
-        // 5 QUESTIONS SAVE LOGIC
         function saveRegistration() {
+            if(!tempGoogleUser) return;
             let user = {
                 uid: tempGoogleUser.uid,
                 email: tempGoogleUser.email,
@@ -870,203 +866,207 @@
             };
 
             database.ref('registered_students/' + user.uid).set(user).then(() => {
-                localStorage.setItem('current_logged_student', JSON.stringify(user));
                 triggerWelcomeAnimation(user.name, user);
             });
         }
 
         function openModal(type) {
+            if(!tempGoogleUser) return;
             let modal = document.getElementById('info-modal');
             let title = document.getElementById('modal-title');
             let body = document.getElementById('modal-body-text');
             let footer = document.getElementById('modal-footer-buttons');
-            let user = JSON.parse(localStorage.getItem('current_logged_student'));
 
             footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">બંધ કરો</button>`;
 
-            if (type === 'profile-edit' && user) {
-                title.innerText = "પ્રોફાઇલ એડિટ કરો";
+            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
+                let user = snapshot.val();
                 
-                let branchOptionsHTML = "";
-                let uniqueBranches = Object.keys(db.branches).length > 0 ? Object.keys(db.branches) : baseStaticBranches;
-                uniqueBranches.forEach(b => { branchOptionsHTML += `<option value="${b}" ${user.branch === b ? 'selected' : ''}>${b}</option>`; });
+                if (type === 'profile-edit' && user) {
+                    title.innerText = "પ્રોફાઇલ એડિટ કરો";
+                    
+                    let branchOptionsHTML = "";
+                    let uniqueBranches = Object.keys(db.branches).length > 0 ? Object.keys(db.branches) : baseStaticBranches;
+                    uniqueBranches.forEach(b => { branchOptionsHTML += `<option value="${b}" ${user.branch === b ? 'selected' : ''}>${b}</option>`; });
 
-                let semOptionsHTML = "";
-                for(let i=1; i<=6; i++) { semOptionsHTML += `<option value="Sem ${i}" ${user.sem === `Sem ${i}` ? 'selected' : ''}>Sem ${i}</option>`; }
+                    let semOptionsHTML = "";
+                    for(let i=1; i<=6; i++) { semOptionsHTML += `<option value="Sem ${i}" ${user.sem === `Sem ${i}` ? 'selected' : ''}>Sem ${i}</option>`; }
 
-                body.innerHTML = `
-                    <div class="modal-form-group"><label>વિદ્યાર્થીનું નામ</label><input type="text" id="edit-name-field" value="${user.name}"></div>
-                    <div class="modal-form-group"><label>એનરોલમેન્ટ નંબર</label><input type="text" id="edit-enroll-field" value="${user.enroll}" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-                    <div class="modal-form-group"><label>તમારી મુખ્ય બ્રાન્ચ (Branch)</label><select id="edit-branch-field">${branchOptionsHTML}</select></div>
-                    <div class="modal-form-group"><label>હાલનું સેમેસ્ટર (Semester)</label><select id="edit-sem-field">${semOptionsHTML}</select></div>
-                `;
-                
-                footer.innerHTML = `
-                    <button class="btn-save-modal" onclick="updateProfileData()">સેવ ચેન્જીસ 💾</button>
-                    <button class="btn-close-modal" onclick="closeModal()">કેન્સલ</button>
-                `;
-            }
-            else if(type === 'saved') { 
-                title.innerText = "સેવ કરેલું મટીરીયલ"; 
-                body.innerHTML = "<p style='text-align:left; font-size:14px; color:var(--text-light); line-height:1.5;'>બુકમાર્ક કરેલી ફાઈલો ક્લાઉડ સ્ટોરેજ પર ઓટોમેટીક સેવ થશે!</p>"; 
-            } 
-            else if(type === 'about') { 
-                title.innerText = "About Diploma Study Portal"; 
-                body.innerHTML = `
-                    <div class="modal-about-container">
-                        <div class="modal-banner">
-                            <span class="banner-badge">PORTAL CORE EDITION v2.0</span>
-                            <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:5px;">Empowering GTU Diploma Students</h3>
-                            <p style="font-size:12px; opacity:0.9;">Your ultimate repository for dynamic academic success.</p>
-                        </div>
-                        <div class="about-section">
-                            <h4>🎯 Our Mission</h4>
-                            <p>To break down academic barriers by providing curated, high-quality engineering resources directly aligned with the Gujarat Technological University (GTU) syllabus. We believe access to quality study resources should be seamless, instant, and 100% free for every aspiring engineer.</p>
-                        </div>
-                        <div class="about-grid">
-                            <div class="about-card">
-                                <div class="card-icon">📚</div>
-                                <h5>Curated Materials</h5>
-                                <p>Interactive YouTube lectures and hand-picked PDF materials mapped strictly to your academic semesters.</p>
+                    body.innerHTML = `
+                        <div class="modal-form-group"><label>વિદ્યાર્થીનું નામ</label><input type="text" id="edit-name-field" value="${user.name}"></div>
+                        <div class="modal-form-group"><label>એનરોલમેન્ટ નંબર</label><input type="text" id="edit-enroll-field" value="${user.enroll}" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                        <div class="modal-form-group"><label>તમારી મુખ્ય બ્રાન્ચ (Branch)</label><select id="edit-branch-field">${branchOptionsHTML}</select></div>
+                        <div class="modal-form-group"><label>હાલનું સેમેસ્ટર (Semester)</label><select id="edit-sem-field">${semOptionsHTML}</select></div>
+                    `;
+                    
+                    footer.innerHTML = `
+                        <button class="btn-save-modal" onclick="updateProfileData()">સેવ ચેન્જીસ 💾</button>
+                        <button class="btn-close-modal" onclick="closeModal()">કેન્સલ</button>
+                    `;
+                }
+                else if(type === 'saved') { 
+                    title.innerText = "સેવ કરેલું મટીરીયલ"; 
+                    body.innerHTML = "<p style='text-align:left; font-size:14px; color:var(--text-light); line-height:1.5;'>બુકમાર્ક કરેલી ફાઈલો ક્લાઉડ સ્ટોરેજ પર ઓટોમેટીક સેવ થશે!</p>"; 
+                } 
+                else if(type === 'about') { 
+                    title.innerText = "About Diploma Study Portal"; 
+                    body.innerHTML = `
+                        <div class="modal-about-container">
+                            <div class="modal-banner">
+                                <span class="banner-badge">PORTAL CORE EDITION v2.0</span>
+                                <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:5px;">Empowering GTU Diploma Students</h3>
+                                <p style="font-size:12px; opacity:0.9;">Your ultimate repository for dynamic academic success.</p>
                             </div>
-                            <div class="about-card">
-                                <div class="card-icon">☁️</div>
-                                <h5>Cloud Synced</h5>
-                                <p>Syllabus modifications, study packages, and dynamic notifications update live through high-speed cloud databases.</p>
+                            <div class="about-section">
+                                <h4>🎯 Our Mission</h4>
+                                <p>To break down academic barriers by providing curated, high-quality engineering resources directly aligned with the Gujarat Technological University (GTU) syllabus. We believe access to quality study resources should be seamless, instant, and 100% free for every aspiring engineer.</p>
                             </div>
-                        </div>
-                        <div class="about-section highlight-box">
-                            <h4>💡 Built For Students, By Pioneers</h4>
-                            <p>This study portal removes the hassle of hunting down files. Register once, select your branch, select your semester, and gain instant visual modules. No hidden charges—just plain focus on technical education.</p>
-                        </div>
-                    </div>
-                `; 
-                footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Close Panel</button>`;
-            } 
-            else if(type === 'contact') { 
-                title.innerText = "Get in Touch"; 
-                body.innerHTML = `
-                    <div class="modal-contact-container">
-                        <p class="contact-intro">Have queries, recommendations, or structural doubts about portal contents? Our active support channel is open. Reach out to the core admin desks directly:</p>
-                        
-                        <div class="contact-methods-grid">
-                            <a href="mailto:vahorarehan5510@gmail.com?subject=Diploma%20Study%20Portal%20Inquiry" class="contact-method-card email-card">
-                                <div class="method-header">
-                                    <span class="method-icon">✉️</span>
-                                    <span class="method-title">Official Email Desk</span>
+                            <div class="about-grid">
+                                <div class="about-card">
+                                    <div class="card-icon">📚</div>
+                                    <h5>Curated Materials</h5>
+                                    <p>Interactive YouTube lectures and hand-picked PDF materials mapped strictly to your academic semesters.</p>
                                 </div>
-                                <span class="method-value">vahorarehan5510@gmail.com</span>
-                                <span class="method-action">Send Email ➡️</span>
-                            </a>
-
-                            <a href="tel:+919016929061" class="contact-method-card call-card">
-                                <div class="method-header">
-                                    <span class="method-icon">📞</span>
-                                    <span class="method-title">Voice Call Helpline</span>
+                                <div class="about-card">
+                                    <div class="card-icon">☁️</div>
+                                    <h5>Cloud Synced</h5>
+                                    <p>Syllabus modifications, study packages, and dynamic notifications update live through high-speed cloud databases.</p>
                                 </div>
-                                <span class="method-value">+91 90169 29061</span>
-                                <span class="method-action">Dial Call ➡️</span>
-                            </a>
+                            </div>
+                            <div class="about-section highlight-box">
+                                <h4>💡 Built For Students, By Pioneers</h4>
+                                <p>This study portal removes the hassle of hunting down files. Register once, select your branch, select your semester, and gain instant visual modules. No hidden charges—just plain focus on technical education.</p>
+                            </div>
+                        </div>
+                    `; 
+                    footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Close Panel</button>`;
+                } 
+                else if(type === 'contact') { 
+                    title.innerText = "Get in Touch"; 
+                    body.innerHTML = `
+                        <div class="modal-contact-container">
+                            <p class="contact-intro">Have queries, recommendations, or structural doubts about portal contents? Our active support channel is open. Reach out to the core admin desks directly:</p>
+                            
+                            <div class="contact-methods-grid">
+                                <a href="mailto:vahorarehan5510@gmail.com?subject=Diploma%20Study%20Portal%20Inquiry" class="contact-method-card email-card">
+                                    <div class="method-header">
+                                        <span class="method-icon">✉️</span>
+                                        <span class="method-title">Official Email Desk</span>
+                                    </div>
+                                    <span class="method-value">vahorarehan5510@gmail.com</span>
+                                    <span class="method-action">Send Email ➡️</span>
+                                </a>
 
-                            <a href="https://wa.me/919016929061?text=Hi%20Rehan,%20I%20am%20using%20the%20Diploma%20Study%20Portal%20and%20had%20some%20queries." target="_blank" class="contact-method-card whatsapp-card">
-                                <div class="method-header">
-                                    <span class="method-icon">💬</span>
-                                    <span class="method-title">WhatsApp Chat Assistant</span>
+                                <a href="tel:+919016929061" class="contact-method-card call-card">
+                                    <div class="method-header">
+                                        <span class="method-icon">📞</span>
+                                        <span class="method-title">Voice Call Helpline</span>
+                                    </div>
+                                    <span class="method-value">+91 90169 29061</span>
+                                    <span class="method-action">Dial Call ➡️</span>
+                                </a>
+
+                                <a href="https://wa.me/919016929061?text=Hi%20Rehan,%20I%20am%20using%20the%20Diploma%20Study%20Portal%20and%20had%20some%20queries." target="_blank" class="contact-method-card whatsapp-card">
+                                    <div class="method-header">
+                                        <span class="method-icon">💬</span>
+                                        <span class="method-title">WhatsApp Chat Assistant</span>
+                                    </div>
+                                    <span class="method-value">+91 90169 29061</span>
+                                    <span class="method-action">Message Admin ➡️</span>
+                                </a>
+                            </div>
+
+                            <div class="contact-form-title">⚡ Drop a Quick message Online</div>
+                            <div class="contact-quick-form">
+                                <div class="modal-form-group">
+                                    <label>Your Message Subject</label>
+                                    <input type="text" id="contact-subject" placeholder="e.g., Syllabus Updates, Material correction">
                                 </div>
-                                <span class="method-value">+91 90169 29061</span>
-                                <span class="method-action">Message Admin ➡️</span>
-                            </a>
-                        </div>
-
-                        <div class="contact-form-title">⚡ Drop a Quick message Online</div>
-                        <div class="contact-quick-form">
-                            <div class="modal-form-group">
-                                <label>Your Message Subject</label>
-                                <input type="text" id="contact-subject" placeholder="e.g., Syllabus Updates, Material correction">
-                            </div>
-                            <div class="modal-form-group">
-                                <label>Message Details</label>
-                                <textarea id="contact-message" placeholder="Type your detailed queries here..." style="width: 100%; min-height: 85px; padding: 12px 15px; border: 1.5px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text-color); font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--primary-blue)'"></textarea>
-                            </div>
-                            <button class="btn-save-modal" style="width:100%; margin-top:10px; border-radius:10px; float:none;" onclick="submitQuickContact()">Submit Message over Cloud</button>
-                        </div>
-                    </div>
-                `; 
-                footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Close Panel</button>`;
-            } 
-            else if(type === 'privacy') { 
-                title.innerText = "Privacy & Data Protection Policy"; 
-                body.innerHTML = `
-                    <div class="modal-privacy-container">
-                        <div class="policy-header">
-                            <span class="update-tag">Updated: June 2026</span>
-                            <h3>Your Data Security is Our Top Priority</h3>
-                        </div>
-                        
-                        <div class="policy-body">
-                            <div class="policy-section">
-                                <h4>🔍 1. Information We Collect</h4>
-                                <p>To construct a dynamically customized profile matched directly with your engineering branch, we collect specific details during Registration:</p>
-                                <ul>
-                                    <li><strong>Identity Credentials:</strong> Full Name, secure Profile Photo URL, and Email verified through Google SSO authentication.</li>
-                                    <li><strong>Academic Details:</strong> Engineering Branch, Current Semester, Admission Batch, Enrollment Number, and College Name.</li>
-                                </ul>
-                            </div>
-
-                            <div class="policy-section">
-                                <h4>⚙️ 2. How We Use Your Data</h4>
-                                <p>We practice extreme simplicity and data hygiene. Your attributes are strictly utilized to:</p>
-                                <ul>
-                                    <li>Filter and populate the accurate GTU modules matched with your Current Semester.</li>
-                                    <li>Enable direct dashboard modification features manageable directly from your sidebar dashboard.</li>
-                                    <li>Maintain statistical records inside the Administrator Console.</li>
-                                </ul>
-                            </div>
-
-                            <div class="policy-section">
-                                <h4>🔒 3. Cloud Database Standard Security</h4>
-                                <p>All operations are securely handled over standard SSL/TLS 256-bit encryption protocols. Profile statistics and syllabus materials are hosted on high-end Google Firebase systems with secure database authorization filters, preventing external identity sniffing.</p>
-                            </div>
-
-                            <div class="policy-section highlight-policy">
-                                <h4>🚫 4. Strict Zero-Ad and Commercial Policy</h4>
-                                <p>We will never distribute, sell, rent, or lease your academic parameters to third parties. This portal is built purely as a secure, education-first utilities portal without active advertisements.</p>
-                            </div>
-
-                            <div class="policy-section">
-                                <h4>🛠️ 5. User Authority & Deletion Rights</h4>
-                                <p>You have full ownership of your details. You can dynamically modify credentials through the <strong>Profile Edit (પ્રોફાઇલ એડિટ)</strong> console or sign out instantly. For absolute record deletion, contact the admin desk.</p>
+                                <div class="modal-form-group">
+                                    <label>Message Details</label>
+                                    <textarea id="contact-message" placeholder="Type your detailed queries here..." style="width: 100%; min-height: 85px; padding: 12px 15px; border: 1.5px solid var(--border-color); border-radius: 10px; background: var(--card-bg); color: var(--text-color); font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--primary-blue)'"></textarea>
+                                </div>
+                                <button class="btn-save-modal" style="width:100%; margin-top:10px; border-radius:10px; float:none;" onclick="submitQuickContact()">Submit Message over Cloud</button>
                             </div>
                         </div>
-                    </div>
-                `;
-                footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">I Understand</button>`;
-            }
-            modal.classList.add('active');
-        }
+                    `; 
+                    footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">Close Panel</button>`;
+                } 
+                else if(type === 'privacy') { 
+                    title.innerText = "Privacy & Data Protection Policy"; 
+                    body.innerHTML = `
+                        <div class="modal-privacy-container">
+                            <div class="policy-header">
+                                <span class="update-tag">Updated: June 2026</span>
+                                <h3>Your Data Security is Our Top Priority</h3>
+                            </div>
+                            
+                            <div class="policy-body">
+                                <div class="policy-section">
+                                    <h4>🔍 1. Information We Collect</h4>
+                                    <p>To construct a dynamically customized profile matched directly with your engineering branch, we collect specific details during Registration:</p>
+                                    <ul>
+                                        <li><strong>Identity Credentials:</strong> Full Name, secure Profile Photo URL, and Email verified through Google SSO authentication.</li>
+                                        <li><strong>Academic Details:</strong> Engineering Branch, Current Semester, Admission Batch, Enrollment Number, and College Name.</li>
+                                    </ul>
+                                </div>
 
-        function updateProfileData() {
-            let user = JSON.parse(localStorage.getItem('current_logged_student'));
-            let newName = document.getElementById('edit-name-field').value.trim();
-            let newEnroll = document.getElementById('edit-enroll-field').value.trim();
-            
-            if(!newName || !newEnroll) { alert("વિગત અધૂરી ન રાખી શકાય!"); return; }
+                                <div class="policy-section">
+                                    <h4>⚙️ 2. How We Use Your Data</h4>
+                                    <p>We practice extreme simplicity and data hygiene. Your attributes are strictly utilized to:</p>
+                                    <ul>
+                                        <li>Filter and populate the accurate GTU modules matched with your Current Semester.</li>
+                                        <li>Enable direct dashboard modification features manageable directly from your sidebar dashboard.</li>
+                                        <li>Maintain statistical records inside the Administrator Console.</li>
+                                    </ul>
+                                </div>
 
-            user.name = newName; 
-            user.enroll = newEnroll; 
-            user.branch = document.getElementById('edit-branch-field').value; 
-            user.sem = document.getElementById('edit-sem-field').value;
+                                <div class="policy-section">
+                                    <h4>🔒 3. Cloud Database Standard Security</h4>
+                                    <p>All operations are securely handled over standard SSL/TLS 256-bit encryption protocols. Profile statistics and syllabus materials are hosted on high-end Google Firebase systems with secure database authorization filters, preventing external identity sniffing.</p>
+                                </div>
 
-            database.ref('registered_students/' + user.uid).set(user).then(() => {
-                localStorage.setItem('current_logged_student', JSON.stringify(user));
-                closeModal(); showHomePage(user);
+                                <div class="policy-section highlight-policy">
+                                    <h4>🚫 4. Strict Zero-Ad and Commercial Policy</h4>
+                                    <p>We will never distribute, sell, rent, or lease your academic parameters to third parties. This portal is built purely as a secure, education-first utilities portal without active advertisements.</p>
+                                </div>
+
+                                <div class="policy-section">
+                                    <h4>🛠️ 5. User Authority & Deletion Rights</h4>
+                                    <p>You have full ownership of your details. You can dynamically modify credentials through the <strong>Profile Edit (પ્રોફાઇલ એડિટ)</strong> console or sign out instantly. For absolute record deletion, contact the admin desk.</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    footer.innerHTML = `<button class="btn-close-modal" onclick="closeModal()">I Understand</button>`;
+                }
+                modal.classList.add('active');
             });
         }
 
-        // --- SUBMIT ONLINE MESSAGE HANDLER ---
+        function updateProfileData() {
+            if(!tempGoogleUser) return;
+            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
+                let user = snapshot.val();
+                let newName = document.getElementById('edit-name-field').value.trim();
+                let newEnroll = document.getElementById('edit-enroll-field').value.trim();
+                
+                if(!newName || !newEnroll) { alert("વિગત અધૂરી ન રાખી શકાય!"); return; }
+
+                user.name = newName; 
+                user.enroll = newEnroll; 
+                user.branch = document.getElementById('edit-branch-field').value; 
+                user.sem = document.getElementById('edit-sem-field').value;
+
+                database.ref('registered_students/' + user.uid).set(user).then(() => {
+                    closeModal(); 
+                    showHomePage(user);
+                });
+            });
+        }
+
         function submitQuickContact() {
-            const user = JSON.parse(localStorage.getItem('current_logged_student'));
-            if(!user) { alert("Please login first to submit a contact inquiry."); return; }
+            if(!tempGoogleUser) { alert("Please login first to submit a contact inquiry."); return; }
             
             const subject = document.getElementById('contact-subject').value.trim();
             const msg = document.getElementById('contact-message').value.trim();
@@ -1076,26 +1076,28 @@
                 return;
             }
 
-            database.ref('registered_students/' + user.uid + '/contact_queries').push({
-                subject: subject,
-                message: msg,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            }).then(() => {
-                const container = document.querySelector('.modal-contact-container');
-                container.innerHTML = `
-                    <div style="text-align:center; padding: 30px 10px;">
-                        <div style="font-size: 50px; margin-bottom: 15px; color: #10b981;">✅</div>
-                        <h4 style="font-size: 1.1rem; color: var(--text-color); margin-bottom: 10px;">Message Delivered!</h4>
-                        <p style="font-size: 13.5px; color: var(--text-light); line-height: 1.5;">Thank you, ${user.name}! Your query regarding "<strong>${subject}</strong>" has been logged dynamically into our cloud database. Admin Rehan will get back to you shortly.</p>
-                    </div>
-                `;
-            }).catch(err => {
-                console.error("Message Submit Error:", err);
-                alert("Failed to deliver your message. Kindly send direct call or WhatsApp inquiry.");
+            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
+                let user = snapshot.val();
+                database.ref('registered_students/' + user.uid + '/contact_queries').push({
+                    subject: subject,
+                    message: msg,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                }).then(() => {
+                    const container = document.querySelector('.modal-contact-container');
+                    container.innerHTML = `
+                        <div style="text-align:center; padding: 30px 10px;">
+                            <div style="font-size: 50px; margin-bottom: 15px; color: #10b981;">✅</div>
+                            <h4 style="font-size: 1.1rem; color: var(--text-color); margin-bottom: 10px;">Message Delivered!</h4>
+                            <p style="font-size: 13.5px; color: var(--text-light); line-height: 1.5;">Thank you, ${user.name}! Your query regarding "<strong>${subject}</strong>" has been logged dynamically into our cloud database. Admin Rehan will get back to you shortly.</p>
+                        </div>
+                    `;
+                }).catch(err => {
+                    console.error("Message Submit Error:", err);
+                    alert("Failed to deliver your message. Kindly send direct call or WhatsApp inquiry.");
+                });
             });
         }
 
-        // --- DYNAMIC SHARE APP HANDLER ---
         function shareApp() {
             const shareTitle = "🎓 GTU Diploma Study Portal";
             const shareText = "📚 *Boost Your GTU Diploma Engineering Prep!* 🎓\n\nHey! I am using this amazing study portal to access structured video lectures, dynamic GTU previous papers, and sorted PDF notes—all 100% FREE! It updates dynamically through cloud.\n\n👉 Join now and excel in your exams:\n";
@@ -1108,7 +1110,6 @@
                     text: fullShareMessage
                 }).catch(err => console.log('Error sharing:', err));
             } else {
-                // Fallback copy functionality
                 const dummyTextarea = document.createElement("textarea");
                 document.body.appendChild(dummyTextarea);
                 dummyTextarea.value = fullShareMessage;
@@ -1116,7 +1117,6 @@
                 document.execCommand("copy");
                 document.body.removeChild(dummyTextarea);
 
-                // Show visual confirmation inside modal
                 let modal = document.getElementById('info-modal');
                 let title = document.getElementById('modal-title');
                 let body = document.getElementById('modal-body-text');
@@ -1209,23 +1209,26 @@
         }
 
         function renderSubjects() {
-            let user = JSON.parse(localStorage.getItem('current_logged_student'));
-            let container = document.getElementById('subjects-container');
-            let chContainer = document.getElementById('chapters-container');
-            let matContainer = document.getElementById('materials-container');
-            let backBtn = document.getElementById('btn-back');
+            if(!tempGoogleUser) return;
+            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
+                let user = snapshot.val();
+                let container = document.getElementById('subjects-container');
+                let chContainer = document.getElementById('chapters-container');
+                let matContainer = document.getElementById('materials-container');
+                let backBtn = document.getElementById('btn-back');
 
-            container.classList.remove('hidden'); chContainer.classList.add('hidden'); matContainer.classList.add('hidden'); backBtn.classList.add('hidden');
-            document.getElementById('filter-heading').innerText = "તમારા સબ્જેક્ટ્સ"; container.innerHTML = "";
+                container.classList.remove('hidden'); chContainer.classList.add('hidden'); matContainer.classList.add('hidden'); backBtn.classList.add('hidden');
+                document.getElementById('filter-heading').innerText = "તમારા સબ્જેક્ટ્સ"; container.innerHTML = "";
 
-            let branchData = db.branches[user.branch] || {}; let semData = branchData[user.sem] || {}; let subjects = Object.keys(semData);
+                let branchData = db.branches[user.branch] || {}; let semData = branchData[user.sem] || {}; let subjects = Object.keys(semData);
 
-            if(subjects.length === 0) {
-                container.innerHTML = "<p style='padding:15px; color:var(--text-light);'>તમારી બ્રાન્ચ/સેમેસ્ટરમાં કોઈ સબ્જેક્ટ્સ હજુ અપલોડ થયા નથી.</p>"; return;
-            }
-            subjects.forEach(sub => {
-                let card = document.createElement('div'); card.className = "box-card"; card.innerHTML = `📘 ${sub}`;
-                card.onclick = () => renderChapters(user.branch, user.sem, sub); container.appendChild(card);
+                if(subjects.length === 0) {
+                    container.innerHTML = "<p style='padding:15px; color:var(--text-light);'>તમારી બ્રાન્ચ/સેમેસ્ટરમાં કોઈ સબ્જેક્ટ્સ હજુ અપલોડ થયા નથી.</p>"; return;
+                }
+                subjects.forEach(sub => {
+                    let card = document.createElement('div'); card.className = "box-card"; card.innerHTML = `📘 ${sub}`;
+                    card.onclick = () => renderChapters(user.branch, user.sem, sub); container.appendChild(card);
+                });
             });
         }
 
@@ -1271,23 +1274,34 @@
         
         function logout() {
             firebase.auth().signOut().then(() => {
-                localStorage.removeItem('current_logged_student'); 
                 location.reload();
             });
         }
 
-        /* ADMIN SYSTEMS */
+        /* --- SECURE ADMIN ACCESS CONTROLLER (REPLACED HARDCODED PLAIN PASSWORD) --- */
         function openAdminModal() {
-            let pwd = prompt("એડમિન કંટ્રોલ પ્રો સેન્ટર પાસવર્ડ:");
-            if(pwd === "admin123") {
+            const user = firebase.auth().currentUser;
+            
+            // Checks if the logged-in Google Email matches your strictly authorized admin account desk
+            if(user && user.email === "vahorarehan5510@gmail.com") {
                 document.getElementById('home-page').classList.add('hidden');
                 document.getElementById('gateway-screen').classList.add('hidden');
                 document.getElementById('admin-panel').classList.remove('hidden');
                 updateAdminDropdowns();
-            } else if (pwd !== null) { alert("ખોટો સિક્રેટ પાસવર્ડ!"); }
+            } else { 
+                alert("ભૂલ: તમારી પાસે એડમિન પેનલ ખોલવાની પરમિશન નથી!"); 
+            }
         }
 
-        function exitAdmin() { document.getElementById('admin-panel').classList.add('hidden'); checkSession(); if(!localStorage.getItem('current_logged_student')) { location.reload(); } }
+        function exitAdmin() { 
+            document.getElementById('admin-panel').classList.add('hidden'); 
+            if(firebase.auth().currentUser) {
+                database.ref('registered_students/' + firebase.auth().currentUser.uid).once('value').then((snapshot) => {
+                    showHomePage(snapshot.val());
+                });
+            }
+        }
+        
         function adminNext(curr, next) { document.getElementById(`admin-step-${curr}`).classList.add('hidden'); document.getElementById(`admin-step-${next}`).classList.remove('hidden'); }
 
         function updateAdminDropdowns() {
