@@ -596,7 +596,10 @@
 
         // REDIRECT GOOGLE LOGIN
         function processGoogleLogin() {
-            firebase.auth().signInWithRedirect(googleProvider);
+            firebase.auth().signInWithPopup(googleProvider).catch((error) => {
+                console.error("Popup failed, trying redirect...", error);
+                firebase.auth().signInWithRedirect(googleProvider);
+            });
         }
 
         // 5 QUESTIONS SAVE LOGIC
