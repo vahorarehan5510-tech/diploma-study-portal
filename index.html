@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIPLOMA Study Portal Pro</title>
+    
+    <meta name="description" content="The definitive digital repository for GTU Diploma Engineering students. Access highly curated semester-wise PDF notes, interactive video lectures, and dynamic previous year question papers.">
+    <meta name="keywords" content="Diploma Study Portal, GTU Diploma Engineering, Diploma study material, GTU diploma papers, Rehan Vahora">
+    <meta name="author" content="Rehan Vahora">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="gateway-screen">
+        <div id="login-form" class="login-wrapper">
+            <div class="login-left">
+                <h1>Diploma Study<br>Portal 🎓</h1>
+                <p>Engineering resources, previous papers, and video lectures sorted by your GTU syllabus.</p>
+                <div class="feature-list">
+                    <div>✅ Higher Quality Curated Content</div>
+                    <div>✅ Cloud Based Secure Storage</div>
+                    <div>✅ Smart Subject Filtering</div>
+                    <div>💬 Student Discussion Forum</div>
+                </div>
+            </div>
+            <div class="login-right">
+                <div class="login-right-content">
+                    <h2>Welcome Back</h2>
+                    <p>Sign in to continue your learning journey.</p>
+                    <button class="btn-google-pro" onclick="processGoogleLogin()">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+                        Continue with Google
+                    </button>
+                    <div class="secure-badge">🔒 Secure 256-bit Cloud Connection</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="wizard-form" class="portal-container hidden">
+            <h2>Complete Profile</h2>
+            <div class="sub-title">Fill your academic details</div>
+
+            <div id="q-step-2" class="wizard-step">
+                <h3>Enter College Name</h3>
+                <input type="text" id="reg-college" placeholder="Enter college name here">
+                <div class="error-text" id="err-college">Please fill this detail</div>
+                <button class="btn-next" onclick="validateAndNext(2, 3)">Next Step</button>
+            </div>
+            <div id="q-step-3" class="wizard-step hidden">
+                <h3>Select Birthdate</h3>
+                <input type="date" id="reg-dob">
+                <div class="error-text" id="err-dob">Please fill this detail</div>
+                <button class="btn-next" onclick="validateAndNext(3, 4)">Next Step</button>
+            </div>
+            <div id="q-step-4" class="wizard-step hidden">
+                <h3>Enter Enrollment No</h3>
+                <input type="text" id="reg-enroll" placeholder="e.g. 216090..." oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <div class="error-text" id="err-enroll">Please fill this detail</div>
+                <button class="btn-next" onclick="validateAndNext(4, 5)">Next Step</button>
+            </div>
+            <div id="q-step-5" class="wizard-step hidden">
+                <h3>Admission Year / Batch</h3>
+                <select id="reg-batch">
+                    <option value="">-- Select Year --</option>
+                    <option value="2023">2023</option><option value="2024">2024</option>
+                    <option value="2025">2025</option><option value="2026">2026</option>
+                </select>
+                <div class="error-text" id="err-batch">Please fill this detail</div>
+                <button class="btn-next" onclick="validateAndNext(5, 6)">Next Step</button>
+            </div>
+            <div id="q-step-6" class="wizard-step hidden">
+                <h3>Select Your Branch</h3>
+                <select id="reg-branch-select"></select>
+                <div class="error-text" id="err-branch">Please fill this detail</div>
+                <button class="btn-next" onclick="validateAndNext(6, 8)">Next Step</button>
+            </div>
+            <div id="q-step-8" class="wizard-step hidden">
+                <h3>Select Your Semester</h3>
+                <select id="reg-sem"></select>
+                <div class="error-text" id="err-sem">Please fill this detail</div>
+                <button class="btn-next" onclick="saveRegistration()">Finish & Start Exploring</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="welcome-animation" class="hidden"></div>
+
+    <div id="home-page" class="hidden">
+        <header>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+                <h2 style="font-weight: 600; font-size: 1.2rem;">Study Portal</h2>
+            </div>
+            <div class="header-controls">
+                <button class="dark-mode-btn" onclick="toggleDarkMode()">🌓 Dark</button>
+                
+                <div class="notif-wrapper" onclick="toggleNotifs(event)">
+                    🔔<span id="notif-badge" class="notif-badge hidden">0</span>
+                    <div id="notif-dropdown" class="notif-dropdown" onclick="event.stopPropagation()">
+                        <div class="notif-header">📢 Latest Updates</div>
+                        <div class="notif-list" id="notif-list-container">
+                            <div style="padding: 15px; text-align: center; color: var(--text-light); font-size: 12px;">No new notifications</div>
+                        </div>
+                    </div>
+                </div>
+
+                <span class="admin-link" onclick="openAdminModal()" style="cursor:pointer; font-size: 13px; opacity: 0.8; margin-left: 5px;">Admin</span>
+            </div>
+        </header>
+
+        <div class="notice-board">
+            <marquee id="notice-text">Welcome to the upgraded Diploma Study Portal! Access Materials, PYQs, and connect in the Discussion Forum.</marquee>
+        </div>
+
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <div class="sidebar" id="sidebar">
+            <div class="profile-section">
+                <div class="profile-img-container">
+                    <div id="user-avatar" class="profile-img">🎓</div>
+                </div>
+                <h3 id="user-profile-name" style="font-size: 1.1rem; font-weight: 600; color: var(--text-color);">Student Name</h3>
+                <p id="user-profile-enroll" style="font-size: 13px; color: var(--text-light); margin-top: 3px;">Enrollment No</p>
+            </div>
+            <div class="sidebar-menu">
+                <a href="#" onclick="showSection('subjects')">📚 My Subjects</a>
+                <a href="#" onclick="showSection('pyqs')">📜 Previous Year Papers</a>
+                <a href="#" onclick="openForumModal()">💬 Discussion Forum</a>
+                <div style="height: 1px; background: var(--border-color); margin: 15px 0;"></div>
+                <a href="#" onclick="openModal('profile-edit')">✏️ Edit Profile</a>
+                <a href="#" onclick="openModal('about')">ℹ️ About Us</a>
+                <a href="#" onclick="openModal('contact')">📞 Contact Us</a>
+                <a href="#" onclick="openModal('privacy')">🔒 Privacy Policy</a>
+                <a href="#" onclick="shareApp()">📤 Share App</a>
+                <button class="btn-logout" onclick="logout()">Logout / Sign Out</button>
+            </div>
+        </div>
+
+        <main>
+            <div class="user-dashboard-card">
+                <h3 id="dash-welcome-title">Hello, Dear Student!</h3>
+                <p id="dash-user-info" style="margin-bottom: 12px;">Subjects according to your syllabus are arranged below.</p>
+                <div style="font-size: 13px; display: flex; gap: 15px; flex-wrap: wrap;">
+                    <span id="dash-stat-batch" style="background: var(--bg-color); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border-color);"><b>Batch:</b> -</span>
+                    <span id="dash-stat-college" style="background: var(--bg-color); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border-color);"><b>College:</b> -</span>
+                </div>
+                
+                <div class="progress-section">
+                    <div class="progress-stats">
+                        <span id="prog-videos">📺 Watched: 0</span>
+                        <span id="prog-pdfs">📄 Read: 0</span>
+                        <span id="prog-pyqs">📜 PYQs: 0</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div id="prog-bar-fill" class="progress-bar-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <input type="text" id="search-input" onkeyup="filterCards()" placeholder="🔍 Search subjects, chapters, or papers...">
+            </div>
+
+            <div class="content-box">
+                <h2 id="filter-heading" style="font-weight: 600; margin-bottom: 5px;">Your Subjects</h2>
+                <p id="filter-subheading" style="color: var(--text-light); font-size: 14px; margin-bottom: 15px;"></p>
+                
+                <div id="subjects-container" class="grid-container"></div>
+                <div id="pyqs-container" class="grid-container hidden"></div>
+                
+                <button id="btn-back" class="btn-next hidden" style="width: auto; margin-top: 20px; display: inline-block; padding: 10px 20px; background: var(--text-light); border-radius: 8px;">⬅️ Go Back</button>
+                
+                <div id="chapters-container" class="grid-container hidden"></div>
+                <div id="materials-container" class="grid-container hidden"></div>
+            </div>
+        </main>
+    </div>
+
+    <div id="info-modal" class="info-modal-overlay" onclick="closeModal()">
+        <div class="info-modal-content" onclick="event.stopPropagation()">
+            <h2 id="modal-title">Title</h2>
+            <div id="modal-body-text">Content</div>
+            <div id="modal-footer-buttons" style="margin-top:20px; display: flow-root;">
+                <button class="btn-close-modal" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-panel" class="hidden">
+        <div class="admin-header">
+            <h2 style="font-size: 1.2rem; font-weight: 600;">⚡ ADMIN CONSOLE</h2>
+            <button class="dark-mode-btn" onclick="exitAdmin()">Exit to App</button>
+        </div>
+        <div class="admin-container">
+            <div class="admin-card-glass">
+                <div class="admin-dashboard-stats">
+                    <div class="stat-box">Branches<strong id="stat-branches">0</strong></div>
+                    <div class="stat-box">Subjects<strong id="stat-subjects">0</strong></div>
+                    <div class="stat-box">Students<strong id="stat-students">0</strong></div>
+                </div>
+
+                <div id="admin-step-1" class="admin-step">
+                    <h2>Menu Control Panel</h2>
+                    <div class="admin-btn-grid">
+                        <button class="btn-admin btn-primary-admin" onclick="adminNext(1, 2)">➕ Add Branch</button>
+                        <button class="btn-admin btn-primary-admin" onclick="adminNext(1, 4)">📘 Add Subject</button>
+                        <button class="btn-admin btn-primary-admin" onclick="adminNext(1, 5)">📄 Add Chapter</button>
+                        <button class="btn-admin btn-primary-admin" onclick="adminNext(1, 6)">📁 Upload Links</button>
+                        <button class="btn-admin btn-warning-admin" onclick="adminNext(1, 'notif')">📢 Post Notice</button>
+                        <button class="btn-admin btn-warning-admin" onclick="adminNext(1, 'pyq')">📜 Add PYQs</button>
+                        <button class="btn-admin btn-danger-admin" onclick="openDeleteManager()" style="grid-column: span 2;">🗑️ Modify/Delete DataCenter</button>
+                        <button class="btn-admin btn-secondary-admin" onclick="openStudentManager()" style="grid-column: span 2;">👥 Student Management</button>
+                        <button class="btn-admin btn-warning-admin" onclick="openPaymentManager()" style="grid-column: span 2; background-color: #10b981;">💰 Payment Approvals</button>
+                    </div>
+                </div>
+
+                <div id="admin-step-2" class="admin-step hidden">
+                    <h2>Add New Branch</h2>
+                    <input type="text" id="adm-branch-name" placeholder="Computer, Chemical etc.">
+                    <div class="admin-btn-group">
+                        <button class="btn-admin btn-secondary-admin" onclick="adminNext(2, 1)">Back</button>
+                        <button class="btn-admin btn-primary-admin" onclick="addBranch()">Save</button>
+                    </div>
+                </div>
+
+                <div id="admin-step-4" class="admin-step hidden">
+                    <h2>Add New Subject</h2>
+                    <select id="adm-sub-branch-select" onchange="updateAdminSemSelect('adm-sub-branch-select', 'adm-sub-sem-select')"><option value="">-- Select Branch --</option></select>
+                    <select id="adm-sub-sem-select"><option value="">-- Select Semester --</option></select>
+                    <input type="text" id="adm-sub-name" placeholder="e.g. Data Structure">
+                    <input type="number" id="adm-sub-price" placeholder="Price (0 for Free, 99 for Premium)" value="0">
+                    <div class="admin-btn-group">
+                        <button class="btn-admin btn-secondary-admin" onclick="adminNext(4, 1)">Back</button>
+                        <button class="btn-admin btn-primary-admin" onclick="addSubject()">Save Subject</button>
+                    </div>
+                </div>
+
+                <div id="admin-step-5" class="admin-step hidden">
+                    <h2>Add New Chapter</h2>
+                    <select id="adm-ch-branch-select" onchange="updateAdminSemSelect('adm-ch-branch-select', 'adm-ch-sem-select')"><option value="">-- Select Branch --</option></select>
+                    <select id="adm-ch-sem-select" onchange="updateAdminSubSelect('adm-ch-branch-select', 'adm-ch-sem-select', 'adm-ch-sub-select')"><option value="">-- Select Semester --</option></select>
+                    <select id="adm-ch-sub-select"><option value="">-- Select Subject --</option></select>
+                    <input type="text" id="adm-ch-name" placeholder="e.g. Chapter 1: Introduction">
+                    <div class="admin-btn-group">
+                        <button class="btn-admin btn-secondary-admin" onclick="adminNext(5, 1)">Back</button>
+                        <button class="btn-admin btn-primary-admin" onclick="addChapter()">Save Chapter</button>
+                    </div>
+                </div>
+
+                <div id="admin-step-6" class="admin-step hidden">
+                    <h2>Upload Material Link</h2>
+                    <select id="adm-mat-branch-select" onchange="updateAdminSemSelect('adm-mat-branch-select', 'adm-mat-sem-select')"><option value="">-- Select Branch --</option></select>
+                    <select id="adm-mat-sem-select" onchange="updateAdminSubSelect('adm-mat-branch-select', 'adm-mat-sem-select', 'adm-mat-sub-select')"><option value="">-- Select Semester --</option></select>
+                    <select id="adm-mat-sub-select" onchange="updateAdminChSelect()"><option value="">-- Select Subject --</option></select>
+                    <select id="adm-mat-ch-select"><option value="">-- Select Chapter --</option></select>
+                    <input type="url" id="adm-mat-yt" placeholder="YouTube Video Link">
+                    <input type="url" id="adm-mat-pdf" placeholder="Google Drive PDF Link">
+                    <div class="admin-btn-group">
+                        <button class="btn-admin btn-secondary-admin" onclick="adminNext(6, 1)">Back</button>
+                        <button class="btn-admin btn-primary-admin" onclick="addMaterial()">Upload Links</button>
+                    </div>
+                </div>
+
+                <div id="admin-step-pyq" class="admin-step hidden">
+                    <h2>📜 Upload Previous Year Paper</h2>
+                    <select id="adm-pyq-branch-select" onchange="updateAdminSemSelect('adm-pyq-branch-select', 'adm-pyq-sem-select')"><option value="">-- Select Branch --</option></select>
+                    <select id="adm-pyq-sem-select" onchange="updateAdminSubSelect('adm-pyq-branch-select', 'adm-pyq-sem-select', 'adm-pyq-sub-select')"><option value="">-- Select Semester --</option></select>
+                    <select id="adm-pyq-sub-select"><option value="">-- Select Subject --</option></select>
+                    <input type="text" id="adm-pyq-year" placeholder="e.g. Winter 2023, Summer 2022">
+                    <input type="url" id="adm-pyq-link" placeholder="Google Drive PDF Link for Paper">
+                    <div class="admin-btn-group">
+                        <button class="btn-admin btn-secondary-admin" onclick="adminNext('pyq', 1)">Back</button>
+                        <button class="btn-admin btn-primary-admin" onclick="addPYQ()">Upload Paper</button>
+                    </div>
+                </div>
+
+                <div id="admin-step-notif" class="admin-step hidden">
+                    <h2>📢 Push Global Notification</h2>
+                    <textarea id="adm-notif-text" placeholder="Type announcement for all students..." style="height:100px; resize:none;"></textarea>
+                    <div class="admin-btn-group">
+                        <button class="btn-admin btn-secondary-admin" onclick="adminNext('notif', 1)">Back</button>
+                        <button class="btn-admin btn-primary-admin" onclick="postNotification()">Push to Portal</button>
+                    </div>
+                </div>
+
+                <div id="admin-step-delete" class="admin-step hidden">
+                    <h2>🗑️ Data Management Center</h2>
+                    <select id="adm-del-branch-select" onchange="updateAdminSemSelect('adm-del-branch-select', 'adm-del-sem-select')"><option value="">-- Select Branch --</option></select>
+                    <select id="adm-del-sem-select" onchange="renderDeleteItems()"><option value="">-- Select Semester --</option></select>
+                    <div id="delete-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; padding-right:5px;"></div>
+                    <button class="btn-admin btn-secondary-admin" style="width:100%;" onclick="adminNext('delete', 1)">Main Menu</button>
+                </div>
+
+                <div id="admin-step-students" class="admin-step hidden">
+                    <h2>👥 Registered Students</h2>
+                    <div id="admin-student-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 15px; padding-right:5px;"></div>
+                    <button class="btn-admin btn-secondary-admin" style="width:100%;" onclick="adminNext('students', 1)">Main Menu</button>
+                </div>
+
+                <div id="admin-step-payments" class="admin-step hidden">
+                    <h2>💰 Pending UTR Approvals Center</h2>
+                    <div id="admin-payment-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 15px; padding-right:5px;"></div>
+                    <button class="btn-admin btn-secondary-admin" style="width:100%;" onclick="adminNext('payments', 1)">Main Menu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
