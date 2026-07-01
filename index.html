@@ -62,7 +62,7 @@
             <div id="q-step-4" class="wizard-step hidden">
                 <h3>Enter Enrollment No</h3>
                 <input type="text" id="reg-enroll" placeholder="e.g. 216090..." oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                <div class="error-text" id="err-enroll">Please fill this detail</div>
+                <div class="error-text" id="err-enroll">કૃપા કરીને સાચો Enrollment નંબર (ફક્ત આંકડા) લખો.</div>
                 <button class="btn-next" onclick="validateAndNext(4, 5)">Next Step</button>
             </div>
             <div id="q-step-5" class="wizard-step hidden">
@@ -138,6 +138,7 @@
                 <a href="#" onclick="openModal('contact')">📞 Contact Us</a>
                 <a href="#" onclick="openModal('privacy')">🔒 Privacy Policy</a>
                 <a href="#" onclick="shareApp()">📤 Share App</a>
+                <a href="#" onclick="deleteOwnAccount()" style="color: #ef4444; font-size: 13px; opacity: 0.9;">⚠️ Delete My Account</a>
                 <button class="btn-logout" onclick="logout()">Logout / Sign Out</button>
             </div>
         </div>
