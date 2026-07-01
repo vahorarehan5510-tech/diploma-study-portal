@@ -264,11 +264,20 @@ function showHomePage(user) {
 
 function renderSubjects() {
     if(!tempGoogleUser) return;
+    
+    let container = document.getElementById('subjects-container');
+    container.classList.remove('hidden');
+    document.getElementById('filter-heading').innerText = "Your Subjects"; 
+    
+    // UI/UX Shimmer Loader (Pulse effect)
+    container.innerHTML = `
+        <div class="box-card loading-skeleton"></div>
+        <div class="box-card loading-skeleton"></div>
+        <div class="box-card loading-skeleton"></div>
+    `;
+
     database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
         let user = snapshot.val();
-        let container = document.getElementById('subjects-container');
-        container.classList.remove('hidden');
-        document.getElementById('filter-heading').innerText = "Your Subjects"; 
         container.innerHTML = "";
 
         let branchData = (db.branches && db.branches[user.branch]) || {}; 
@@ -301,6 +310,8 @@ function renderSubjects() {
             };
             container.appendChild(card);
         });
+    }).catch(() => {
+        container.innerHTML = "<p style='padding:15px; color:#ef4444;'>ડેટા લોડ કરવામાં ભૂલ થઈ. ફરી પ્રયાસ કરો.</p>";
     });
 }
 
@@ -344,6 +355,16 @@ function openPaymentModal(user, branch, sem, subject, price) {
         <button class="btn-close-modal" onclick="closeModal()">કેન્સલ (Cancel)</button>
     `;
     modal.classList.add('active');
+    
+    // Auto border validation glow logic
+    setTimeout(() => {
+        const utrInput = document.getElementById('pay-utr-input');
+        if(utrInput) {
+            utrInput.addEventListener('keyup', () => {
+                utrInput.style.borderColor = (utrInput.value.length === 12) ? "#10b981" : "var(--border-color)";
+            });
+        }
+    }, 200);
 }
 
 function submitPaymentDetails(uid, subject, price) {
@@ -507,6 +528,23 @@ function updateProfileData() {
     });
 }
 
+// Play Store Mandatory Account Deletion Feature
+function deleteOwnAccount() {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+
+    if (confirm("શું તમે તમારું એકાઉન્ટ અને બધો જ પ્રોગ્રેસ ડેટા કાયમ માટે ડિલીટ કરવા માંગો છો? આ પ્રોસેસ પાછી નહીં થાય.")) {
+        database.ref('registered_students/' + user.uid).remove().then(() => {
+            user.delete().then(() => {
+                alert("તમારું એકાઉન્ટ સક્સેસફુલી ડિલીટ થઈ ગયું છે.");
+                location.reload();
+            }).catch(() => {
+                alert("સિક્યોરિટી પ્રોટેક્શનના કારણે પ્લીઝ એકવાર લોગઆઉટ કરીને ફરી લોગીન કરો, પછી એકાઉન્ટ ડિલીટ કરો.");
+            });
+        });
+    }
+}
+
 function shareApp() {
     const shareText = "📚 Boost Your GTU Diploma Prep! 🎓\n👉 Join now:\n" + window.location.href;
     if (navigator.share) { navigator.share({ title: "GTU Portal", text: shareText }).catch(err => console.log('Error sharing')); } 
@@ -573,10 +611,17 @@ function populateDropdowns() {
 function openAdminModal() {
     const user = firebase.auth().currentUser;
     if(user && user.email === "vahorarehan5510@gmail.com") {
-        document.getElementById('home-page').classList.add('hidden');
-        document.getElementById('gateway-screen').classList.add('hidden');
-        document.getElementById('admin-panel').classList.remove('hidden');
-        updateAdminDropdowns();
+        // Secure database check override protection
+        database.ref('portal_db').once('value')
+        .then(() => {
+            document.getElementById('home-page').classList.add('hidden');
+            document.getElementById('gateway-screen').classList.add('hidden');
+            document.getElementById('admin-panel').classList.remove('hidden');
+            updateAdminDropdowns();
+        })
+        .catch(() => {
+            alert("Security Error: Client side database verification rule failed.");
+        });
     } else { alert("Error: Administrator Access Denied."); }
 }
 
