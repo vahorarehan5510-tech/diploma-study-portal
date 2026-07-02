@@ -17,7 +17,6 @@ let db = { branches: {}, pyqs: {} };
 let currentOpenBranch, currentOpenSem, currentOpenSubject;
 let tempGoogleUser = null; 
 let currentActiveSection = 'subjects'; 
-
 const MY_UPI_ID = "9016929061@fam"; 
 
 window.onclick = function(event) {
@@ -42,7 +41,6 @@ window.onload = function() {
                 } else {
                     document.getElementById('login-form').classList.add('hidden');
                     document.getElementById('home-page').classList.add('hidden');
-                    document.getElementById('admin-panel').classList.add('hidden');
                     document.getElementById('wizard-form').classList.remove('hidden');
                 }
             });
@@ -50,7 +48,6 @@ window.onload = function() {
             tempGoogleUser = null;
             document.getElementById('home-page').classList.add('hidden');
             document.getElementById('wizard-form').classList.add('hidden');
-            document.getElementById('admin-panel').classList.add('hidden');
             document.getElementById('login-form').classList.remove('hidden');
             document.getElementById('gateway-screen').classList.remove('hidden');
         }
@@ -68,8 +65,6 @@ window.onload = function() {
     });
     populateDropdowns();
 };
-
-function saveDB() { database.ref('portal_db').set(db); }
 
 function processGoogleLogin() {
     firebase.auth().signInWithPopup(googleProvider).catch((error) => {
@@ -264,12 +259,10 @@ function showHomePage(user) {
 
 function renderSubjects() {
     if(!tempGoogleUser) return;
-    
     let container = document.getElementById('subjects-container');
     container.classList.remove('hidden');
     document.getElementById('filter-heading').innerText = "Your Subjects"; 
     
-    // UI/UX Shimmer Loader (Pulse effect)
     container.innerHTML = `
         <div class="box-card loading-skeleton"></div>
         <div class="box-card loading-skeleton"></div>
@@ -324,7 +317,93 @@ function handleSubjectAccess(user, branch, sem, subject, price) {
             openPaymentModal(user, branch, sem, subject, price);
         }
     } else {
-        renderChapters(branch, sem, subject);
+        openSubjectTimelineHub(branch, sem, subject);
+    }
+}
+
+// PREMIUM EXCLUSIVE NO-PUNT BLOCK CONFIGURATION (Unified Timeline Sequence Builder)
+function openSubjectTimelineHub(branch, sem, subject) {
+    currentOpenBranch = branch; currentOpenSem = sem; currentOpenSubject = subject;
+    let container = document.getElementById('subjects-container'); 
+    let chContainer = document.getElementById('chapters-container'); 
+    let backBtn = document.getElementById('btn-back');
+
+    container.classList.add('hidden'); 
+    chContainer.classList.remove('hidden'); 
+    backBtn.classList.remove('hidden');
+    
+    document.getElementById('filter-heading').innerText = `✨ ${subject}`; 
+    chContainer.innerHTML = "";
+    
+    backBtn.onclick = () => { 
+        document.getElementById('search-input').value = ""; 
+        chContainer.classList.add('hidden');
+        renderSubjects(); 
+        backBtn.classList.add('hidden');
+    };
+
+    let subObj = db.branches[branch][sem][subject] || {};
+    let syllabusLink = subObj.syllabus || "";
+    let papers = (db.pyqs && db.pyqs[branch] && db.pyqs[branch][sem] && db.pyqs[branch][sem][subject]) || [];
+    let chapters = subObj.chapters || [];
+
+    // STRUCTURE 1: SYLLABUS DISCOVERY UNIT
+    let syllabusHTML = "";
+    if(syllabusLink) {
+        syllabusHTML = `
+            <div class="box-card" style="border-left: 6px solid #10b981; background: rgba(16, 185, 129, 0.02); text-align: left; align-items: flex-start; min-height: auto; width: 100%;">
+                <h3 style="color: #10b981; font-size: 1.2rem; font-weight: 600; margin-bottom: 5px;">📋 Official GTU Syllabus</h3>
+                <p style="font-size: 13px; color: var(--text-light); margin-bottom: 15px;">તમારા સત્તાવાર અભ્યાસક્રમની વિગતો અને ગુણ મૂલ્યાંકન પદ્ધતિ અહીં ડાઉનલોડ કરો.</p>
+                <a href="${syllabusLink}" target="_blank" style="background:#d1fae5; color:#065f46; display: inline-flex; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 14px; text-decoration: none;">🌐 View Syllabus PDF</a>
+            </div>
+        `;
+    }
+
+    // STRUCTURE 2: PYQS EXAMINATION HISTORY TIMELINE
+    let papersHTML = `
+        <div class="timeline-section-wrapper" style="margin-top: 15px; width: 100%;">
+            <h3 style="color: #d97706; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left;">📜 Previous Year Papers (PYQs)</h3>
+    `;
+    if(papers.length === 0) {
+        papersHTML += `<p style="font-size: 13px; color: var(--text-light); padding-left: 5px; text-align: left;">આ સબ્જેક્ટના પ્રશ્નપત્રો ટૂંક સમયમાં ઉપલબ્ધ કરાશે.</p>`;
+    } else {
+        papers.forEach((p) => {
+            papersHTML += `
+                <div class="box-card" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 15px 20px; border-left: 4px solid #d97706; min-height: auto; width: 100%;">
+                    <span style="font-size: 14px; font-weight: 500; color: var(--text-color);">📄 GTU Question Paper - ${p.year}</span>
+                    <a href="${p.link}" target="_blank" class="btn-pyq-action" style="padding: 8px 16px; font-size: 13px; border-radius: 8px; text-decoration: none; font-weight: 600;">Download PDF</a>
+                </div>
+            `;
+        });
+    }
+    papersHTML += `</div>`;
+
+    // STRUCTURE 3: LEARNING CHAPTER ARCHITECTURE
+    let chaptersHTML = `
+        <div class="timeline-section-wrapper" style="margin-top: 20px; width: 100%;">
+            <h3 style="color: #2563eb; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left;">📚 Reference Study Chapters & Notes</h3>
+    `;
+    if(chapters.length === 0) {
+        chaptersHTML += `<p style="font-size: 13px; color: var(--text-light); padding-left: 5px; text-align: left;">આ પ્રકરણના અભ્યાસક્રમની સામગ્રી પ્રક્રિયા હેઠળ છે.</p>`;
+    } else {
+        chapters.forEach((ch, idx) => {
+            chaptersHTML += `
+                <div class="box-card" id="ch-row-hub-${idx}" style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 18px 20px; border-left: 4px solid #2563eb; width: 100%; min-height: auto;">
+                    <div style="font-size: 15px; font-weight: 600; color: var(--text-color);">📁 Chapter ${idx + 1}: ${ch.name}</div>
+                    <span style="font-size: 12px; color: var(--text-light); margin-top: 4px;">ક્લિક કરીને હાઈ-ક્વોલિટી વિડીયો લેક્ચર્સ અને હેન્ડરાઇટિંગ પીડીએફ નોટ્સ મેળવો</span>
+                </div>
+            `;
+        });
+    }
+    chaptersHTML += `</div>`;
+
+    chContainer.innerHTML = syllabusHTML + papersHTML + chaptersHTML;
+
+    if(chapters.length > 0) {
+        chapters.forEach((ch, idx) => {
+            let row = document.getElementById(`ch-row-hub-${idx}`);
+            if(row) { row.onclick = () => { renderMaterials(ch); }; }
+        });
     }
 }
 
@@ -356,7 +435,6 @@ function openPaymentModal(user, branch, sem, subject, price) {
     `;
     modal.classList.add('active');
     
-    // Auto border validation glow logic
     setTimeout(() => {
         const utrInput = document.getElementById('pay-utr-input');
         if(utrInput) {
@@ -391,26 +469,14 @@ function submitPaymentDetails(uid, subject, price) {
 }
 
 function renderChapters(branch, sem, subject) {
-    currentOpenBranch = branch; currentOpenSem = sem; currentOpenSubject = subject;
-    let container = document.getElementById('subjects-container'); let chContainer = document.getElementById('chapters-container'); let backBtn = document.getElementById('btn-back');
-
-    container.classList.add('hidden'); chContainer.classList.remove('hidden'); backBtn.classList.remove('hidden');
-    document.getElementById('filter-heading').innerText = `Chapters of ${subject}`; chContainer.innerHTML = "";
-    backBtn.onclick = () => { document.getElementById('search-input').value = ""; renderSubjects(); };
-
-    let chapters = db.branches[branch][sem][subject].chapters || [];
-    if(chapters.length === 0) { chContainer.innerHTML = "<p style='padding:15px; color:var(--text-light);'>No chapters available yet.</p>"; return; }
-    chapters.forEach((ch) => {
-        let card = document.createElement('div'); card.className = "box-card"; card.innerHTML = `📄 ${ch.name}`;
-        card.onclick = () => renderMaterials(ch); chContainer.appendChild(card);
-    });
+    openSubjectTimelineHub(branch, sem, subject);
 }
 
 function renderMaterials(chapter) {
     let chContainer = document.getElementById('chapters-container'); let matContainer = document.getElementById('materials-container'); let backBtn = document.getElementById('btn-back');
     chContainer.classList.add('hidden'); matContainer.classList.remove('hidden');
     document.getElementById('filter-heading').innerText = `${chapter.name} Study Box`; matContainer.innerHTML = "";
-    backBtn.onclick = () => { document.getElementById('search-input').value = ""; renderChapters(currentOpenBranch, currentOpenSem, currentOpenSubject); };
+    backBtn.onclick = () => { document.getElementById('search-input').value = ""; matContainer.classList.add('hidden'); openSubjectTimelineHub(currentOpenBranch, currentOpenSem, currentOpenSubject); };
 
     let card = document.createElement('div'); card.className = "box-card"; card.style.width = "100%"; card.style.cursor = "default";
     card.innerHTML = `
@@ -469,7 +535,6 @@ function renderPYQPapers(branch, sem, subject) {
     });
 }
 
-/* --- CONTACT, ABOUT & PRIVACY OPTIONS CONTROL --- */
 function openModal(type) {
     if(!tempGoogleUser) return;
     toggleSidebar();
@@ -528,7 +593,6 @@ function updateProfileData() {
     });
 }
 
-// Play Store Mandatory Account Deletion Feature
 function deleteOwnAccount() {
     const user = firebase.auth().currentUser;
     if (!user) return;
@@ -604,250 +668,9 @@ function populateDropdowns() {
         regSem.innerHTML = '<option value="">-- Select Semester --</option>';
         for(let i=1; i<=6; i++) { regSem.innerHTML += `<option value="Sem ${i}">Sem ${i}</option>`; }
     }
-    updateAdminDropdowns();
 }
 
-/* --- ADVANCED ADMIN CONSOLE LOGIC --- */
-function openAdminModal() {
-    const user = firebase.auth().currentUser;
-    if(user && user.email === "vahorarehan5510@gmail.com") {
-        // Secure database check override protection
-        database.ref('portal_db').once('value')
-        .then(() => {
-            document.getElementById('home-page').classList.add('hidden');
-            document.getElementById('gateway-screen').classList.add('hidden');
-            document.getElementById('admin-panel').classList.remove('hidden');
-            updateAdminDropdowns();
-        })
-        .catch(() => {
-            alert("Security Error: Client side database verification rule failed.");
-        });
-    } else { alert("Error: Administrator Access Denied."); }
-}
-
-function exitAdmin() { 
-    document.getElementById('admin-panel').classList.add('hidden'); 
-    if(firebase.auth().currentUser) {
-        database.ref('registered_students/' + firebase.auth().currentUser.uid).once('value').then((snapshot) => { showHomePage(snapshot.val()); });
-    }
-}
- 
-function adminNext(curr, next) { 
-    document.querySelectorAll('.admin-step').forEach(el => el.classList.add('hidden'));
-    document.getElementById(`admin-step-${next}`).classList.remove('hidden'); 
-}
-
-function updateAdminDropdowns() {
-    let bSelects = ['adm-sub-branch-select', 'adm-ch-branch-select', 'adm-mat-branch-select', 'adm-del-branch-select', 'adm-pyq-branch-select'];
-    let branchList = (db && db.branches && Object.keys(db.branches).length > 0) ? Object.keys(db.branches) : baseStaticBranches;
-    bSelects.forEach(id => {
-        let el = document.getElementById(id); if(el) { el.innerHTML = '<option value="">-- Select Branch --</option>'; branchList.forEach(b => { el.innerHTML += `<option value="${b}">${b}</option>`; }); }
-    });
-}
-
-function updateAdminSemSelect(bId, sId) {
-    let branch = document.getElementById(bId).value; let sSelect = document.getElementById(sId);
-    sSelect.innerHTML = '<option value="">-- Select Semester --</option>';
-    if(branch) { for(let i=1; i<=6; i++) { sSelect.innerHTML += `<option value="Sem ${i}">Sem ${i}</option>`; } }
-}
-
-function updateAdminSubSelect(bId, sId, subId) {
-    let branch = document.getElementById(bId).value; let sem = document.getElementById(sId).value; let subSelect = document.getElementById(subId);
-    subSelect.innerHTML = '<option value="">-- Select Subject --</option>';
-    let targetDB = bId.includes('pyq') ? db.pyqs : db.branches;
-    if(branch && sem && targetDB[branch] && targetDB[branch][sem]) { Object.keys(targetDB[branch][sem]).forEach(sub => { subSelect.innerHTML += `<option value="${sub}">${sub}</option>`; }); }
-}
-
-function updateAdminChSelect() {
-    let branch = document.getElementById('adm-mat-branch-select').value; let sem = document.getElementById('adm-mat-sem-select').value; let sub = document.getElementById('adm-mat-sub-select').value; let chSelect = document.getElementById('adm-mat-ch-select');
-    chSelect.innerHTML = '<option value="">-- Select Chapter --</option>';
-    if(branch && sem && sub && db.branches[branch][sem][sub] && db.branches[branch][sem][sub].chapters) { 
-        db.branches[branch][sem][sub].chapters.forEach((ch, idx) => { chSelect.innerHTML += `<option value="${idx}">${ch.name}</option>`; }); 
-    }
-}
-
-function addBranch() {
-    let name = document.getElementById('adm-branch-name').value.trim();
-    if(name) { if(!db.branches[name]) db.branches[name] = {}; saveDB(); populateDropdowns(); alert(`Branch "${name}" saved.`); }
-    adminNext(2, 1);
-}
-
-function addSubject() {
-    let branch = document.getElementById('adm-sub-branch-select').value; 
-    let sem = document.getElementById('adm-sub-sem-select').value; 
-    let sub = document.getElementById('adm-sub-name').value.trim();
-    let price = document.getElementById('adm-sub-price').value.trim() || 0;
-    
-    if(branch && sem && sub) {
-        if(!db.branches[branch]) db.branches[branch] = {}; 
-        if(!db.branches[branch][sem]) db.branches[branch][sem] = {};
-        
-        db.branches[branch][sem][sub] = { 
-            price: parseInt(price), 
-            chapters: [] 
-        }; 
-        saveDB(); 
-        alert(`Subject "${sub}" સક્સેસફુલી સેવ થઈ ગયો છે.`);
-        adminNext(4, 1);
-    } else { alert("બધી માહિતી ભરો!"); }
-}
-
-function addChapter() {
-    let branch = document.getElementById('adm-ch-branch-select').value; 
-    let sem = document.getElementById('adm-ch-sem-select').value; 
-    let sub = document.getElementById('adm-ch-sub-select').value; 
-    let chName = document.getElementById('adm-ch-name').value.trim();
-    
-    if(branch && sem && sub && chName) { 
-        if(!db.branches[branch][sem][sub].chapters) db.branches[branch][sem][sub].chapters = [];
-        db.branches[branch][sem][sub].chapters.push({ name: chName, yt: "#", pdf: "#" }); 
-        saveDB(); alert(`Chapter "${chName}" સેવ થઈ ગયું છે.`); 
-        adminNext(5, 1);
-    } else { alert("બધી માહિતી સિલેક્ટ કરો!"); }
-}
-
-function addMaterial() {
-    let branch = document.getElementById('adm-mat-branch-select').value; let sem = document.getElementById('adm-mat-sem-select').value; let sub = document.getElementById('adm-mat-sub-select').value; let chIdx = document.getElementById('adm-mat-ch-select').value; let yt = document.getElementById('adm-mat-yt').value.trim(); let pdf = document.getElementById('adm-mat-pdf').value.trim();
-    if(branch && sem && sub && chIdx !== "") { 
-        let ch = db.branches[branch][sem][sub].chapters[chIdx];
-        if(yt) ch.yt = yt; if(pdf) ch.pdf = pdf; 
-        saveDB(); alert("લિંક્સ અપલોડ થઈ ગઈ છે!"); 
-        adminNext(6, 1);
-    }
-}
-
-function addPYQ() {
-    let branch = document.getElementById('adm-pyq-branch-select').value; let sem = document.getElementById('adm-pyq-sem-select').value; let sub = document.getElementById('adm-pyq-sub-select').value; let year = document.getElementById('adm-pyq-year').value.trim(); let link = document.getElementById('adm-pyq-link').value.trim();
-    if(branch && sem && sub && year && link) {
-        if(!db.pyqs) db.pyqs = {}; if(!db.pyqs[branch]) db.pyqs[branch] = {}; if(!db.pyqs[branch][sem]) db.pyqs[branch][sem] = {}; if(!db.pyqs[branch][sem][sub]) db.pyqs[branch][sem][sub] = [];
-        db.pyqs[branch][sem][sub].push({ year: year, link: link }); saveDB(); alert(`PYQ Paper for ${year} saved.`);
-        adminNext('pyq', 1);
-    }
-}
-
-function postNotification() {
-    let text = document.getElementById('adm-notif-text').value.trim();
-    if(text) {
-        database.ref('notifications').push({ text: text, time: firebase.database.ServerValue.TIMESTAMP });
-        alert("Announcement pushed globally!");
-        document.getElementById('adm-notif-text').value = "";
-        adminNext('notif', 1);
-    }
-}
-
-function openDeleteManager() { adminNext(1, 'delete'); document.getElementById('delete-items-list').innerHTML = "<p style='color:#9ca3af; text-align:center;'>Make a selection from above...</p>"; }
-
-function renderDeleteItems() {
-    let branch = document.getElementById('adm-del-branch-select').value; let sem = document.getElementById('adm-del-sem-select').value; let container = document.getElementById('delete-items-list'); container.innerHTML = "";
-    if(!branch || !sem || !db.branches[branch] || !db.branches[branch][sem] || Object.keys(db.branches[branch][sem]).length === 0) { container.innerHTML = "<p style='color:#dc2626; text-align:center;'>Data not available.</p>"; return; }
-    let subjects = db.branches[branch][sem];
-    Object.keys(subjects).forEach(subName => {
-        let div = document.createElement('div'); div.className = "admin-manage-item"; div.innerHTML = `<div class="admin-manage-header"><span>📘 ${subName} (₹${subjects[subName].price || 0})</span><button style="background:none; border:none; color:#dc2626; cursor:pointer; font-size:16px;" onclick="deleteItem('${branch}', '${sem}', '${subName}')">❌</button></div>`;
-        if(subjects[subName].chapters) {
-            subjects[subName].chapters.forEach((ch, idx) => {
-                let chDiv = document.createElement('div'); chDiv.style.margin = "10px 0 0 15px"; chDiv.innerHTML = `<div>📄 ${ch.name}</div>
-                    <div class="admin-manage-buttons"><button style="background:none; border:none; color:#fbbf24; cursor:pointer; margin-right:8px; font-size:16px;" onclick="editItem('${branch}', '${sem}', '${subName}', ${idx})">✏️</button><button style="background:none; border:none; color:#dc2626; cursor:pointer; font-size:16px;" onclick="deleteItem('${branch}', '${sem}', '${subName}', ${idx})">❌</button></div>`;
-                div.appendChild(chDiv);
-            });
-        }
-        container.appendChild(div);
-    });
-}
-
-function deleteItem(branch, sem, subName, chIdx = null) {
-    if (chIdx === null) { if (confirm(`Delete subject?`)) { delete db.branches[branch][sem][subName]; } } 
-    else { if (confirm(`Remove chapter?`)) { db.branches[branch][sem][subName].chapters.splice(chIdx, 1); } }
-    saveDB(); renderDeleteItems();
-}
-
-function editItem(branch, sem, subName, chIdx) {
-    let ch = db.branches[branch][sem][subName].chapters[chIdx]; let newName = prompt("New Chapter Name:", ch.name); let newYt = prompt("New YouTube Link:", ch.yt); let newPdf = prompt("New PDF Link:", ch.pdf);
-    if (newName) ch.name = newName; if (newYt) ch.yt = newYt; if (newPdf) ch.pdf = newPdf; saveDB(); renderDeleteItems();
-}
-
-function openStudentManager() {
-    adminNext(1, 'students');
-    let listContainer = document.getElementById('admin-student-list');
-    listContainer.innerHTML = "<p style='color:#9ca3af; text-align:center;'>Loading students...</p>";
-    database.ref('registered_students').once('value').then(snap => {
-        listContainer.innerHTML = "";
-        if(snap.exists()) {
-            let students = snap.val();
-            Object.keys(students).forEach(uid => {
-                let s = students[uid];
-                let div = document.createElement('div');
-                div.className = "user-list-item";
-                div.innerHTML = `
-                    <div class="user-list-info">
-                        <div>${s.name} <span style="font-weight:400;">(${s.enroll || 'No Enroll'})</span></div>
-                        <span>${s.branch} | ${s.sem} | ${s.college}</span>
-                    </div>
-                    <button class="btn-admin btn-danger-admin" style="padding: 8px 12px; font-size:12px;" onclick="deleteStudent('${uid}', '${s.name}')">Delete</button>
-                `;
-                listContainer.appendChild(div);
-            });
-        }
-    });
-}
-
-function deleteStudent(uid, name) {
-    if(confirm(`Are you sure you want to completely delete student: ${name}?`)) {
-        database.ref('registered_students/' + uid).remove().then(() => {
-            alert(`${name} has been deleted.`); openStudentManager();
-        });
-    }
-}
-
-function openPaymentManager() {
-    adminNext(1, 'payments');
-    let listContainer = document.getElementById('admin-payment-list');
-    listContainer.innerHTML = "<p style='color:#9ca3af; text-align:center;'>Loading payment requests...</p>";
-    database.ref('payment_requests').on('value', snap => {
-        listContainer.innerHTML = "";
-        if(snap.exists()) {
-            snap.forEach(child => {
-                let reqId = child.key; let r = child.val();
-                database.ref(`registered_students/${r.uid}`).once('value').then(sSnap => {
-                    let sName = sSnap.exists() ? sSnap.val().name : "Unknown Student";
-                    let sEnroll = sSnap.exists() ? sSnap.val().enroll : "No Enroll";
-                    let div = document.createElement('div');
-                    div.className = "admin-manage-item";
-                    div.innerHTML = `
-                        <div style="font-size:14px; color:#e5e7eb; line-height:1.6;">
-                            <b>Student:</b> ${sName} (${sEnroll})<br>
-                            <b>Subject:</b> <span style="color:#60a5fa;">${r.subject}</span> (Price: ₹${r.price})<br>
-                            <b>UTR Number:</b> <span style="color:#10b981; font-weight:600; font-size:15px; letter-spacing:1px;">${r.utr}</span>
-                        </div>
-                        <div class="admin-btn-group" style="margin-top:12px;">
-                            <button class="btn-admin" style="background:#10b981; padding:6px 12px; font-size:12px;" onclick="approvePayment('${reqId}', '${r.uid}', '${r.subject}')">Approve ✅</button>
-                            <button class="btn-admin btn-danger-admin" style="padding:6px 12px; font-size:12px;" onclick="rejectPayment('${reqId}', '${r.uid}', '${r.subject}')">Reject ❌</button>
-                        </div>
-                    `;
-                    listContainer.appendChild(div);
-                });
-            });
-        } else {
-            listContainer.innerHTML = "<p style='color:#9ca3af; text-align:center;'>No pending payment approvals! 🎉</p>";
-        }
-    });
-}
-
-function approvePayment(reqId, uid, subject) {
-    if(confirm(`UTR ચેક કરી લીધો છે? "${subject}" અનલોક કરવો છે?`)) {
-        database.ref(`registered_students/${uid}/unlocked_subjects/${subject}`).set("approved").then(() => {
-            database.ref(`payment_requests/${reqId}`).remove().then(() => {
-                alert("વિષય સક્સેસફુલી અનલોક થઈ ગયો છે! 🎉"); openPaymentManager();
-            });
-        });
-    }
-}
-
-function rejectPayment(reqId, uid, subject) {
-    if(confirm("ખોટો UTR હોવાને કારણે આ રિકવેસ્ટ રીજેક્ટ કરવી છે?")) {
-        database.ref(`registered_students/${uid}/unlocked_subjects/${subject}`).remove().then(() => {
-            database.ref(`payment_requests/${reqId}`).remove().then(() => {
-                alert("રિકવેસ્ટ રીજેક્ટ કરવામાં આવી છે."); openPaymentManager();
-            });
-        });
-    }
+// Custom redirection rule to link to your decoupled external admin workspace
+function redirectToAdminPortal() {
+    window.open('https://vahorarehan5510-tech.github.io/admin_portal/', '_blank');
 }
