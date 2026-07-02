@@ -321,7 +321,7 @@ function handleSubjectAccess(user, branch, sem, subject, price) {
     }
 }
 
-// FIXED CRITICAL LOGIC CHAIN: સબ્જેક્ટના ક્લિક પર Syllabus ➔ Old Papers ➔ Chapters લાઇનસર મોર્ડન કાર્ડ્સમાં લોડ થશે
+// PREMIUM EXCLUSIVE DESIGNER FLOW TIMELINE LINKCHAIN (Syllabus ➔ Old Papers Hub ➔ Chapters)
 function openSubjectTimelineHub(branch, sem, subject) {
     currentOpenBranch = branch; currentOpenSem = sem; currentOpenSubject = subject;
     let container = document.getElementById('subjects-container'); 
@@ -344,7 +344,6 @@ function openSubjectTimelineHub(branch, sem, subject) {
 
     let subObj = db.branches[branch][sem][subject] || {};
     let syllabusLink = subObj.syllabus || "";
-    // ફિક્સ: એડમિન પેનલ જે સ્ટ્રક્ચરમાં ગ્લોબલી સેવ કરે છે (db.pyqs) ત્યાંથી જ કનેક્ટ કર્યું
     let papers = (db.pyqs && db.pyqs[branch] && db.pyqs[branch][sem] && db.pyqs[branch][sem][subject]) || [];
     let chapters = subObj.chapters || [];
 
@@ -352,44 +351,48 @@ function openSubjectTimelineHub(branch, sem, subject) {
     let syllabusHTML = "";
     if(syllabusLink && syllabusLink !== "#") {
         syllabusHTML = `
-            <div class="box-card" style="border-left: 6px solid #10b981; background: rgba(16, 185, 129, 0.02); text-align: left; align-items: flex-start; min-height: auto; width: 100%; margin-bottom: 15px;">
+            <div class="box-card" style="border-left: 6px solid #10b981; background: rgba(16, 185, 129, 0.02); text-align: left; align-items: flex-start; min-height: auto; width: 100%; margin-bottom: 20px; padding: 20px;">
                 <h3 style="color: #10b981; font-size: 1.2rem; font-weight: 600; margin-bottom: 5px;">📋 Official GTU Syllabus</h3>
-                <p style="font-size: 13px; color: var(--text-light); margin-bottom: 15px;">તમારા સત્તાવાર અભ્યાસક્રમની વિગતો અને ગુણ મૂલ્યાંકન પદ્ધતિ અહીં ડાઉનલોડ કરો.</p>
+                <p style="font-size: 13px; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">તમારા સત્તાવાર અભ્યાસક્રમની વિગતો અને ગુણ મૂલ્યાંકન પદ્ધતિ અહીં ડાઉનલોડ કરો.</p>
                 <a href="${syllabusLink}" target="_blank" style="background:#d1fae5; color:#065f46; display: inline-flex; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 14px; text-decoration: none;">🌐 View Syllabus PDF</a>
             </div>
         `;
     } else {
         syllabusHTML = `
-            <div class="box-card" style="border-left: 6px solid #6b7280; text-align: left; align-items: flex-start; min-height: auto; width: 100%; margin-bottom: 15px;">
+            <div class="box-card" style="border-left: 6px solid #6b7280; text-align: left; align-items: flex-start; min-height: auto; width: 100%; margin-bottom: 20px; padding: 20px;">
                 <h3 style="color: var(--text-light); font-size: 1.1rem; font-weight: 600; margin-bottom: 3px;">📋 Syllabus Not Available</h3>
                 <p style="font-size: 12px; color: var(--text-light);">આ વિષયનો સિલેબસ એડમિન દ્વારા ટૂંક સમયમાં અપલોડ કરવામાં આવશે.</p>
             </div>
         `;
     }
 
-    // 2. PYQS EXAMINATION TIMELINE SECTION (હવે ૧૦૦% વિષયવાઇઝ પેપર્સ દેખાશે)
+    // 2. PREMIUM DYNAMIC OLD PAPERS HUB (બટન ટૉગલ ફંક્શનાલિટી સાથે)
     let papersHTML = `
-        <div class="timeline-section-wrapper" style="margin-top: 15px; width: 100%;">
-            <h3 style="color: #d97706; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left; margin-bottom: 10px;">📜 Previous Year Papers (PYQs)</h3>
+        <div class="box-card" style="border-left: 6px solid #d97706; background: rgba(217, 119, 6, 0.02); text-align: left; align-items: flex-start; min-height: auto; width: 100%; margin-bottom: 20px; padding: 20px;">
+            <h3 style="color: #d97706; font-size: 1.2rem; font-weight: 600; margin-bottom: 5px;">📜 Previous Year Papers (PYQs)</h3>
+            <p style="font-size: 13px; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">તમારી પરીક્ષાની તૈયારી માટે જીટીયુ (GTU) ના પાછલા વર્ષોના ઓરિજિનલ પ્રશ્નપત્રો અહીંથી મેળવો.</p>
+            <button id="btn-toggle-papers" style="background: #fef3c7; color: #92400e; display: inline-flex; padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; outline: none; transition: transform 0.2s;">📄 View Papers PDF</button>
+            
+            <div id="hidden-papers-list" class="hidden" style="width: 100%; margin-top: 20px; display: flex; flex-direction: column; gap: 12px;">
     `;
     if(papers.length === 0) {
-        papersHTML += `<p style="font-size: 13px; color: var(--text-light); padding-left: 5px; text-align: left; margin-bottom: 15px;">આ સબ્જેક્ટના પ્રશ્નપત્રો ટૂંક સમયમાં ઉપલબ્ધ કરાશે.</p>`;
+        papersHTML += `<p style="font-size: 13px; color: var(--text-light);">આ વિષયના જૂના પ્રશ્નપત્રો ટૂંક સમયમાં ઉમેરવામાં આવશે.</p>`;
     } else {
         papers.forEach((p) => {
             papersHTML += `
-                <div class="box-card" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 15px 20px; border-left: 4px solid #d97706; min-height: auto; width: 100%; margin-bottom: 10px;">
-                    <span style="font-size: 14px; font-weight: 500; color: var(--text-color);">📄 GTU Question Paper - ${p.year}</span>
-                    <a href="${p.link}" target="_blank" class="btn-pyq-action" style="padding: 8px 16px; font-size: 13px; border-radius: 8px; text-decoration: none; font-weight: 600;">Download PDF</a>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: var(--bg-color); border-radius: 8px; border: 1px solid var(--border-color); width: 100%;">
+                    <span style="font-size: 13.5px; font-weight: 500; color: var(--text-color);">📝 GTU Paper - ${p.year}</span>
+                    <a href="${p.link}" target="_blank" style="background: #d97706; color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600;" onclick="trackProgress('pyq')">Download PDF</a>
                 </div>
             `;
         });
     }
-    papersHTML += `</div>`;
+    papersHTML += `</div></div>`;
 
-    // 3. LEARNING CHAPTER MATERIAL TIMELINE SECTION
+    // 3. LEARNING CHAPTER TIMELINE SECTION
     let chaptersHTML = `
-        <div class="timeline-section-wrapper" style="margin-top: 20px; width: 100%;">
-            <h3 style="color: #2563eb; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left; margin-bottom: 10px;">📚 Reference Study Chapters & Notes</h3>
+        <div class="timeline-section-wrapper" style="width: 100%;">
+            <h3 style="color: #2563eb; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left; margin-bottom: 12px;">📚 Reference Study Chapters & Notes</h3>
     `;
     if(chapters.length === 0) {
         chaptersHTML += `<p style="font-size: 13px; color: var(--text-light); padding-left: 5px; text-align: left;">આ પ્રકરણના અભ્યાસક્રમની સામગ્રી પ્રક્રિયા હેઠળ છે.</p>`;
@@ -405,8 +408,22 @@ function openSubjectTimelineHub(branch, sem, subject) {
     }
     chaptersHTML += `</div>`;
 
-    // પેજ પર કમ્બાઈન કરીને બધું રેન્ડર કરવું
     chContainer.innerHTML = syllabusHTML + papersHTML + chaptersHTML;
+
+    // બટન ક્લિક ટોગલ કસ્ટમ લોજિક બાઈન્ડિંગ
+    let toggleBtn = document.getElementById('btn-toggle-papers');
+    let papersList = document.getElementById('hidden-papers-list');
+    if(toggleBtn && papersList) {
+        toggleBtn.onclick = (e) => {
+            e.stopPropagation();
+            papersList.classList.toggle('hidden');
+            if(papersList.classList.contains('hidden')) {
+                toggleBtn.innerText = "📄 View Papers PDF";
+            } else {
+                toggleBtn.innerText = "❌ Hide Papers List";
+            }
+        };
+    }
 
     if(chapters.length > 0) {
         chapters.forEach((ch, idx) => {
@@ -572,7 +589,7 @@ function openModal(type) {
         }
         else if(type === 'about') { 
             title.innerText = "About Our Portal ℹ️"; 
-            body.innerHTML = `<h3>Empowering GTU Diploma Engineering Students</h3><p style="font-size: 13px; color: var(--text-light); line-height:1.6; margin-top:10px;">Diploma Study Portal My એક ઓનલાઈન શૈક્ષણિક પ્લેટફોર્મ છે જે ગુજરાત ટેકનોલોજીકલ યુનિવર્સિટી (GTU) ના ડિપ્લોમા એન્જીનીયરીંગ વિદ્યાર્થીઓ માટે ખાસ બનાવવામાં આવ્યું છે. અહીં સચોટ સિલેબસ મુજબ મટીરીયલ્સ, પ્રકરણવાઇઝ યુટ્યુબ લેકચર્સ અને પાછલા વર્ષೋના પ્રશ્નપત્રો ઉપલબ્ધ કરવામાં આવે છે.</p>`; 
+            body.innerHTML = `<h3>Empowering GTU Diploma Engineering Students</h3><p style="font-size: 13px; color: var(--text-light); line-height:1.6; margin-top:10px;">Diploma Study Portal My એક ઓનલાઈન શૈક્ષણિક પ્લેટફોર્મ છે જે ગુજરાત ટેકનોલોજીકલ યુનિવર્સિટી (GTU) ના ડિપ્લોમા એન્જીનીયરીંગ વિદ્યાર્થીઓ માટે ખાસ બનાવવામાં આવ્યું છે. અહીં સચોટ સિલેબસ મુજબ મટીરીયલ્સ, પ્રકરણવાઇઝ યુટ્યુબ લેકચર્સ અને પાછલા વર્ષોના પ્રશ્નપત્રો ઉપલબ્ધ કરવામાં આવે છે.</p>`; 
         } 
         else if(type === 'contact') {
             title.innerText = "Contact Us 📞";
