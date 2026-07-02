@@ -209,7 +209,7 @@ main { padding: 24px; max-width: 1200px; margin: 0 auto; }
 .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
 @media (max-width: 480px) { .grid-container { grid-template-columns: 1fr; } }
 
-/* Advanced Designer Premium Cards & Timeline System */
+/* Advanced Premium Cards & Timeline System */
 .box-card {
     background: rgba(255, 255, 255, 0.8) !important;
     backdrop-filter: blur(12px);
