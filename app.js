@@ -66,6 +66,21 @@ window.onload = function() {
     populateDropdowns();
 };
 
+// --- NAVIGATION LAYOUT UTILS ---
+function toggleDashboardUI(show) {
+    const dashCard = document.querySelector('.user-dashboard-card');
+    const searchBar = document.querySelector('.search-container');
+    if(dashCard && searchBar) {
+        if(show) {
+            dashCard.classList.remove('hidden');
+            searchBar.classList.remove('hidden');
+        } else {
+            dashCard.classList.add('hidden');
+            searchBar.classList.add('hidden');
+        }
+    }
+}
+
 function processGoogleLogin() {
     firebase.auth().signInWithPopup(googleProvider).catch((error) => {
         firebase.auth().signInWithRedirect(googleProvider);
@@ -110,6 +125,7 @@ function setupLiveListeners(user) {
     database.ref('notifications').limitToLast(10).on('value', snap => {
         let listContainer = document.getElementById('notif-list-container');
         let badge = document.getElementById('notif-badge');
+        if(!listContainer || !badge) return;
         listContainer.innerHTML = '';
         if(snap.exists()) {
             let notifs = [];
@@ -131,12 +147,18 @@ function setupLiveListeners(user) {
 
     database.ref('registered_students/' + user.uid + '/progress').on('value', snap => {
         let p = snap.val() || { videos: 0, pdfs: 0, pyqs: 0 };
-        document.getElementById('prog-videos').innerText = `📺 Watched: ${p.videos || 0}`;
-        document.getElementById('prog-pdfs').innerText = `📄 Read: ${p.pdfs || 0}`;
-        document.getElementById('prog-pyqs').innerText = `📜 PYQs: ${p.pyqs || 0}`;
+        const vEl = document.getElementById('prog-videos');
+        const pEl = document.getElementById('prog-pdfs');
+        const pyEl = document.getElementById('prog-pyqs');
+        const barFill = document.getElementById('prog-bar-fill');
+        
+        if(vEl) vEl.innerText = `📺 Watched: ${p.videos || 0}`;
+        if(pEl) pEl.innerText = `📄 Read: ${p.pdfs || 0}`;
+        if(pyEl) pyEl.innerText = `📜 PYQs: ${p.pyqs || 0}`;
+        
         let total = (p.videos || 0) + (p.pdfs || 0) + (p.pyqs || 0);
         let percent = Math.min((total / 30) * 100, 100);
-        document.getElementById('prog-bar-fill').style.width = percent + '%';
+        if(barFill) barFill.style.width = percent + '%';
     });
 }
 
@@ -258,16 +280,19 @@ function showHomePage(user) {
 }
 
 function renderSubjects() {
-    if(!tempGoogleUser) return;
+    toggleDashboardUI(true); // મુખ્ય લિસ્ટ પર ડેશબોર્ડ બતાવો
     let container = document.getElementById('subjects-container');
+    let chContainer = document.getElementById('chapters-container');
+    let pyqListContainer = document.getElementById('pyqs-container');
+    let backBtn = document.getElementById('btn-back');
+
     container.classList.remove('hidden');
+    chContainer.classList.add('hidden');
+    pyqListContainer.classList.add('hidden');
+    backBtn.classList.add('hidden');
+
     document.getElementById('filter-heading').innerText = "Your Subjects"; 
-    
-    container.innerHTML = `
-        <div class="box-card loading-skeleton"></div>
-        <div class="box-card loading-skeleton"></div>
-        <div class="box-card loading-skeleton"></div>
-    `;
+    container.innerHTML = `<div class="box-card loading-skeleton"></div><div class="box-card loading-skeleton"></div>`;
 
     database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snapshot) => {
         let user = snapshot.val();
@@ -304,7 +329,7 @@ function renderSubjects() {
             container.appendChild(card);
         });
     }).catch(() => {
-        container.innerHTML = "<p style='padding:15px; color:#ef4444;'>ડેટા લોડ કરવામાં ભૂલ થઈ. ફરી પ્રયાસ કરો.</p>";
+        container.innerHTML = "<p style='padding:15px; color:#ef4444;'>Error loading dataset mapping structures.</p>";
     });
 }
 
@@ -317,38 +342,38 @@ function handleSubjectAccess(user, branch, sem, subject, price) {
             openPaymentModal(user, branch, sem, subject, price);
         }
     } else {
-        openSubjectTimelineHub(branch, sem, subject);
+        openSubjectHub(branch, sem, subject);
     }
 }
 
-// PREMIUM EXCLUSIVE DESIGNER FLOW TIMELINE LINKCHAIN (નવા વ્યુ/પેજ તરીકે પરફેક્ટ ઓપન થશે)
-function openSubjectTimelineHub(branch, sem, subject) {
+// ૧. સબ્જેક્ટ હબ (નવું ક્લીન પેજ - ડેશબોર્ડ હાઇડ થઈ જશે)
+function openSubjectHub(branch, sem, subject) {
     currentOpenBranch = branch; currentOpenSem = sem; currentOpenSubject = subject;
+    toggleDashboardUI(false); // ડેશબોર્ડની બધી વિગતો ગાયબ કરો
+
     let container = document.getElementById('subjects-container'); 
     let chContainer = document.getElementById('chapters-container'); 
+    let pyqListContainer = document.getElementById('pyqs-container');
     let backBtn = document.getElementById('btn-back');
 
-    // નવું પેજ ક્રિએટ કરવા માટે જૂના કન્ટેનરને હાઇડ કરો
     container.classList.add('hidden'); 
+    pyqListContainer.classList.add('hidden');
     chContainer.classList.remove('hidden'); 
     backBtn.classList.remove('hidden');
     
     document.getElementById('filter-heading').innerText = `✨ ${subject}`; 
     chContainer.innerHTML = "";
     
-    backBtn.onclick = () => { 
-        document.getElementById('search-input').value = ""; 
-        chContainer.classList.add('hidden');
-        renderSubjects(); 
-        backBtn.classList.add('hidden');
+    backBtn.onclick = () => {
+        document.getElementById('search-input').value = "";
+        renderSubjects();
     };
 
     let subObj = db.branches[branch][sem][subject] || {};
     let syllabusLink = subObj.syllabus || "";
-    let papers = (db.pyqs && db.pyqs[branch] && db.pyqs[branch][sem] && db.pyqs[branch][sem][subject]) || [];
     let chapters = subObj.chapters || [];
 
-    // ૧. ઓફિશિયલ જીટીયુ સિલેબસ સેક્શન
+    // Syllabus Card Construction
     let syllabusHTML = "";
     if(syllabusLink && syllabusLink !== "#") {
         syllabusHTML = `
@@ -358,153 +383,82 @@ function openSubjectTimelineHub(branch, sem, subject) {
                 <a href="${syllabusLink}" target="_blank" style="background:#d1fae5; color:#065f46; display: inline-flex; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 14px; text-decoration: none;">🌐 View Syllabus PDF</a>
             </div>
         `;
-    } else {
-        syllabusHTML = `
-            <div class="box-card" style="border-left: 6px solid #6b7280; text-align: left; align-items: flex-start; min-height: auto; width: 100%; margin-bottom: 20px; padding: 20px;">
-                <h3 style="color: var(--text-light); font-size: 1.1rem; font-weight: 600; margin-bottom: 3px;">📋 Syllabus Not Available</h3>
-                <p style="font-size: 12px; color: var(--text-light);">આ વિષયનો સિલેબસ એડમિન દ્વારા ટૂંક સમયમાં અપલોડ કરવામાં આવશે.</p>
-            </div>
-        `;
     }
 
-    // ૨. પ્રીમિયમ ઓલ્ડ પેપર્સ હબ (બટન ક્લિક પર એ જ પેજ પર નીચે લિસ્ટ ખુલશે)
-    let papersHTML = `
+    // Previous Year Papers Hub Card Configuration
+    let pyqHTML = `
         <div class="box-card" style="border-left: 6px solid #d97706; background: rgba(217, 119, 6, 0.02); text-align: left; align-items: flex-start; min-height: auto; width: 100%; margin-bottom: 20px; padding: 20px;">
             <h3 style="color: #d97706; font-size: 1.2rem; font-weight: 600; margin-bottom: 5px;">📜 Previous Year Papers (PYQs)</h3>
             <p style="font-size: 13px; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">તમારી પરીક્ષાની તૈયારી માટે જીટીયુ (GTU) ના પાછલા વર્ષોના ઓરિજિનલ પ્રશ્નપત્રો અહીંથી મેળવો.</p>
-            <button id="btn-toggle-papers" style="background: #fef3c7; color: #92400e; display: inline-flex; padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; outline: none; transition: transform 0.2s;">📄 View Papers PDF</button>
-            
-            <div id="hidden-papers-list" class="hidden" style="width: 100%; margin-top: 20px; display: flex; flex-direction: column; gap: 12px;">
-    `;
-    if(papers.length === 0) {
-        papersHTML += `<p style="font-size: 13px; color: var(--text-light);">આ વિષયના જૂના પ્રશ્નપત્રો ટૂંક સમયમાં ઉમેરવામાં આવશે.</p>`;
-    } else {
-        papers.forEach((p) => {
-            // ફિક્સ: બટન અને સ્ટ્રક્ચરને ફ્લેક્સ ડાયરેક્શન કોલમ કરીને પ્રોપર નીચે સેટ કર્યું
-            papersHTML += `
-                <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 15px; background: var(--bg-color); border-radius: 12px; border: 1px solid var(--border-color); width: 100%;">
-                    <span style="font-size: 14px; font-weight: 600; color: var(--text-color);">📝 GTU Paper - ${p.year}</span>
-                    <a href="${p.link}" target="_blank" style="background: #d97706; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; display: inline-block; text-align: center; margin-top: 4px;" onclick="trackProgress('pyq')">View PDF</a>
-                </div>
-            `;
-        });
-    }
-    papersHTML += `</div></div>`;
-
-    // ૩. લર્નિંગ ચેપ્ટર્સ સેક્શન
-    let chaptersHTML = `
-        <div class="timeline-section-wrapper" style="width: 100%;">
-            <h3 style="color: #2563eb; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left; margin-bottom: 12px;">📚 Reference Study Chapters & Notes</h3>
-    `;
-    if(chapters.length === 0) {
-        chaptersHTML += `<p style="font-size: 13px; color: var(--text-light); padding-left: 5px; text-align: left;">આ પ્રકરણના અભ્યાસક્રમની સામગ્રી પ્રક્રિયા હેઠળ છે.</p>`;
-    } else {
-        chapters.forEach((ch, idx) => {
-            chaptersHTML += `
-                <div class="box-card" id="ch-row-hub-${idx}" style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 18px 20px; border-left: 4px solid #2563eb; width: 100%; min-height: auto; margin-bottom: 10px;">
-                    <div style="font-size: 15px; font-weight: 600; color: var(--text-color);">📁 Chapter ${idx + 1}: ${ch.name}</div>
-                    <span style="font-size: 12px; color: var(--text-light); margin-top: 4px;">ક્લિક કરીને હાઈ-ક્વોલિટી વિડીયો લેક્ચર્સ અને હેન્ડરાઇટિંગ પીડીએફ નોટ્સ મેળવો</span>
-                </div>
-            `;
-        });
-    }
-    chaptersHTML += `</div>`;
-
-    chContainer.innerHTML = syllabusHTML + papersHTML + chaptersHTML;
-
-    // સ્મૂધ ટૉગલ ક્લિક ઇવેન્ટ મેનેજમેન્ટ
-    let toggleBtn = document.getElementById('btn-toggle-papers');
-    let papersList = document.getElementById('hidden-papers-list');
-    if(toggleBtn && papersList) {
-        toggleBtn.onclick = (e) => {
-            e.stopPropagation();
-            papersList.classList.toggle('hidden');
-            if(papersList.classList.contains('hidden')) {
-                toggleBtn.innerText = "📄 View Papers PDF";
-            } else {
-                toggleBtn.innerText = "❌ Hide Papers List";
-            }
-        };
-    }
-
-    if(chapters.length > 0) {
-        chapters.forEach((ch, idx) => {
-            let row = document.getElementById(`ch-row-hub-${idx}`);
-            if(row) { row.onclick = () => { renderMaterials(ch); }; }
-        });
-    }
-}
-
-function openPaymentModal(user, branch, sem, subject, price) {
-    let modal = document.getElementById('info-modal');
-    let title = document.getElementById('modal-title');
-    let body = document.getElementById('modal-body-text');
-    let footer = document.getElementById('modal-footer-buttons');
-
-    title.innerText = `🔒 Unlock ${subject}`;
-    let upiString = `upi://pay?pa=${MY_UPI_ID}&pn=DiplomaStudyPortal&tn=${encodeURIComponent(subject + ' ' + user.name)}&am=${price}&cu=INR`;
-    let qrChartUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
-
-    body.innerHTML = `
-        <div style="text-align:center;">
-            <p style="margin-bottom:15px; font-size:14px; color:var(--text-color);">આ પ્રીમિયમ વિષય અનલોક કરવા માટે <b>₹${price}</b> સ્કેન કરો.</p>
-            <img src="${qrChartUrl}" alt="UPI QR Code" style="border:1px solid #ddd; padding:10px; border-radius:12px; background:white; margin-bottom:15px;">
-            <p style="font-size:12px; color:var(--text-light); margin-bottom:15px;">UPI ID: <b>${MY_UPI_ID}</b></p>
-            <div class="modal-form-group">
-                <label>પેમેન્ટ કર્યા પછી ૧૨-આંકડાનો UTR / Transaction ID અહીં લખો:</label>
-                <input type="text" id="pay-utr-input" placeholder="e.g. 412589632514" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-            </div>
+            <button onclick="openPYQListView('${branch}', '${sem}', '${subject}')" style="background: #fef3c7; color: #92400e; display: inline-flex; padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer;">📄 View Papers PDF</button>
         </div>
     `;
 
-    footer.innerHTML = `
-        <button class="btn-save-modal" onclick="submitPaymentDetails('${user.uid}', '${subject}', ${price})">સબમિટ કરો (Submit)</button>
-        <button class="btn-close-modal" onclick="closeModal()">કેન્સલ (Cancel)</button>
-    `;
-    modal.classList.add('active');
+    let chaptersHeader = `<h3 style="color: #2563eb; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left; margin-bottom: 12px; width:100%;">📚 Reference Study Chapters & Notes</h3>`;
     
-    setTimeout(() => {
-        const utrInput = document.getElementById('pay-utr-input');
-        if(utrInput) {
-            utrInput.addEventListener('keyup', () => {
-                utrInput.style.borderColor = (utrInput.value.length === 12) ? "#10b981" : "var(--border-color)";
-            });
-        }
-    }, 200);
-}
+    chContainer.innerHTML = syllabusHTML + pyqHTML + chaptersHeader;
 
-function submitPaymentDetails(uid, subject, price) {
-    let utr = document.getElementById('pay-utr-input').value.trim();
-    if(utr.length !== 12) {
-        alert("કૃપા કરીને સાચો ૧૨-આંકડાનો UTR / Transaction ID દાખલ કરો!"); return;
+    if(chapters.length === 0) {
+        chContainer.innerHTML += `<p style="font-size: 13px; color: var(--text-light); padding-left: 5px; text-align: left; width:100%;">આ પ્રકરણના અભ્યાસક્રમની સામગ્રી પ્રક્રિયા હેઠળ છે.</p>`;
+    } else {
+        chapters.forEach((ch, idx) => {
+            let card = document.createElement('div');
+            card.className = "box-card";
+            card.style = "border-left: 4px solid #2563eb; text-align: left; align-items: flex-start; min-height: auto; width:100%; margin-bottom: 10px; padding: 18px 20px;";
+            card.innerHTML = `<div style="font-size: 15px; font-weight: 600; color: var(--text-color);">📁 Chapter ${idx + 1}: ${ch.name}</div><span style="font-size: 12px; color: var(--text-light); margin-top:4px;">ક્લિક કરીને વિડીયો લેક્ચર્સ અને હેન્ડરાઇટિંગ પીડીએફ નોટ્સ મેળવો</span>`;
+            card.onclick = () => renderMaterials(ch);
+            chContainer.appendChild(card);
+        });
     }
-    database.ref(`registered_students/${uid}/unlocked_subjects/${subject}`).set("pending");
-    database.ref('payment_requests').push({
-        uid: uid,
-        subject: subject,
-        price: price,
-        utr: utr,
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-    }).then(() => {
-        alert("તમારી વિનંતી મોકલાઈ ગઈ છે! એડમિન ચેક કરીને ટૂંક સમયમાં સબ્જેક્ટ અનલોક કરી દેશે. 👍");
-        closeModal();
-        if (tempGoogleUser) {
-            database.ref('registered_students/' + tempGoogleUser.uid).once('value').then((snap) => {
-                showHomePage(snap.val());
-            });
-        }
-    });
 }
 
-function renderChapters(branch, sem, subject) {
-    openSubjectTimelineHub(branch, sem, subject);
+// ૨. પેપર લિસ્ટ વ્યુ (બીજું નવું સિંગલ પેજ વ્યુ - બટન નીચે View PDF સાથે)
+function openPYQListView(branch, sem, subject) {
+    let chContainer = document.getElementById('chapters-container');
+    let pyqListContainer = document.getElementById('pyqs-container');
+    let backBtn = document.getElementById('btn-back');
+
+    chContainer.classList.add('hidden');
+    pyqListContainer.classList.remove('hidden');
+    
+    document.getElementById('filter-heading').innerText = `📜 ${subject} - Papers`;
+    pyqListContainer.innerHTML = "";
+
+    // બેક બટન પર પાછા સબ્જેક્ટ હબ પેજ પર જાવ
+    backBtn.onclick = () => openSubjectHub(branch, sem, subject);
+
+    let papers = (db.pyqs && db.pyqs[branch] && db.pyqs[branch][sem] && db.pyqs[branch][sem][subject]) || [];
+    
+    if(papers.length === 0) {
+        pyqListContainer.innerHTML = "<p style='padding:20px; color:var(--text-light); text-align:center; width:100%;'>આ વિષયના જૂના પ્રશ્નપત્રો ટૂંક સમયમાં ઉમેરવામાં આવશે.</p>";
+    } else {
+        papers.forEach((p) => {
+            let card = document.createElement('div');
+            card.className = "box-card";
+            card.style = "display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-height: auto; width: 100%; margin-bottom: 15px; padding: 15px; text-align: left;";
+            card.innerHTML = `
+                <span style="font-size: 14px; font-weight: 600; color: var(--text-color);">📝 GTU Paper - ${p.year}</span>
+                <a href="${p.link}" target="_blank" style="background: #d97706; color: white; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; display: inline-block; text-align: center; margin-top: 4px;" onclick="trackProgress('pyq')">View PDF</a>
+            `;
+            pyqListContainer.appendChild(card);
+        });
+    }
 }
 
 function renderMaterials(chapter) {
-    let chContainer = document.getElementById('chapters-container'); let matContainer = document.getElementById('materials-container'); let backBtn = document.getElementById('btn-back');
-    chContainer.classList.add('hidden'); matContainer.classList.remove('hidden');
-    document.getElementById('filter-heading').innerText = `${chapter.name} Study Box`; matContainer.innerHTML = "";
-    backBtn.onclick = () => { document.getElementById('search-input').value = ""; matContainer.classList.add('hidden'); openSubjectTimelineHub(currentOpenBranch, currentOpenSem, currentOpenSubject); };
+    let chContainer = document.getElementById('chapters-container'); 
+    let matContainer = document.getElementById('materials-container'); 
+    let backBtn = document.getElementById('btn-back');
+    
+    chContainer.classList.add('hidden'); 
+    matContainer.classList.remove('hidden');
+    document.getElementById('filter-heading').innerText = `📁 ${chapter.name}`;
+    matContainer.innerHTML = "";
+    
+    backBtn.onclick = () => { 
+        matContainer.classList.add('hidden'); 
+        openSubjectHub(currentOpenBranch, currentOpenSem, currentOpenSubject); 
+    };
 
     let card = document.createElement('div'); card.className = "box-card"; card.style.width = "100%"; card.style.cursor = "default";
     card.innerHTML = `
@@ -643,17 +597,50 @@ function shareApp() {
     else { alert("Copy this link and share with friends: \n" + window.location.href); }
 }
 
+function openPaymentModal(user, branch, sem, subject, price) {
+    let modal = document.getElementById('info-modal');
+    let title = document.getElementById('modal-title');
+    let body = document.getElementById('modal-body-text');
+    let footer = document.getElementById('modal-footer-buttons');
+
+    title.innerText = `🔒 Unlock ${subject}`;
+    let upiString = `upi://pay?pa=${MY_UPI_ID}&pn=DiplomaStudyPortal&tn=${encodeURIComponent(subject + ' ' + user.name)}&am=${price}&cu=INR`;
+    let qrChartUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
+
+    body.innerHTML = `
+        <div style="text-align:center;">
+            <p style="margin-bottom:15px; font-size:14px; color:var(--text-color);">આ પ્રીમિયમ વિષય અનલોક કરવા માટે <b>₹${price}</b> સ્કેન કરો.</p>
+            <img src="${qrChartUrl}" alt="UPI QR Code" style="border:1px solid #ddd; padding:10px; border-radius:12px; background:white; margin-bottom:15px;">
+            <p style="font-size:12px; color:var(--text-light); margin-bottom:15px;">UPI ID: <b>${MY_UPI_ID}</b></p>
+            <div class="modal-form-group">
+                <label>પેમેન્ટ કર્યા પછી ૧૨-આંકડાનો UTR / Transaction ID અહીં લખો:</label>
+                <input type="text" id="pay-utr-input" placeholder="e.g. 412589632514" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+        </div>
+    `;
+
+    footer.innerHTML = `
+        <button class="btn-save-modal" onclick="submitPaymentDetails('${user.uid}', '${subject}', ${price})">સબમિટ કરો (Submit)</button>
+        <button class="btn-close-modal" onclick="closeModal()">કેન્સલ (Cancel)</button>
+    `;
+    modal.classList.add('active');
+}
+
 function toggleSidebar() {
     let sidebar = document.getElementById('sidebar'); let overlay = document.getElementById('sidebar-overlay');
-    sidebar.classList.toggle('active'); overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+    if(sidebar && overlay) {
+        sidebar.classList.toggle('active'); overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+    }
 }
 function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 function logout() { firebase.auth().signOut().then(() => location.reload()); }
 function closeModal() { document.getElementById('info-modal').classList.remove('active'); }
 function loadUserProfilePhoto(user) {
     let avatar = document.getElementById('user-avatar');
-    if(user && user.photo) { avatar.innerHTML = `<img src="${user.photo}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`; } 
-    else { avatar.innerHTML = "🎓"; }
+    if(avatar) {
+        if(user && user.photo) { avatar.innerHTML = `<img src="${user.photo}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`; } 
+        else { avatar.innerHTML = "🎓"; }
+    }
 }
 
 function calculateLiveCounters() {
@@ -666,10 +653,15 @@ function calculateLiveCounters() {
             });
         });
     }
-    document.getElementById('stat-branches').innerText = totalBranches;
-    document.getElementById('stat-subjects').innerText = totalSubjects;
+    const bCount = document.getElementById('stat-branches');
+    const sCount = document.getElementById('stat-subjects');
+    const stCount = document.getElementById('stat-students');
+    
+    if(bCount) bCount.innerText = totalBranches;
+    if(sCount) sCount.innerText = totalSubjects;
+    
     database.ref('registered_students').once('value').then(snap => {
-        document.getElementById('stat-students').innerText = snap.exists() ? Object.keys(snap.val()).length : 0;
+        if(stCount) stCount.innerText = snap.exists() ? Object.keys(snap.val()).length : 0;
     });
 }
 
@@ -685,15 +677,22 @@ function validateAndNext(current, next) {
 }
 
 function populateDropdowns() {
-    let regBranch = document.getElementById('reg-branch-select');
-    if(regBranch) {
-        regBranch.innerHTML = '<option value="">-- Select Branch --</option>';
-        let branchList = (db && db.branches && Object.keys(db.branches).length > 0) ? Object.keys(db.branches) : baseStaticBranches;
-        branchList.forEach(b => { regBranch.innerHTML += `<option value="${b}">${b}</option>`; });
-    }
-    let regSem = document.getElementById('reg-sem');
-    if(regSem) {
-        regSem.innerHTML = '<option value="">-- Select Semester --</option>';
-        for(let i=1; i<=6; i++) { regSem.innerHTML += `<option value="Sem ${i}">Sem ${i}</option>`; }
-    }
+    let regBranchSelect = document.getElementById('reg-branch-select');
+    let regSemSelect = document.getElementById('reg-sem');
+    if(!regBranchSelect || !regSemSelect) return;
+    
+    regBranchSelect.innerHTML = '<option value="">-- Select Branch --</option>';
+    let branchList = (db && db.branches && Object.keys(db.branches).length > 0) ? Object.keys(db.branches) : baseStaticBranches;
+    branchList.forEach(b => {
+        regBranchSelect.innerHTML += `<option value="${b}">${b}</option>`;
+    });
+
+    regBranchSelect.onchange = function() {
+        regSemSelect.innerHTML = '<option value="">-- Select Semester --</option>';
+        if(this.value) {
+            for(let i=1; i<=6; i++) {
+                regSemSelect.innerHTML += `<option value="Sem ${i}">Sem ${i}</option>`;
+            }
+        }
+    };
 }
