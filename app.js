@@ -321,7 +321,7 @@ function handleSubjectAccess(user, branch, sem, subject, price) {
     }
 }
 
-// PREMIUM EXCLUSIVE NO-PUNT BLOCK CONFIGURATION (Unified Timeline Sequence Builder)
+// PREMIUM EXCLUSIVE DESIGNER FLOW TIMELINE LINKCHAIN
 function openSubjectTimelineHub(branch, sem, subject) {
     currentOpenBranch = branch; currentOpenSem = sem; currentOpenSubject = subject;
     let container = document.getElementById('subjects-container'); 
@@ -347,7 +347,7 @@ function openSubjectTimelineHub(branch, sem, subject) {
     let papers = (db.pyqs && db.pyqs[branch] && db.pyqs[branch][sem] && db.pyqs[branch][sem][subject]) || [];
     let chapters = subObj.chapters || [];
 
-    // STRUCTURE 1: SYLLABUS DISCOVERY UNIT
+    // 1. SYLLABUS SECTION
     let syllabusHTML = "";
     if(syllabusLink) {
         syllabusHTML = `
@@ -359,7 +359,7 @@ function openSubjectTimelineHub(branch, sem, subject) {
         `;
     }
 
-    // STRUCTURE 2: PYQS EXAMINATION HISTORY TIMELINE
+    // 2. PYQS TIMELINE SECTION
     let papersHTML = `
         <div class="timeline-section-wrapper" style="margin-top: 15px; width: 100%;">
             <h3 style="color: #d97706; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left;">📜 Previous Year Papers (PYQs)</h3>
@@ -378,7 +378,7 @@ function openSubjectTimelineHub(branch, sem, subject) {
     }
     papersHTML += `</div>`;
 
-    // STRUCTURE 3: LEARNING CHAPTER ARCHITECTURE
+    // 3. CHAPTERS MATERIAL TIMELINE SECTION
     let chaptersHTML = `
         <div class="timeline-section-wrapper" style="margin-top: 20px; width: 100%;">
             <h3 style="color: #2563eb; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left;">📚 Reference Study Chapters & Notes</h3>
@@ -563,7 +563,7 @@ function openModal(type) {
         }
         else if(type === 'about') { 
             title.innerText = "About Our Portal ℹ️"; 
-            body.innerHTML = `<h3>Empowering GTU Diploma Engineering Students</h3><p style="font-size: 13px; color: var(--text-light); line-height:1.6; margin-top:10px;">Diploma Study Portal Pro એક ઓનલાઈન શૈક્ષણિક પ્લેટફોર્મ છે જે ગુજરાત ટેકનોલોજીકલ યુનિવર્સિટી (GTU) ના ડિપ્લોમા એન્જીનીયરીંગ વિદ્યાર્થીઓ માટે ખાસ બનાવવામાં આવ્યું છે. અહીં સચોટ સિલેબસ મુજબ મટીરીયલ્સ, પ્રકરણવાઇઝ યુટ્યુબ લેકચર્સ અને પાછલા વર્ષોના પ્રશ્નપત્રો ઉપલબ્ધ કરવામાં આવે છે.</p>`; 
+            body.innerHTML = `<h3>Empowering GTU Diploma Engineering Students</h3><p style="font-size: 13px; color: var(--text-light); line-height:1.6; margin-top:10px;">Diploma Study Portal My એક ઓનલાઈન શૈક્ષણિક પ્લેટફોર્મ છે જે ગુજરાત ટેકનોલોજીકલ યુનિવર્સિટી (GTU) ના ડિપ્લોમા એન્જીનીયરીંગ વિદ્યાર્થીઓ માટે ખાસ બનાવવામાં આવ્યું છે. અહીં સચોટ સિલેબસ મુજબ મટીરીયલ્સ, પ્રકરણવાઇઝ યુટ્યુબ લેકચર્સ અને પાછલા વર્ષોના પ્રશ્નપત્રો ઉપલબ્ધ કરવામાં આવે છે.</p>`; 
         } 
         else if(type === 'contact') {
             title.innerText = "Contact Us 📞";
@@ -668,9 +668,4 @@ function populateDropdowns() {
         regSem.innerHTML = '<option value="">-- Select Semester --</option>';
         for(let i=1; i<=6; i++) { regSem.innerHTML += `<option value="Sem ${i}">Sem ${i}</option>`; }
     }
-}
-
-// Custom redirection rule to link to your decoupled external admin workspace
-function redirectToAdminPortal() {
-    window.open('https://vahorarehan5510-tech.github.io/admin_portal/', '_blank');
 }
