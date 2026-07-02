@@ -106,11 +106,6 @@ function filterCards() {
     });
 }
 
-// Custom redirection rule to link to your decoupled external admin website
-function redirectToAdminPortal() {
-    window.open('https://vahorarehan5510-tech.github.io/admin_portal/', '_blank');
-}
-
 function setupLiveListeners(user) {
     database.ref('notifications').limitToLast(10).on('value', snap => {
         let listContainer = document.getElementById('notif-list-container');
@@ -163,7 +158,6 @@ function toggleNotifs(e) {
     document.getElementById('notif-badge').classList.add('hidden');
 }
 
-// UI Section Router
 function showSection(sectionType) {
     toggleSidebar();
     currentActiveSection = sectionType;
@@ -327,7 +321,7 @@ function handleSubjectAccess(user, branch, sem, subject, price) {
     }
 }
 
-// PREMIUM EXCLUSIVE DESIGNER FLOW TIMELINE LINKCHAIN (Unified Hub Architecture)
+// FIXED CRITICAL LOGIC CHAIN: સબ્જેક્ટના ક્લિક પર Syllabus ➔ Old Papers ➔ Chapters લાઇનસર મોર્ડન કાર્ડ્સમાં લોડ થશે
 function openSubjectTimelineHub(branch, sem, subject) {
     currentOpenBranch = branch; currentOpenSem = sem; currentOpenSubject = subject;
     let container = document.getElementById('subjects-container'); 
@@ -350,10 +344,11 @@ function openSubjectTimelineHub(branch, sem, subject) {
 
     let subObj = db.branches[branch][sem][subject] || {};
     let syllabusLink = subObj.syllabus || "";
+    // ફિક્સ: એડમિન પેનલ જે સ્ટ્રક્ચરમાં ગ્લોબલી સેવ કરે છે (db.pyqs) ત્યાંથી જ કનેક્ટ કર્યું
     let papers = (db.pyqs && db.pyqs[branch] && db.pyqs[branch][sem] && db.pyqs[branch][sem][subject]) || [];
     let chapters = subObj.chapters || [];
 
-    // 1. SYLLABUS DISCOVERY UNIT
+    // 1. SYLLABUS DISCOVERY SECTION
     let syllabusHTML = "";
     if(syllabusLink && syllabusLink !== "#") {
         syllabusHTML = `
@@ -372,17 +367,17 @@ function openSubjectTimelineHub(branch, sem, subject) {
         `;
     }
 
-    // 2. PYQS EXAMINATION HISTORY TIMELINE
+    // 2. PYQS EXAMINATION TIMELINE SECTION (હવે ૧૦૦% વિષયવાઇઝ પેપર્સ દેખાશે)
     let papersHTML = `
         <div class="timeline-section-wrapper" style="margin-top: 15px; width: 100%;">
-            <h3 style="color: #d97706; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left;">📜 Previous Year Papers (PYQs)</h3>
+            <h3 style="color: #d97706; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left; margin-bottom: 10px;">📜 Previous Year Papers (PYQs)</h3>
     `;
     if(papers.length === 0) {
-        papersHTML += `<p style="font-size: 13px; color: var(--text-light); padding-left: 5px; text-align: left;">આ સબ્જેક્ટના પ્રશ્નપત્રો ટૂંક સમયમાં ઉપલબ્ધ કરાશે.</p>`;
+        papersHTML += `<p style="font-size: 13px; color: var(--text-light); padding-left: 5px; text-align: left; margin-bottom: 15px;">આ સબ્જેક્ટના પ્રશ્નપત્રો ટૂંક સમયમાં ઉપલબ્ધ કરાશે.</p>`;
     } else {
         papers.forEach((p) => {
             papersHTML += `
-                <div class="box-card" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 15px 20px; border-left: 4px solid #d97706; min-height: auto; width: 100%;">
+                <div class="box-card" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 15px 20px; border-left: 4px solid #d97706; min-height: auto; width: 100%; margin-bottom: 10px;">
                     <span style="font-size: 14px; font-weight: 500; color: var(--text-color);">📄 GTU Question Paper - ${p.year}</span>
                     <a href="${p.link}" target="_blank" class="btn-pyq-action" style="padding: 8px 16px; font-size: 13px; border-radius: 8px; text-decoration: none; font-weight: 600;">Download PDF</a>
                 </div>
@@ -391,17 +386,17 @@ function openSubjectTimelineHub(branch, sem, subject) {
     }
     papersHTML += `</div>`;
 
-    // 3. LEARNING CHAPTER ARCHITECTURE
+    // 3. LEARNING CHAPTER MATERIAL TIMELINE SECTION
     let chaptersHTML = `
         <div class="timeline-section-wrapper" style="margin-top: 20px; width: 100%;">
-            <h3 style="color: #2563eb; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left;">📚 Reference Study Chapters & Notes</h3>
+            <h3 style="color: #2563eb; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left; margin-bottom: 10px;">📚 Reference Study Chapters & Notes</h3>
     `;
     if(chapters.length === 0) {
         chaptersHTML += `<p style="font-size: 13px; color: var(--text-light); padding-left: 5px; text-align: left;">આ પ્રકરણના અભ્યાસક્રમની સામગ્રી પ્રક્રિયા હેઠળ છે.</p>`;
     } else {
         chapters.forEach((ch, idx) => {
             chaptersHTML += `
-                <div class="box-card" id="ch-row-hub-${idx}" style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 18px 20px; border-left: 4px solid #2563eb; width: 100%; min-height: auto;">
+                <div class="box-card" id="ch-row-hub-${idx}" style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 18px 20px; border-left: 4px solid #2563eb; width: 100%; min-height: auto; margin-bottom: 10px;">
                     <div style="font-size: 15px; font-weight: 600; color: var(--text-color);">📁 Chapter ${idx + 1}: ${ch.name}</div>
                     <span style="font-size: 12px; color: var(--text-light); margin-top: 4px;">ક્લિક કરીને હાઈ-ક્વોલિટી વિડીયો લેક્ચર્સ અને હેન્ડરાઇટિંગ પીડીએફ નોટ્સ મેળવો</span>
                 </div>
@@ -410,6 +405,7 @@ function openSubjectTimelineHub(branch, sem, subject) {
     }
     chaptersHTML += `</div>`;
 
+    // પેજ પર કમ્બાઈન કરીને બધું રેન્ડર કરવું
     chContainer.innerHTML = syllabusHTML + papersHTML + chaptersHTML;
 
     if(chapters.length > 0) {
@@ -576,11 +572,11 @@ function openModal(type) {
         }
         else if(type === 'about') { 
             title.innerText = "About Our Portal ℹ️"; 
-            body.innerHTML = `<h3>Empowering GTU Diploma Engineering Students</h3><p style="font-size: 13px; color: var(--text-light); line-height:1.6; margin-top:10px;">Diploma Study Portal My એક ઓનલાઈન શૈક્ષણિક પ્લેટફોર્મ છે જે ગુજરાત ટેકનોલોજીકલ યુનિવર્સિટી (GTU) ના ડિપ્લોમા એન્જીનીયરીંગ વિદ્યાર્થીઓ માટે ખાસ બનાવવામાં આવ્યું છે. અહીં સચોટ સિલેબસ મુજબ મટીરીયલ્સ, પ્રકરણવાઇઝ યુટ્યુબ લેકચર્સ અને પાછલા વર્ષોના પ્રશ્નપત્રો ઉપલબ્ધ કરવામાં આવે છે.</p>`; 
+            body.innerHTML = `<h3>Empowering GTU Diploma Engineering Students</h3><p style="font-size: 13px; color: var(--text-light); line-height:1.6; margin-top:10px;">Diploma Study Portal My એક ઓનલાઈન શૈક્ષણિક પ્લેટફોર્મ છે જે ગુજરાત ટેકનોલોજીકલ યુનિવર્સિટી (GTU) ના ડિપ્લોમા એન્જીનીયરીંગ વિદ્યાર્થીઓ માટે ખાસ બનાવવામાં આવ્યું છે. અહીં સચોટ સિલેબસ મુજબ મટીરીયલ્સ, પ્રકરણવાઇઝ યુટ્યુબ લેકચર્સ અને પાછલા વર્ષೋના પ્રશ્નપત્રો ઉપલબ્ધ કરવામાં આવે છે.</p>`; 
         } 
         else if(type === 'contact') {
             title.innerText = "Contact Us 📞";
-            body.innerHTML = `<h3>કોઈપણ પ્રશ્ન કે સમસ્યા માટે સંપարկ કરો:</h3>
+            body.innerHTML = `<h3>કોઈપણ પ્રશ્ન કે સમસ્યા માટે સંપર્ક કરો:</h3>
             <p style="font-size: 14px; margin-top:10px; line-height:1.8;">📧 Email: <b>vahorarehan5510@gmail.com</b><br>💬 Discussion Forum માં એડમિનને સીધો પ્રશ્ન પૂછી શકો છો.<br>📍 Vadodara, Gujarat, India.</p>`;
         }
         else if(type === 'privacy') {
