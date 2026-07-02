@@ -321,13 +321,14 @@ function handleSubjectAccess(user, branch, sem, subject, price) {
     }
 }
 
-// PREMIUM EXCLUSIVE DESIGNER FLOW TIMELINE LINKCHAIN (Syllabus ➔ Old Papers Hub ➔ Chapters)
+// PREMIUM EXCLUSIVE DESIGNER FLOW TIMELINE LINKCHAIN (નવા વ્યુ/પેજ તરીકે પરફેક્ટ ઓપન થશે)
 function openSubjectTimelineHub(branch, sem, subject) {
     currentOpenBranch = branch; currentOpenSem = sem; currentOpenSubject = subject;
     let container = document.getElementById('subjects-container'); 
     let chContainer = document.getElementById('chapters-container'); 
     let backBtn = document.getElementById('btn-back');
 
+    // નવું પેજ ક્રિએટ કરવા માટે જૂના કન્ટેનરને હાઇડ કરો
     container.classList.add('hidden'); 
     chContainer.classList.remove('hidden'); 
     backBtn.classList.remove('hidden');
@@ -347,7 +348,7 @@ function openSubjectTimelineHub(branch, sem, subject) {
     let papers = (db.pyqs && db.pyqs[branch] && db.pyqs[branch][sem] && db.pyqs[branch][sem][subject]) || [];
     let chapters = subObj.chapters || [];
 
-    // 1. SYLLABUS DISCOVERY SECTION
+    // ૧. ઓફિશિયલ જીટીયુ સિલેબસ સેક્શન
     let syllabusHTML = "";
     if(syllabusLink && syllabusLink !== "#") {
         syllabusHTML = `
@@ -366,7 +367,7 @@ function openSubjectTimelineHub(branch, sem, subject) {
         `;
     }
 
-    // 2. PREMIUM DYNAMIC OLD PAPERS HUB (બટન ટૉગલ ફંક્શનાલિટી સાથે)
+    // ૨. પ્રીમિયમ ઓલ્ડ પેપર્સ હબ (બટન ક્લિક પર એ જ પેજ પર નીચે લિસ્ટ ખુલશે)
     let papersHTML = `
         <div class="box-card" style="border-left: 6px solid #d97706; background: rgba(217, 119, 6, 0.02); text-align: left; align-items: flex-start; min-height: auto; width: 100%; margin-bottom: 20px; padding: 20px;">
             <h3 style="color: #d97706; font-size: 1.2rem; font-weight: 600; margin-bottom: 5px;">📜 Previous Year Papers (PYQs)</h3>
@@ -379,17 +380,18 @@ function openSubjectTimelineHub(branch, sem, subject) {
         papersHTML += `<p style="font-size: 13px; color: var(--text-light);">આ વિષયના જૂના પ્રશ્નપત્રો ટૂંક સમયમાં ઉમેરવામાં આવશે.</p>`;
     } else {
         papers.forEach((p) => {
+            // ફિક્સ: બટન અને સ્ટ્રક્ચરને ફ્લેક્સ ડાયરેક્શન કોલમ કરીને પ્રોપર નીચે સેટ કર્યું
             papersHTML += `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: var(--bg-color); border-radius: 8px; border: 1px solid var(--border-color); width: 100%;">
-                    <span style="font-size: 13.5px; font-weight: 500; color: var(--text-color);">📝 GTU Paper - ${p.year}</span>
-                    <a href="${p.link}" target="_blank" style="background: #d97706; color: white; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600;" onclick="trackProgress('pyq')">Download PDF</a>
+                <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 15px; background: var(--bg-color); border-radius: 12px; border: 1px solid var(--border-color); width: 100%;">
+                    <span style="font-size: 14px; font-weight: 600; color: var(--text-color);">📝 GTU Paper - ${p.year}</span>
+                    <a href="${p.link}" target="_blank" style="background: #d97706; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; display: inline-block; text-align: center; margin-top: 4px;" onclick="trackProgress('pyq')">View PDF</a>
                 </div>
             `;
         });
     }
     papersHTML += `</div></div>`;
 
-    // 3. LEARNING CHAPTER TIMELINE SECTION
+    // ૩. લર્નિંગ ચેપ્ટર્સ સેક્શન
     let chaptersHTML = `
         <div class="timeline-section-wrapper" style="width: 100%;">
             <h3 style="color: #2563eb; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left; margin-bottom: 12px;">📚 Reference Study Chapters & Notes</h3>
@@ -410,7 +412,7 @@ function openSubjectTimelineHub(branch, sem, subject) {
 
     chContainer.innerHTML = syllabusHTML + papersHTML + chaptersHTML;
 
-    // બટન ક્લિક ટોગલ કસ્ટમ લોજિક બાઈન્ડિંગ
+    // સ્મૂધ ટૉગલ ક્લિક ઇવેન્ટ મેનેજમેન્ટ
     let toggleBtn = document.getElementById('btn-toggle-papers');
     let papersList = document.getElementById('hidden-papers-list');
     if(toggleBtn && papersList) {
