@@ -106,6 +106,11 @@ function filterCards() {
     });
 }
 
+// Custom redirection rule to link to your decoupled external admin website
+function redirectToAdminPortal() {
+    window.open('https://vahorarehan5510-tech.github.io/admin_portal/', '_blank');
+}
+
 function setupLiveListeners(user) {
     database.ref('notifications').limitToLast(10).on('value', snap => {
         let listContainer = document.getElementById('notif-list-container');
@@ -158,6 +163,7 @@ function toggleNotifs(e) {
     document.getElementById('notif-badge').classList.add('hidden');
 }
 
+// UI Section Router
 function showSection(sectionType) {
     toggleSidebar();
     currentActiveSection = sectionType;
@@ -321,7 +327,7 @@ function handleSubjectAccess(user, branch, sem, subject, price) {
     }
 }
 
-// PREMIUM EXCLUSIVE DESIGNER FLOW TIMELINE LINKCHAIN
+// PREMIUM EXCLUSIVE DESIGNER FLOW TIMELINE LINKCHAIN (Unified Hub Architecture)
 function openSubjectTimelineHub(branch, sem, subject) {
     currentOpenBranch = branch; currentOpenSem = sem; currentOpenSubject = subject;
     let container = document.getElementById('subjects-container'); 
@@ -347,19 +353,26 @@ function openSubjectTimelineHub(branch, sem, subject) {
     let papers = (db.pyqs && db.pyqs[branch] && db.pyqs[branch][sem] && db.pyqs[branch][sem][subject]) || [];
     let chapters = subObj.chapters || [];
 
-    // 1. SYLLABUS SECTION
+    // 1. SYLLABUS DISCOVERY UNIT
     let syllabusHTML = "";
-    if(syllabusLink) {
+    if(syllabusLink && syllabusLink !== "#") {
         syllabusHTML = `
-            <div class="box-card" style="border-left: 6px solid #10b981; background: rgba(16, 185, 129, 0.02); text-align: left; align-items: flex-start; min-height: auto; width: 100%;">
+            <div class="box-card" style="border-left: 6px solid #10b981; background: rgba(16, 185, 129, 0.02); text-align: left; align-items: flex-start; min-height: auto; width: 100%; margin-bottom: 15px;">
                 <h3 style="color: #10b981; font-size: 1.2rem; font-weight: 600; margin-bottom: 5px;">📋 Official GTU Syllabus</h3>
                 <p style="font-size: 13px; color: var(--text-light); margin-bottom: 15px;">તમારા સત્તાવાર અભ્યાસક્રમની વિગતો અને ગુણ મૂલ્યાંકન પદ્ધતિ અહીં ડાઉનલોડ કરો.</p>
                 <a href="${syllabusLink}" target="_blank" style="background:#d1fae5; color:#065f46; display: inline-flex; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 14px; text-decoration: none;">🌐 View Syllabus PDF</a>
             </div>
         `;
+    } else {
+        syllabusHTML = `
+            <div class="box-card" style="border-left: 6px solid #6b7280; text-align: left; align-items: flex-start; min-height: auto; width: 100%; margin-bottom: 15px;">
+                <h3 style="color: var(--text-light); font-size: 1.1rem; font-weight: 600; margin-bottom: 3px;">📋 Syllabus Not Available</h3>
+                <p style="font-size: 12px; color: var(--text-light);">આ વિષયનો સિલેબસ એડમિન દ્વારા ટૂંક સમયમાં અપલોડ કરવામાં આવશે.</p>
+            </div>
+        `;
     }
 
-    // 2. PYQS TIMELINE SECTION
+    // 2. PYQS EXAMINATION HISTORY TIMELINE
     let papersHTML = `
         <div class="timeline-section-wrapper" style="margin-top: 15px; width: 100%;">
             <h3 style="color: #d97706; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left;">📜 Previous Year Papers (PYQs)</h3>
@@ -378,7 +391,7 @@ function openSubjectTimelineHub(branch, sem, subject) {
     }
     papersHTML += `</div>`;
 
-    // 3. CHAPTERS MATERIAL TIMELINE SECTION
+    // 3. LEARNING CHAPTER ARCHITECTURE
     let chaptersHTML = `
         <div class="timeline-section-wrapper" style="margin-top: 20px; width: 100%;">
             <h3 style="color: #2563eb; font-size: 1.15rem; font-weight: 600; padding-left: 5px; text-align: left;">📚 Reference Study Chapters & Notes</h3>
@@ -567,7 +580,7 @@ function openModal(type) {
         } 
         else if(type === 'contact') {
             title.innerText = "Contact Us 📞";
-            body.innerHTML = `<h3>કોઈપણ પ્રશ્ન કે સમસ્યા માટે સંપર્ક કરો:</h3>
+            body.innerHTML = `<h3>કોઈપણ પ્રશ્ન કે સમસ્યા માટે સંપարկ કરો:</h3>
             <p style="font-size: 14px; margin-top:10px; line-height:1.8;">📧 Email: <b>vahorarehan5510@gmail.com</b><br>💬 Discussion Forum માં એડમિનને સીધો પ્રશ્ન પૂછી શકો છો.<br>📍 Vadodara, Gujarat, India.</p>`;
         }
         else if(type === 'privacy') {
